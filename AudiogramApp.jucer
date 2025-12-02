@@ -3,6 +3,7 @@
 <JUCERPROJECT id="WKUAzk" name="AudiogramApp" projectType="guiapp" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="lnMh6c" name="AudiogramApp">
+    <FILE id="w0qxbC" name="reverb_ir.wav" compile="0" resource="1" file="../../../../Downloads/reverb_ir.wav"/>
     <GROUP id="{46B42F38-5DC4-96AB-47E8-1842A2EF02B4}" name="Resources">
       <GROUP id="{5442CB66-3BAD-C3E9-2257-95FB1F20DC62}" name="Digits">
         <FILE id="ODUExG" name="speech_0.wav" compile="0" resource="1" file="Resources/Digits/speech_0.wav"/>
@@ -448,8 +449,6 @@
         <FILE id="cV3Bi6" name="sqlite3.h" compile="0" resource="0" file="ThirdParty/sqlite-amalgamation-3510000/sqlite3.h"/>
       </GROUP>
     </GROUP>
-    <FILE id="JgJTIV" name="snd.wav" compile="0" resource="1" file="../../../../Desktop/snd.wav"/>
-    <FILE id="GcoRC0" name="speech_15.wav" compile="0" resource="1" file="../../5C1/lab3a/speech_15.wav"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

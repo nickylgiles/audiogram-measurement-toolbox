@@ -35,6 +35,7 @@ private:
     int partSize;
 
     std::vector<std::vector<juce::dsp::Complex<float>>> inputFDL;
+    int inputFDLidx = 0;
     std::vector<juce::dsp::Complex<float>> inputTDL;
 
     std::vector<std::vector<juce::dsp::Complex<float>>> irPartsFFT;

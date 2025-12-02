@@ -12,25 +12,16 @@
 #include <JuceHeader.h>
 #include <BinaryData.h>
 
-Spatialiser::Spatialiser(HRTFManager& hrtfManagerRef)
+Spatialiser::Spatialiser(HRTFManager& hrtfManagerRef, int fftBlockSize)
     : hrtfManager(hrtfManagerRef),
-    convolverLeft(64),
-    convolverRight(64)
+    convolverLeft(fftBlockSize),
+    convolverRight(fftBlockSize),
+    azimuth(0.0f), elevation(0.0f),sampleRate(0.0)
 {
 }
 
 void Spatialiser::setSampleRate(double newSampleRate) {
     sampleRate = newSampleRate;
-
-    juce::dsp::ProcessSpec spec;
-    spec.sampleRate = sampleRate;
-    spec.maximumBlockSize = 4096;
-    spec.numChannels = 1;
-
-    firLeft.prepare(spec);
-    firRight.prepare(spec);
-
-    DBG("Convolutions prepared. Sample rate = " << sampleRate);
 }
 
 void Spatialiser::setDirection(float newElevation, float newAzimuth) {
@@ -40,25 +31,9 @@ void Spatialiser::setDirection(float newElevation, float newAzimuth) {
     // Load IRs
     juce::AudioBuffer<float> hrirL = hrtfManager.getIR(elevation, azimuth, 0);
     juce::AudioBuffer<float> hrirR = hrtfManager.getIR(elevation, azimuth, 1);
-
-    const float* samplesL = hrirL.getReadPointer(0);
-    size_t numTapsL = (size_t)hrirL.getNumSamples();
-
-    auto coeffsL = new juce::dsp::FIR::Coefficients<float>(samplesL, numTapsL);
-    firLeft.coefficients = coeffsL;
-    firLeft.reset();
-
-    const float* samplesR = hrirR.getReadPointer(0);
-    size_t numTapsR = (size_t)hrirR.getNumSamples();
-
-    auto coeffsR = new juce::dsp::FIR::Coefficients<float>(samplesR, numTapsR);
-    firRight.coefficients = coeffsR;
-    firRight.reset();
-
     
     convolverLeft.loadIR(hrirL);
     convolverRight.loadIR(hrirR);
-
 
     irLoaded = true;
 }
@@ -66,11 +41,6 @@ void Spatialiser::setDirection(float newElevation, float newAzimuth) {
 void Spatialiser::reset() {
     return;
 }
-
-void Spatialiser::setFFTBlockSize(int newBlockSize) {
-    return;
-}
-
 
 void Spatialiser::processBlock(const float* input, float* outputL, float* outputR, int numSamples) {
     if(!irLoaded) {
@@ -84,19 +54,7 @@ void Spatialiser::processBlock(const float* input, float* outputL, float* output
         }
         return;
     }
-
-    /*
-    for (int i = 0; i < numSamples; ++i) {
-        float inSample = input[i];
-
-        outputL[i] = firLeft.processSample(inSample);
-        outputR[i] = firRight.processSample(inSample);
-    }
-    */
     
     convolverLeft.processBlock(input, outputL, numSamples);
     convolverRight.processBlock(input, outputR, numSamples);
-    
-
 }
-

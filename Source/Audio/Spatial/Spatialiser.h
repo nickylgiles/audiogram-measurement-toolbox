@@ -16,13 +16,10 @@
 
 class Spatialiser {
 public:
-    Spatialiser(HRTFManager& hrtfManagerRef);
+    Spatialiser(HRTFManager& hrtfManagerRef, int fftBlockSize = 64);
     void setSampleRate(double newSampleRate);
     void setDirection(float newElevation, float newAzimuth);
     void reset();
-
-    void setFFTBlockSize(int newBlockSize);
-
     void processBlock(const float* input, float* outputL, float* outputR, int numSamples);
 private:
     float azimuth;
@@ -32,9 +29,6 @@ private:
 
     PartitionedConvolver convolverLeft;
     PartitionedConvolver convolverRight;
-
-    juce::dsp::FIR::Filter<float> firLeft;
-    juce::dsp::FIR::Filter<float> firRight;
 
     bool irLoaded = false;
 };

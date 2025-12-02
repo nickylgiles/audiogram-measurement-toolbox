@@ -56,11 +56,6 @@ void PartitionedConvolver::loadIR(const juce::AudioBuffer<float>& irBuffer) {
         // Perform FFT on partition
         fft->perform(tempFFTBuffer.data(), tempFFTBuffer.data(), false);
 
-        // Normalisation factor for output IFFT
-        float invNFFT = 1.0f / NFFT;
-        for (int n = 0; n < NFFT; ++n)
-            tempFFTBuffer[n] *= invNFFT;
-        
         // Store result in H[p]
         irPartsFFT[p] = tempFFTBuffer;
     }
@@ -128,17 +123,17 @@ void PartitionedConvolver::processPartition(float* inputPart, float* outputPart)
     }
 
     //Shift X_fdl
-    for (int p = numIRParts - 1; p > 0; --p)
-        inputFDL[p] = inputFDL[p - 1];
+    inputFDLidx = (inputFDLidx + 1) % numIRParts;
 
     // take FFt of current block
-    fft->perform(inputTDL.data(), inputFDL[0].data(), false);
+    fft->perform(inputTDL.data(), inputFDL[inputFDLidx /*0*/].data(), false);
 
     // multiply-accumulate result
     std::vector<juce::dsp::Complex<float>> accumulator(NFFT, { 0.0f, 0.0f });
     for (int p = 0; p < numIRParts; ++p) {
         for (int k = 0; k < NFFT; ++k) {
-            accumulator[k] += irPartsFFT[p][k] * inputFDL[p][k];
+            int idx = (inputFDLidx + p) % numIRParts; // index of FDL to use (wrap around)
+            accumulator[k] += irPartsFFT[p][k] * inputFDL[idx][k];
         }
     }
 
