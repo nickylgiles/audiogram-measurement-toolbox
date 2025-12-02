@@ -47,6 +47,9 @@ private:
     std::vector<float> inputBuffer;
 
     std::vector<float> leftoverOutput;
+
+    std::vector<float> outputBuf; // temp buffer for output of convolution
+    std::vector<juce::dsp::Complex<float>> tempFFTBuffer; // temp buffer for loading IRs
     int leftoverPos = 0;
 
 };
