@@ -5,8 +5,6 @@
     Created: 25 Nov 2025 7:42:14pm
     Author:  nicky_hgjk9m6
 
-    Implementation based on Uniformly Partitioned Overlap-Save (UPOLS)
-
   ==============================================================================
 */
 
@@ -23,6 +21,7 @@ PartitionedConvolver::PartitionedConvolver(int partitionSize)
     outputFFT.resize(NFFT, {0.0f, 0.0f});
     outputIFFT.resize(NFFT, 0.0f);
     inputBuffer.clear();
+    inputBuffer.reserve(partSize);
     outputBuffer.resize(partSize, 0.0f);
     tempFFTBuffer.resize(NFFT, { 0.0f, 0.0f });
 }
@@ -57,6 +56,11 @@ void PartitionedConvolver::loadIR(const juce::AudioBuffer<float>& irBuffer) {
         // Perform FFT on partition
         fft->perform(tempFFTBuffer.data(), tempFFTBuffer.data(), false);
 
+        // Normalisation factor for output IFFT
+        float invNFFT = 1.0f / NFFT;
+        for (int n = 0; n < NFFT; ++n)
+            tempFFTBuffer[n] *= invNFFT;
+        
         // Store result in H[p]
         irPartsFFT[p] = tempFFTBuffer;
     }
@@ -77,14 +81,21 @@ void PartitionedConvolver::processBlock(const float* input, float* output, int n
     // Handle leftover samples from previous block output
     while (leftoverPos < leftoverOutput.size() && outputPos < numSamples)
         output[outputPos++] = leftoverOutput[leftoverPos++];
+
     if (leftoverPos >= leftoverOutput.size()) {
         leftoverOutput.clear();
         leftoverPos = 0;
     }
+
     while (inputPos < numSamples) {
-        inputBuffer.push_back(input[inputPos]);
-        ++inputPos;
+        // Fill buffer with incoming samples until full or run out of input samples
+        int samplesToFill = partSize - inputBuffer.size();
+        int samplesToCopy = juce::jmin(numSamples - inputPos, samplesToFill);
+        inputBuffer.insert(inputBuffer.end(), input + inputPos, input + inputPos + samplesToCopy);
+        inputPos += samplesToCopy;
+
         if (inputBuffer.size() == partSize) {
+            // When buffer has a full partition-sized block, process it
             processPartition(inputBuffer.data(), outputBuffer.data());
             int samplesToWrite = juce::jmin(partSize, numSamples - outputPos);
             std::copy(outputBuffer.begin(), outputBuffer.begin() + samplesToWrite,
@@ -98,6 +109,7 @@ void PartitionedConvolver::processBlock(const float* input, float* output, int n
         }
     }
 
+    // Clear unused space on output buffer
     while (outputPos < numSamples) {
         output[outputPos++] = 0.0f;
     }
@@ -132,10 +144,6 @@ void PartitionedConvolver::processPartition(float* inputPart, float* outputPart)
 
     // IFFT of accumulated spectral convolutions
     fft->perform(accumulator.data(), outputIFFT.data(), true);
-
-    // Normalise
-    for (int n = 0; n < NFFT; ++n)
-        outputIFFT[n] /= NFFT;
 
     // Output right half of output
     for (int n = 0; n < partSize; ++n)
