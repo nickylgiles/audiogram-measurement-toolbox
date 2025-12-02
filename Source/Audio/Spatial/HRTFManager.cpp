@@ -133,6 +133,29 @@ bool HRTFManager::loadIR(const juce::String& name, juce::AudioBuffer<float>& des
     irSampleRate = reader->sampleRate;
 
     DBG("HRIR sample rate: " << irSampleRate);
+    if (sampleRate > 0 && irSampleRate != sampleRate) {
+        resampleBuffer(dest, irSampleRate, sampleRate);
+        irSampleRate = sampleRate;
+        DBG("HRIR resampled to device sample rate: " << irSampleRate);
+    }
 
     return true;
+}
+
+void HRTFManager::resampleBuffer(juce::AudioBuffer<float>& buffer, double srcRate, double destRate) {
+    if (srcRate == destRate)
+        return;
+
+    float ratio = static_cast<float>(srcRate / destRate);
+    int newLength = static_cast<int>(std::ceil(buffer.getNumSamples() * destRate / srcRate));
+
+    juce::AudioBuffer<float> resampled(1, newLength);
+
+    const float* in = buffer.getReadPointer(0);
+    float* out = resampled.getWritePointer(0);
+
+    interpolator.process(ratio, in, out, newLength);
+    interpolator.reset();
+
+    buffer = std::move(resampled);
 }

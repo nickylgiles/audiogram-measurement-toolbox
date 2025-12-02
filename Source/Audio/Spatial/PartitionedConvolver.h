@@ -19,26 +19,34 @@ public:
     void processBlock(const float* input, float* output, int numSamples);
 
 private:
-    void processPartition();
 
-    int partitionSize;
-    int fftSize; // fft size = 2*partitionSize or next power of 2
+    void processPartition(float* inputPart, float* outputPart);
+    std::unique_ptr<juce::dsp::FFT> fft;
 
-    std::vector<std::vector<juce::dsp::Complex<float>>> irPartitions; // fft of IR partitions
+    static int computeFFTOrder(int N) {
+        int order = 0;
+        while ((1 << order) < N)
+            ++order;
+        return order;
+    }
 
-    juce::AudioBuffer<float> inputBuffer; // accumulate incoming samples until enough for FFT
-    int inputBufferPos;
+    std::vector<std::vector<juce::dsp::Complex<float>>> X_fdl;
+    std::vector<std::vector<juce::dsp::Complex<float>>> H;
 
-    std::vector<std::vector<juce::dsp::Complex<float>>> inputFFTBuffer;
-    int inputFFTBufferPos;
+    std::vector<juce::dsp::Complex<float>> Y;
+    
+    std::vector<juce::dsp::Complex<float>> yifft;
+    
+    std::vector<juce::dsp::Complex<float>> x_tdl;
 
+    int NFFT;
+    int partSize;
 
-    juce::AudioBuffer<float> overlapBuffer;
+    int hParts;
 
-    int numPartitions;
+    std::vector<float> inputBuffer;
 
-    juce::dsp::FFT fft;
-
-    int processedPartitions = 0;
+    std::vector<float> leftoverOutput;
+    int leftoverPos = 0;
 
 };

@@ -36,4 +36,7 @@ private:
 
     juce::AudioFormatManager audioFormatManager;
 
+    void resampleBuffer(juce::AudioBuffer<float>& buffer, double srcRate, double destRate);
+
+    juce::LagrangeInterpolator interpolator;
 };

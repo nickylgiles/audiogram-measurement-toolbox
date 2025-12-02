@@ -5,147 +5,151 @@
     Created: 25 Nov 2025 7:42:14pm
     Author:  nicky_hgjk9m6
 
+    Implementation based on Uniformly Partitioned Overlap-Save (UPOLS)
+
   ==============================================================================
 */
 
 #include "PartitionedConvolver.h"
 
-PartitionedConvolver::PartitionedConvolver(int partitionSize) 
-    : partitionSize(partitionSize),
-    fftSize(juce::nextPowerOfTwo(partitionSize * 2)),
-    fft(static_cast<int>(std::log2(fftSize))) 
+PartitionedConvolver::PartitionedConvolver(int partitionSize)
+    : partSize(partitionSize)
 {
-    inputBuffer.setSize(1, partitionSize);
+    NFFT = 2 * partSize;
+    int fftOrder = computeFFTOrder(NFFT);
+    fft = std::make_unique<juce::dsp::FFT>(fftOrder);
+
+    x_tdl.resize(NFFT, 0.0f);
+
+    Y.resize(NFFT, {0.0f, 0.0f});
+
+    yifft.resize(NFFT, 0.0f);
+
     inputBuffer.clear();
-    inputBufferPos = 0;
-
-    overlapBuffer.setSize(1, fftSize);
-    overlapBuffer.clear();
-
-    irPartitions.clear();
-    numPartitions = 0;
-
-    DBG("PartitionedConvolver: partitionSize=" << partitionSize << " fftSize=" << fftSize);
 }
 
 void PartitionedConvolver::loadIR(const juce::AudioBuffer<float>& irBuffer) {
-    irPartitions.clear();
+    int length = irBuffer.getNumSamples();
+    hParts = (length + partSize - 1) / partSize;
 
-    int irLength = irBuffer.getNumSamples();
-    const float* readPointer = irBuffer.getReadPointer(0);
-    
-    numPartitions = (irLength + partitionSize - 1) / partitionSize;
+    H.clear();
+    H.resize(hParts);
 
-    std::vector<juce::dsp::Complex<float>> fftData(fftSize);
-
-    for (int p = 0; p < numPartitions; ++p) {
-        int offset = p * partitionSize;
-        for (int i = 0; i < partitionSize; ++i) {
-            if (offset + i < irLength)
-                fftData[i] = { readPointer[offset + i], 0.0f };
-            else
-                fftData[i] = { 0.0f, 0.0f };
-        }
-        for (int i = partitionSize; i < fftSize; ++i) {
-            fftData[i] = { 0.0f, 0.0f };
-        }
-
-        fft.perform(fftData.data(), fftData.data(), false);
-        irPartitions.push_back(fftData);
+    for (int i = 0; i < hParts; ++i) {
+        H[i].resize(NFFT, {0.0f, 0.0f});
     }
 
-    inputFFTBuffer.clear();
-    inputFFTBuffer.resize(numPartitions, std::vector<juce::dsp::Complex<float>>(fftSize));
-    inputFFTBufferPos = 0;
-    
-    overlapBuffer.setSize(1, fftSize);
-    overlapBuffer.clear();
+    auto* irReadPtr = irBuffer.getReadPointer(0);
 
-    DBG("PartitionedConvolver: loaded IR - partitions=" << numPartitions);
+    // Zero-pad parts and perform FFT
+    std::vector<juce::dsp::Complex<float>> tempBuf;
+    tempBuf.resize(NFFT, {0.0f, 0.0f});
+
+    for (int p = 0; p < hParts; ++p) {
+        for (int n = 0; n < tempBuf.size(); ++n)
+            tempBuf[n] = juce::dsp::Complex<float>(0.0f, 0.0f);
+
+        int startIdx = p * partSize;
+        int numToCopy = juce::jmin(partSize, length - startIdx);
+
+        for (int i = 0; i < numToCopy; ++i) {
+            tempBuf[i] = juce::dsp::Complex<float>(irReadPtr[startIdx + i], 0.0f);
+        }
+
+        // Perform FFT on partition
+        fft->perform(tempBuf.data(), tempBuf.data(), false);
+
+        // Store result in H[p]
+        H[p] = tempBuf;
+    }
+
+    DBG("Loaded IR as " << hParts << " blocks.");
+
+    // Initialize input block FFT delay line
+    X_fdl.clear();
+    X_fdl.resize(hParts);
+    for (int p = 0; p < hParts; ++p)
+        X_fdl[p].resize(NFFT, { 0.0f, 0.0f });
 }
 
 void PartitionedConvolver::processBlock(const float* input, float* output, int numSamples) {
-    // Copy input into buffer
-    int samplesProcessed = 0;
+    DBG("Block size = " << numSamples);
+    int inputPos = 0;
+    int outputPos = 0;
 
-    while (samplesProcessed < numSamples) {
-        int samplesFree = partitionSize - inputBufferPos;
-        int samplesToCopy = std::min(samplesFree, numSamples - samplesProcessed);
+    // Handle leftover samples from previous block output
+    while (leftoverPos < leftoverOutput.size() && outputPos < numSamples)
+        output[outputPos++] = leftoverOutput[leftoverPos++];
 
-        inputBuffer.copyFrom(0, inputBufferPos, input + samplesProcessed, samplesToCopy);
-        inputBufferPos += samplesToCopy;
+    if (leftoverPos >= leftoverOutput.size()) {
+        leftoverOutput.clear();
+        leftoverPos = 0;
+    }
 
-        // Process FFT once enough samples are in buffer
-        if (inputBufferPos == partitionSize) {
-            DBG("Processing partition");
-            processPartition();
-            inputBufferPos = 0;
+    while (inputPos < numSamples) {
+        inputBuffer.push_back(input[inputPos]);
+        ++inputPos;
+
+        if (inputBuffer.size() == partSize) {
+            std::vector<float> outputBuf(partSize, 0.0f); // temp buffer for output of convolution
+            processPartition(inputBuffer.data(), outputBuf.data());
+
+            int samplesToWrite = juce::jmin(partSize, numSamples - outputPos);
+
+            std::copy(outputBuf.begin(), outputBuf.begin() + samplesToWrite,
+                output + outputPos);
+
+            outputPos += samplesToWrite;
+
+            if (samplesToWrite < partSize) {
+                leftoverOutput.assign(outputBuf.begin() + samplesToWrite, outputBuf.end());
+                leftoverPos = 0;
+            }
+
+            inputBuffer.clear();
         }
-
-        // Output processed samples
-        auto* overlapReadPtr = overlapBuffer.getReadPointer(0);
-        for (int i = 0; i < samplesToCopy; ++i) {
-            output[samplesProcessed + i] = overlapReadPtr[i];
-        }
-
-        // Shift overlap buffer by samplesToCopy
-        auto* overlapWritePtr = overlapBuffer.getWritePointer(0);
-        int remaining = fftSize - samplesToCopy;
-        std::memmove(overlapWritePtr, overlapWritePtr + samplesToCopy, remaining * sizeof(float));
-        overlapBuffer.clear(0, fftSize - samplesToCopy, samplesToCopy);
-
-        samplesProcessed += samplesToCopy;
     }
 }
 
-void PartitionedConvolver::processPartition() {
+void PartitionedConvolver::processPartition(float* inputPart, float* outputPart) {
 
-    // Convert input buffer to Complex
-    std::vector<juce::dsp::Complex<float>> inputFFT(fftSize);
-    auto* inputReadPtr = inputBuffer.getReadPointer(0);
+    // Shift right half of input buffer to left
+    std::move(x_tdl.begin() + partSize, x_tdl.end(), x_tdl.begin());
 
-    for (int i = 0; i < partitionSize; ++i) {
-        inputFFT[i] = juce::dsp::Complex<float>(inputReadPtr[i], 0.0f);
+    // Store new part in right half
+    for (int i = 0; i < partSize; ++i) {
+        x_tdl[partSize + i] = inputPart[i];
     }
-    // Zero-pad input to fft size
-    for (int i = partitionSize; i < fftSize; ++i) {
-        inputFFT[i] = juce::dsp::Complex<float>(0.0f, 0.0f);
-    }
-    // Perform FFT on input
-    fft.perform(inputFFT.data(), inputFFT.data(), false);
 
-    // Store input FFT on buffer
-    inputFFTBuffer[inputFFTBufferPos] = inputFFT;
+    //Shift X_fdl
 
-    // Convolution - input fft blocks convolved with IR partitions in frequency domain
-    std::vector<juce::dsp::Complex<float>> accumulator(fftSize, { 0.0f, 0.0f });
+    for (int p = hParts - 1; p > 0; --p)
+        X_fdl[p] = X_fdl[p - 1];
 
-    for (int p = 0; p < numPartitions; ++p) {
+    // take FFt of current block
+    fft->perform(x_tdl.data(), X_fdl[0].data(), false);
 
-        int inputBlockIndex = (inputFFTBufferPos - p + numPartitions) % numPartitions;
-        auto& inputPartition = inputFFTBuffer[inputBlockIndex];
-        auto& irPartition = irPartitions[p];
-
-        for (int i = 0; i < fftSize; ++i) {
-            accumulator[i] += inputPartition[i] * irPartition[i]; // Complex multiplication
+    // multiply-accumulate result
+    std::vector<juce::dsp::Complex<float>> accumulator(NFFT, { 0.0f, 0.0f });
+    for (int p = 0; p < hParts; ++p) {
+        for (int k = 0; k < NFFT; ++k) {
+            accumulator[k] += H[p][k] * X_fdl[p][k];
         }
     }
 
-    // Perform inverse FFT on accumulator
-    fft.perform(accumulator.data(), accumulator.data(), true);
+    // IFFT of accumulated spectral convolutions
+    fft->perform(accumulator.data(), yifft.data(), true);
 
-    // Scale inverse FFT by N
-    for (int i = 0; i < fftSize; ++i) {
-        accumulator[i] /= static_cast<float>(fftSize);
-    }
+    // Normalise
+    for (int n = 0; n < NFFT; ++n)
+        yifft[n] /= NFFT;
 
-    // Overlap-add 
-    auto* overlapPtr = overlapBuffer.getWritePointer(0);
+    float sum = 0.0f;
+    for (int n = 0; n < NFFT; ++n)
+        sum += std::abs(yifft[n].real());
+    DBG("Partition sum = " << sum);
 
-    for (int i = 0; i < fftSize; ++i) {
-        overlapPtr[i] += accumulator[i].real();
-    }
-
-    // increment input block buffer position
-    inputFFTBufferPos = (inputFFTBufferPos + 1) % numPartitions;
+    // Output right half of output
+    for (int n = 0; n < partSize; ++n)
+        outputPart[n] = yifft[partSize + n].real();
 }

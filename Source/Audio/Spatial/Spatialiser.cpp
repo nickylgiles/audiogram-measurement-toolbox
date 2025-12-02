@@ -55,10 +55,9 @@ void Spatialiser::setDirection(float newElevation, float newAzimuth) {
     firRight.coefficients = coeffsR;
     firRight.reset();
 
-    /*
+    
     convolverLeft.loadIR(hrirL);
     convolverRight.loadIR(hrirR);
-    */
 
 
     irLoaded = true;
@@ -85,18 +84,19 @@ void Spatialiser::processBlock(const float* input, float* outputL, float* output
         }
         return;
     }
-    
+
+    /*
     for (int i = 0; i < numSamples; ++i) {
         float inSample = input[i];
 
         outputL[i] = firLeft.processSample(inSample);
         outputR[i] = firRight.processSample(inSample);
     }
+    */
     
-    /*
     convolverLeft.processBlock(input, outputL, numSamples);
     convolverRight.processBlock(input, outputR, numSamples);
-    */
+    
 
 }
 

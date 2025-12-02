@@ -11,8 +11,7 @@
 #include "SoundEngine.h"
 
 SoundEngine::SoundEngine() {
-    hrtfManager.setSampleRate(sampleRate);
-    hrtfManager.loadBinaryData();
+
 }
 
 void SoundEngine::playTone(float frequency, float amplitude, float duration, int channel) {
@@ -58,6 +57,7 @@ bool SoundEngine::isPlaying() const {
 void SoundEngine::setSampleRate(double newSampleRate) {
     sampleRate = newSampleRate;
     hrtfManager.setSampleRate(newSampleRate);
+    hrtfManager.loadBinaryData();
     stop();
 }
 
