@@ -21,6 +21,7 @@ public:
 private:
 
     void processPartition(float* inputPart, float* outputPart);
+
     std::unique_ptr<juce::dsp::FFT> fft;
 
     static int computeFFTOrder(int N) {
@@ -30,26 +31,22 @@ private:
         return order;
     }
 
-    std::vector<std::vector<juce::dsp::Complex<float>>> X_fdl;
-    std::vector<std::vector<juce::dsp::Complex<float>>> H;
-
-    std::vector<juce::dsp::Complex<float>> Y;
-    
-    std::vector<juce::dsp::Complex<float>> yifft;
-    
-    std::vector<juce::dsp::Complex<float>> x_tdl;
-
     int NFFT;
     int partSize;
 
-    int hParts;
+    std::vector<std::vector<juce::dsp::Complex<float>>> inputFDL;
+    std::vector<juce::dsp::Complex<float>> inputTDL;
+
+    std::vector<std::vector<juce::dsp::Complex<float>>> irPartsFFT;
+    int numIRParts;
+
+    std::vector<juce::dsp::Complex<float>> outputFFT;
+    std::vector<juce::dsp::Complex<float>> outputIFFT;
 
     std::vector<float> inputBuffer;
-
     std::vector<float> leftoverOutput;
-
-    std::vector<float> outputBuf; // temp buffer for output of convolution
-    std::vector<juce::dsp::Complex<float>> tempFFTBuffer; // temp buffer for loading IRs
     int leftoverPos = 0;
 
+    std::vector<float> outputBuffer; // temp buffer for output of convolution
+    std::vector<juce::dsp::Complex<float>> tempFFTBuffer; // temp buffer for loading IRs
 };
