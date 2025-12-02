@@ -8,6 +8,7 @@ MainComponent::MainComponent()
     testController = nullptr;
 
     showMenuScreen();
+
     // Make sure you set the size of the component after
     // you add any child components.
     setSize (800, 600);
@@ -24,7 +25,6 @@ MainComponent::MainComponent()
         // Specify the number of input and output channels that we want to open
         setAudioChannels (0, 2);
     }
-
 }
 
 MainComponent::~MainComponent()

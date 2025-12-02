@@ -76,40 +76,37 @@ void PartitionedConvolver::processBlock(const float* input, float* output, int n
     DBG("Block size = " << numSamples);
     int inputPos = 0;
     int outputPos = 0;
-
     // Handle leftover samples from previous block output
     while (leftoverPos < leftoverOutput.size() && outputPos < numSamples)
         output[outputPos++] = leftoverOutput[leftoverPos++];
-
     if (leftoverPos >= leftoverOutput.size()) {
         leftoverOutput.clear();
         leftoverPos = 0;
     }
-
     while (inputPos < numSamples) {
         inputBuffer.push_back(input[inputPos]);
         ++inputPos;
-
         if (inputBuffer.size() == partSize) {
             std::vector<float> outputBuf(partSize, 0.0f); // temp buffer for output of convolution
             processPartition(inputBuffer.data(), outputBuf.data());
-
             int samplesToWrite = juce::jmin(partSize, numSamples - outputPos);
-
             std::copy(outputBuf.begin(), outputBuf.begin() + samplesToWrite,
                 output + outputPos);
-
             outputPos += samplesToWrite;
-
             if (samplesToWrite < partSize) {
                 leftoverOutput.assign(outputBuf.begin() + samplesToWrite, outputBuf.end());
                 leftoverPos = 0;
             }
-
             inputBuffer.clear();
         }
     }
+
+    while (outputPos < numSamples) {
+        output[outputPos++] = 0.0f;
+    }
 }
+
+
 
 void PartitionedConvolver::processPartition(float* inputPart, float* outputPart) {
 
