@@ -12,7 +12,7 @@
 #include "SoundFileSource.h"
 
 SpatialisedSoundFileSource::SpatialisedSoundFileSource(double sampleRate, const void* data, size_t size, HRTFManager& hrtfManager, float elevation, float azimuth, float newGain)
-    : spatialiser(hrtfManager)
+    : spatialiser(hrtfManager), gain(newGain)
 {
     player.setSampleRate(sampleRate);
     
@@ -26,8 +26,6 @@ SpatialisedSoundFileSource::SpatialisedSoundFileSource(double sampleRate, const 
     spatialiser.setDirection(elevation, azimuth);
 
     tempBuffer.setSize(1, 0);
-
-    gain = newGain;
 }
 
 void SpatialisedSoundFileSource::process(float* outputL, float* outputR, int numSamples) {

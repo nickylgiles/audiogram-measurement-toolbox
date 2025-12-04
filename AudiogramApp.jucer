@@ -381,6 +381,10 @@
         <FILE id="p9ATjb" name="SoundEngine.h" compile="0" resource="0" file="Source/Audio/SoundEngine.h"/>
       </GROUP>
       <GROUP id="{943F7013-3B33-5071-AA95-51CCE457EC05}" name="Controller">
+        <FILE id="l6xPD2" name="DualTaskTestController.cpp" compile="1" resource="0"
+              file="Source/Control/DualTaskTestController.cpp"/>
+        <FILE id="xqXKfC" name="DualTaskTestController.h" compile="0" resource="0"
+              file="Source/Control/DualTaskTestController.h"/>
         <FILE id="JPKWyE" name="PureToneTestController.cpp" compile="1" resource="0"
               file="Source/Control/PureToneTestController.cpp"/>
         <FILE id="GE1E7n" name="PureToneTestController.h" compile="0" resource="0"
@@ -401,7 +405,16 @@
       <FILE id="Zx0RZL" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <GROUP id="{8F5E5A1D-8BFE-3270-DA73-9A53E2F30F6B}" name="GUI">
-        <GROUP id="{4B763882-CE80-2599-5B95-5D10F38F4471}" name="DualTask"/>
+        <GROUP id="{4B763882-CE80-2599-5B95-5D10F38F4471}" name="DualTask">
+          <FILE id="CHnxuK" name="DualTaskResultsScreen.cpp" compile="1" resource="0"
+                file="Source/GUI/DualTask/DualTaskResultsScreen.cpp"/>
+          <FILE id="UBU6br" name="DualTaskResultsScreen.h" compile="0" resource="0"
+                file="Source/GUI/DualTask/DualTaskResultsScreen.h"/>
+          <FILE id="CN5TjO" name="DualTaskTestScreen.cpp" compile="1" resource="0"
+                file="Source/GUI/DualTask/DualTaskTestScreen.cpp"/>
+          <FILE id="piR6lM" name="DualTaskTestScreen.h" compile="0" resource="0"
+                file="Source/GUI/DualTask/DualTaskTestScreen.h"/>
+        </GROUP>
         <GROUP id="{38458A30-AD0D-CBC1-DEF6-90933964B2BB}" name="SpeechInNoise">
           <FILE id="Sfcxji" name="SpeechInNoiseResultsScreen.cpp" compile="1"
                 resource="0" file="Source/GUI/SpeechInNoise/SpeechInNoiseResultsScreen.cpp"/>
@@ -436,15 +449,21 @@
         <FILE id="n96XkO" name="MenuScreen.h" compile="0" resource="0" file="Source/GUI/MenuScreen.h"/>
       </GROUP>
       <GROUP id="{7E4C7854-C52A-8E8F-A1C7-D2FCF346D5A2}" name="Database">
+        <GROUP id="{A5F9A91D-4FF0-EB70-048B-68FE6A66699F}" name="Results">
+          <FILE id="AAzvfl" name="DualTaskTestResults.h" compile="0" resource="0"
+                file="Source/Results/DualTaskTestResults.h"/>
+          <FILE id="znDsoO" name="PureToneTestResults.h" compile="0" resource="0"
+                file="Source/Results/PureToneTestResults.h"/>
+          <FILE id="kFMjXM" name="SpatialTestResults.h" compile="0" resource="0"
+                file="Source/Results/SpatialTestResults.h"/>
+          <FILE id="t3t5RT" name="SpeechInNoiseTestResults.h" compile="0" resource="0"
+                file="Source/Results/SpeechInNoiseTestResults.h"/>
+        </GROUP>
         <FILE id="l2aSHW" name="Database.cpp" compile="1" resource="0" file="Source/Results/Database.cpp"/>
         <FILE id="LyU3e7" name="Database.h" compile="0" resource="0" file="Source/Results/Database.h"/>
-        <FILE id="znDsoO" name="PureToneTestResults.h" compile="0" resource="0"
-              file="Source/Results/PureToneTestResults.h"/>
         <FILE id="LHeNif" name="ResultsLogger.cpp" compile="1" resource="0"
               file="Source/Results/ResultsLogger.cpp"/>
         <FILE id="mtWplc" name="ResultsLogger.h" compile="0" resource="0" file="Source/Results/ResultsLogger.h"/>
-        <FILE id="kFMjXM" name="SpatialTestResults.h" compile="0" resource="0"
-              file="Source/Results/SpatialTestResults.h"/>
         <FILE id="C3C8gR" name="sqlite3.c" compile="1" resource="0" file="ThirdParty/sqlite-amalgamation-3510000/sqlite3.c"/>
         <FILE id="cV3Bi6" name="sqlite3.h" compile="0" resource="0" file="ThirdParty/sqlite-amalgamation-3510000/sqlite3.h"/>
       </GROUP>
