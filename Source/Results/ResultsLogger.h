@@ -12,6 +12,8 @@
 
 #include "Database.h"
 #include "SpatialTestResults.h"
+#include "SpeechInNoiseTestResults.h"
+#include "DualTaskTestResults.h"
 #include "PureToneTestResults.h"
 
 class ResultsLogger {
@@ -23,6 +25,9 @@ public:
 
     bool logSpatialResults(const SpatialTestResults& results);
     bool logPureToneResults(const PureToneTestResults& results);
+
+    bool logSpeechInNoiseResults(const SpeechInNoiseTestResults& results);
+    bool logDualTaskResults(const DualTaskTestResults& results);
 
 private:
     Database db;

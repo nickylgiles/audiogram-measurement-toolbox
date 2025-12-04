@@ -33,8 +33,6 @@ private:
     juce::TextButton menuButton{ "Back to menu" };
 
     SpatialTestResults results;
-    std::vector<float> frequencies;
-    std::vector<float> dbLevels;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpatialResultsScreen)
 };

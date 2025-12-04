@@ -30,3 +30,11 @@ bool ResultsLogger::logSpatialResults(const SpatialTestResults& results) {
 bool ResultsLogger::logPureToneResults(const PureToneTestResults& results) {
     return false;
 }
+
+bool ResultsLogger::logSpeechInNoiseResults(const SpeechInNoiseTestResults& results) {
+    return false;
+}
+
+bool ResultsLogger::logDualTaskResults(const DualTaskTestResults& results) {
+    return false;
+}

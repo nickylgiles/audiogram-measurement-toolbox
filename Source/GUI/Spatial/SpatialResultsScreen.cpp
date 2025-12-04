@@ -20,6 +20,7 @@ SpatialResultsScreen::SpatialResultsScreen() {
 
 void SpatialResultsScreen::setResults(const SpatialTestResults& newResults) {
     results = newResults;
+    resized();
 }
 
 void SpatialResultsScreen::resized() {

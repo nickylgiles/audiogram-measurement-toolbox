@@ -12,6 +12,7 @@
 
 #include "TestController.h"
 #include "../Audio/Speech/SpeechFileManager.h"
+#include "../Results/SpeechInNoiseTestResults.h"
 
 class SpeechInNoiseController : public TestController, private juce::Timer {
 public:
@@ -22,6 +23,8 @@ public:
     void buttonClicked(const juce::String& id) override;
 
     const float getSRT();
+
+    const SpeechInNoiseTestResults getResults();
 
     std::function<void(bool)> setInputsEnabled;
 
@@ -86,4 +89,5 @@ private:
     std::vector<int> userInput;
     bool inputCorrect = false;
 
+    SpeechInNoiseTestResults results;
 };

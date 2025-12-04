@@ -178,11 +178,14 @@ void MainComponent::showSpeechInNoiseTestScreen() {
 
 
     // Get inputsEnabled() from SpeechInNoiseController
+    // SafePointer needed in case the screen is deleted before async call is executed
     if (auto* sin = dynamic_cast<SpeechInNoiseController*>(testController.get())) {
-        if (auto* scr = dynamic_cast<SpeechInNoiseTestScreen*>(screen.get())) {
-            sin->setInputsEnabled = [scr](bool enabled) {
-                juce::MessageManager::callAsync([scr, enabled] {
-                    scr->setDigitsEnabled(enabled);
+        auto* scr = dynamic_cast<SpeechInNoiseTestScreen*>(screen.get());
+        juce::Component::SafePointer<SpeechInNoiseTestScreen> scrPtr = scr;
+        if (scrPtr) {
+            sin->setInputsEnabled = [scrPtr](bool enabled) {
+                juce::MessageManager::callAsync([scrPtr, enabled] {
+                    if (scrPtr) scrPtr->setDigitsEnabled(enabled);
                     });
                 };
         }
@@ -194,6 +197,25 @@ void MainComponent::showSpeechInNoiseTestScreen() {
 }
 
 void MainComponent::showSpeechInNoiseResultsScreen() {
+    auto sinTestController = dynamic_cast<SpeechInNoiseController*>(testController.get());
+    if (!sinTestController) {
+        return;
+    }
+    SpeechInNoiseTestResults results = sinTestController->getResults();
+
+    auto screen = std::make_unique<SpeechInNoiseResultsScreen>();
+
+    screen->setResults(results);
+    screen->onExportClicked = [this] {
+        // code to export results
+        };
+    screen->onMenuClicked = [this] {
+        showMenuScreen();
+        };
+
+    currentScreen = std::move(screen);
+    addAndMakeVisible(currentScreen.get());
+    resized();
 }
 
 void MainComponent::showPureToneResultsScreen() {

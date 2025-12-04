@@ -9,6 +9,9 @@
 */
 
 #include "SpeechInNoiseController.h"
+#include "../MainComponent.h"
+
+class MainComponent;
 
 SpeechInNoiseController::SpeechInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef) 
     : TestController(mainComponentRef, soundEngineRef)
@@ -49,6 +52,10 @@ const float SpeechInNoiseController::getSRT() {
     }
 
     return total / (trialSNRs.size() - 3);
+}
+
+const SpeechInNoiseTestResults SpeechInNoiseController::getResults() {
+    return results;
 }
 
 void SpeechInNoiseController::scheduleNextState(int delayMs) {
@@ -109,6 +116,16 @@ void SpeechInNoiseController::digitInput(int digit) {
         }
         DBG("Correct sequence: " << correctStr);
         DBG("Your sequence: " << userStr << (inputCorrect ? " (correct)" : " (incorrect)"));
+
+        SpeechInNoiseTestResponse response;
+        response.targetWord = correctStr;
+        response.reportedWord = userStr;
+        response.wordCorrect = inputCorrect;
+
+        response.snr = currentSNR;
+
+        results.responses.push_back(response);
+          
 
         currentState = TestState::NEXT_TRIAL;
         timerCallback();
@@ -180,6 +197,9 @@ void SpeechInNoiseController::timerCallback() {
 
     case SpeechInNoiseController::TestState::END:
         DBG("Test Complete.  SRT = " << getSRT());
+        results.srt = getSRT();
+        stopTest();
+        mainComponent.showSpeechInNoiseResultsScreen();
         break;
 
     default:

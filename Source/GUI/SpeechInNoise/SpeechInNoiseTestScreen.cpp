@@ -25,7 +25,6 @@ SpeechInNoiseTestScreen::SpeechInNoiseTestScreen() {
 
 void SpeechInNoiseTestScreen::setDigitsEnabled(bool enable) {
     digitsEnabled = enable;
-
     for (auto& b : digitButtons)
         b->setVisible(enable);
     resized();

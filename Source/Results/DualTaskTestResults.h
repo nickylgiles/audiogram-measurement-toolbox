@@ -9,3 +9,15 @@
 */
 
 #pragma once
+
+#include "SpatialTestResults.h"
+#include "SpeechInNoiseTestResults.h"
+
+struct DualTaskTestResponse {
+    SpeechInNoiseTestResponse wordTestResponse;
+    SpatialTestResponse spatialTestResponse;
+};
+
+struct DualTaskTestResults {
+    std::vector<DualTaskTestResponse> responses;
+};

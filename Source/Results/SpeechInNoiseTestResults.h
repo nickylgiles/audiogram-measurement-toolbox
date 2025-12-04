@@ -9,3 +9,18 @@
 */
 
 #pragma once
+
+#include <JuceHeader.h>
+
+
+struct SpeechInNoiseTestResponse {
+    juce::String targetWord;
+    juce::String reportedWord;
+    float snr;
+    bool wordCorrect;
+};
+
+struct SpeechInNoiseTestResults {
+    std::vector<SpeechInNoiseTestResponse> responses;
+    float srt;
+};
