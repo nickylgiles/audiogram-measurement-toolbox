@@ -159,9 +159,14 @@ void MainComponent::showSpatialResultsScreen() {
     auto screen = std::make_unique<SpatialResultsScreen>();
 
     screen->setResults(results);
-    screen->onExportClicked = [this] {
-        // export
-        };
+    screen->onExportClicked = [this, results] {
+        if (resultsLogger.logSpatialResults(results)) {
+            DBG("Spatial results logged successfully.");
+        }
+        else {
+            DBG("Failed to save spatial results.");
+        }
+    };
     screen->onMenuClicked = [this] {
         showMenuScreen();
         };
@@ -240,7 +245,6 @@ void MainComponent::showPureToneResultsScreen() {
 
     screen->setResults(results);
     screen->onExportClicked = [this, results] {
-        // code to export results
         if (resultsLogger.logPureToneResults(results)) {
             DBG("Pure tone results logged successfully.");
         }

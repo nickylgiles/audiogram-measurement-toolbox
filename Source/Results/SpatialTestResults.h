@@ -15,11 +15,10 @@
 struct SpatialTestResponse {
     float referenceAzimuth;
     float targetAzimuth;
+    float snr;
     bool spatialCorrect;
 };
 
 struct SpatialTestResults {
     std::vector<SpatialTestResponse> responses;
-
 };
-

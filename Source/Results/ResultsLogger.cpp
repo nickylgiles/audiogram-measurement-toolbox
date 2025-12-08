@@ -24,7 +24,38 @@ bool ResultsLogger::openDatabase(const juce::File& file) {
 }
 
 bool ResultsLogger::logSpatialResults(const SpatialTestResults& results) {
-    return false;
+    if (!db.execute(
+        "CREATE TABLE IF NOT EXISTS  SpatialResults ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "timestamp TEXT NOT NULL,"
+        "referenceAzimuth REAL NOT NULL,"
+        "targetAzimuth REAL NOT NULL,"
+        "snr REAL NOT NULL,"
+        "correct INTEGER NOT NULL);"
+    )) {
+        return false;
+    }
+
+    juce::String timestamp = juce::Time::getCurrentTime().toString(true, true, true, true);
+
+    for (auto& r : results.responses) {
+        float refAz = r.referenceAzimuth;
+        float targAz = r.targetAzimuth;
+        float snr = r.snr;
+        int correct = r.spatialCorrect;
+
+        juce::String sql = "INSERT INTO SpatialResults (timestamp, referenceAzimuth, targetAzimuth, snr, correct) VALUES ('"
+            + timestamp + "', '"
+            + juce::String(refAz) + "', "
+            + juce::String(targAz) + ", "
+            + juce::String(snr) + ", "
+            + juce::String(correct) + ");";
+
+        if (!db.execute(sql))
+            return false;
+    }
+
+    return true;
 }
 
 bool ResultsLogger::logPureToneResults(const PureToneTestResults& results) {
@@ -35,8 +66,9 @@ bool ResultsLogger::logPureToneResults(const PureToneTestResults& results) {
         "ear TEXT NOT NULL,"
         "frequency REAL NOT NULL,"
         "threshold REAL NOT NULL);"
-        ))
+    )) {
         return false;
+    }
 
     juce::String timestamp = juce::Time::getCurrentTime().toString(true, true, true, true);
 
