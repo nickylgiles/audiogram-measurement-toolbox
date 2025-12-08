@@ -16,7 +16,12 @@ Database::~Database() {
 
 bool Database::open(const juce::File& file) {
     close();
-    return sqlite3_open(file.getFullPathName().toRawUTF8(), &db);
+    int rc = sqlite3_open(file.getFullPathName().toRawUTF8(), &db);
+    if (rc != SQLITE_OK) {
+        DBG("Failed to open database: " << sqlite3_errmsg(db));
+        return false;
+    }
+    return true;
 }
 
 void Database::close() {
@@ -32,4 +37,8 @@ bool Database::execute(const juce::String& sql) {
         return false;
     }
     return true;
+}
+
+sqlite3* Database::getHandle() {
+    return db;
 }

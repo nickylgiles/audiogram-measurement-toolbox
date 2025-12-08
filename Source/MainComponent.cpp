@@ -7,6 +7,17 @@ MainComponent::MainComponent()
     soundEngine = std::make_unique<SoundEngine>();
     testController = nullptr;
 
+    // Open logging database
+    juce::File dbFile = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory)
+        .getChildFile("Results.db");
+    DBG("Database file path: " << dbFile.getFullPathName());
+    bool openDB = resultsLogger.openDatabase(dbFile);
+
+    if (openDB)
+        DBG("Database opened succesfully.");
+    else
+        DBG("Database failed to open.");
+
     showMenuScreen();
 
     // Make sure you set the size of the component after
@@ -30,6 +41,7 @@ MainComponent::MainComponent()
 MainComponent::~MainComponent()
 {
     // This shuts down the audio device and clears the audio source.
+
     shutdownAudio();
 }
 
@@ -227,12 +239,18 @@ void MainComponent::showPureToneResultsScreen() {
     auto screen = std::make_unique<PureToneResultsScreen>();
 
     screen->setResults(results);
-    screen->onExportClicked = [this] {
+    screen->onExportClicked = [this, results] {
         // code to export results
-        };
+        if (resultsLogger.logPureToneResults(results)) {
+            DBG("Pure tone results logged successfully.");
+        }
+        else {
+            DBG("Failed to save pure tone results.");
+        }
+    };
     screen->onMenuClicked = [this] {
         showMenuScreen();
-        };
+    };
 
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());

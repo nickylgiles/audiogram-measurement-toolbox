@@ -60,6 +60,8 @@ private:
     std::unique_ptr<TestController> testController;
     std::unique_ptr<SoundEngine> soundEngine;
 
+    ResultsLogger resultsLogger;
+
     bool testStarted = false;
 
     std::unique_ptr<juce::Component> currentScreen;

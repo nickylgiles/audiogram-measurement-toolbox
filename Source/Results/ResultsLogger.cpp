@@ -28,7 +28,37 @@ bool ResultsLogger::logSpatialResults(const SpatialTestResults& results) {
 }
 
 bool ResultsLogger::logPureToneResults(const PureToneTestResults& results) {
-    return false;
+    if (!db.execute(
+        "CREATE TABLE IF NOT EXISTS  PureToneResults ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "timestamp TEXT NOT NULL,"
+        "ear TEXT NOT NULL,"
+        "frequency REAL NOT NULL,"
+        "threshold REAL NOT NULL);"
+        ))
+        return false;
+
+    juce::String timestamp = juce::Time::getCurrentTime().toString(true, true, true, true);
+
+    for (auto earIdx : { 0, 1 }) {
+        juce::String earName = (earIdx == 0) ? "left" : "right";
+
+        for (auto& entry : results[earIdx]) {
+            float freq = entry.first;
+            float threshold = entry.second;
+
+            juce::String sql = "INSERT INTO PureToneResults (timestamp, ear, frequency, threshold) VALUES ('"
+                + timestamp + "', '"
+                + earName + "', "
+                + juce::String(freq) + ", "
+                + juce::String(threshold) + ");";
+
+            if (!db.execute(sql))
+                return false;
+
+        }
+    }
+    return true;
 }
 
 bool ResultsLogger::logSpeechInNoiseResults(const SpeechInNoiseTestResults& results) {
