@@ -169,7 +169,7 @@ void MainComponent::showSpatialResultsScreen() {
     };
     screen->onMenuClicked = [this] {
         showMenuScreen();
-        };
+    };
 
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());
@@ -223,9 +223,14 @@ void MainComponent::showSpeechInNoiseResultsScreen() {
     auto screen = std::make_unique<SpeechInNoiseResultsScreen>();
 
     screen->setResults(results);
-    screen->onExportClicked = [this] {
-        // code to export results
-        };
+    screen->onExportClicked = [this, results] {
+        if (resultsLogger.logSpeechInNoiseResults(results)) {
+            DBG("Speech-in-noise results logged successfully.");
+        }
+        else {
+            DBG("Failed to save speechin-noise results.");
+        }
+    };
     screen->onMenuClicked = [this] {
         showMenuScreen();
         };

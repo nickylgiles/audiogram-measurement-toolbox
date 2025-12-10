@@ -25,7 +25,7 @@ bool ResultsLogger::openDatabase(const juce::File& file) {
 
 bool ResultsLogger::logSpatialResults(const SpatialTestResults& results) {
     if (!db.execute(
-        "CREATE TABLE IF NOT EXISTS  SpatialResults ("
+        "CREATE TABLE IF NOT EXISTS SpatialResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "timestamp TEXT NOT NULL,"
         "referenceAzimuth REAL NOT NULL,"
@@ -60,7 +60,7 @@ bool ResultsLogger::logSpatialResults(const SpatialTestResults& results) {
 
 bool ResultsLogger::logPureToneResults(const PureToneTestResults& results) {
     if (!db.execute(
-        "CREATE TABLE IF NOT EXISTS  PureToneResults ("
+        "CREATE TABLE IF NOT EXISTS PureToneResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "timestamp TEXT NOT NULL,"
         "ear TEXT NOT NULL,"
@@ -94,7 +94,38 @@ bool ResultsLogger::logPureToneResults(const PureToneTestResults& results) {
 }
 
 bool ResultsLogger::logSpeechInNoiseResults(const SpeechInNoiseTestResults& results) {
-    return false;
+    if (!db.execute(
+        "CREATE TABLE IF NOT EXISTS SpeechInNoiseResults ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "timestamp TEXT NOT NULL,"
+        "targetWord TEXT NOT NULL, "
+        "reportedWord TEXT NOT NULL,"
+        "snr REAL NOT NULL,"
+        "correct INTEGER NOT NULL);"
+    )) {
+        return false;
+    }
+
+    juce::String timestamp = juce::Time::getCurrentTime().toString(true, true, true, true);
+
+    for (auto& r : results.responses) {
+        juce::String targWord = r.targetWord;
+        juce::String repWord = r.reportedWord;
+        float snr = r.snr;
+        int correct = r.wordCorrect;
+
+        juce::String sql = "INSERT INTO SpeechInNoiseResults (timestamp, targetWord, reportedWord, snr, correct) VALUES ('"
+            + timestamp + "', '"
+            + targWord + "', '"
+            + repWord + "', "
+            + juce::String(snr) + ", "
+            + juce::String(correct) + ");";
+
+        if (!db.execute(sql))
+            return false;
+    }
+
+    return true;
 }
 
 bool ResultsLogger::logDualTaskResults(const DualTaskTestResults& results) {
