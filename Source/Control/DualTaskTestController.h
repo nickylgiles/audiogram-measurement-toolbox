@@ -9,3 +9,22 @@
 */
 
 #pragma once
+
+#include <JuceHeader.h>
+#include "TestController.h"
+#include "../Results/DualTaskTestResults.h"
+
+class DualTaskTestController : public TestController, private juce::Timer {
+public:
+	DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+	void startTest() override;
+	void stopTest() override;
+
+	void buttonClicked(const juce::String& id) override;
+
+	const DualTaskTestResults getResults();
+private:
+	void timerCallback() override;
+
+	DualTaskTestResults results;
+};
