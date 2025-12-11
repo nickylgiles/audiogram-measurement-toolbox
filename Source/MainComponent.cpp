@@ -8,7 +8,7 @@ MainComponent::MainComponent()
     testController = nullptr;
 
     // Open logging database
-    dbFile = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory)
+    dbFile = juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory)
         .getChildFile("Results.db");
     DBG("Database file path: " << dbFile.getFullPathName());
     bool openDB = resultsLogger.openDatabase(dbFile);
