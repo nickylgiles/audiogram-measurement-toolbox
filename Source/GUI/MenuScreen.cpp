@@ -22,6 +22,10 @@ MenuScreen::MenuScreen() {
 
     addAndMakeVisible(dualTaskButton);
     dualTaskButton.onClick = [this] {if (onDualTaskClicked) onDualTaskClicked(); };
+
+
+    addAndMakeVisible(settingsButton);
+    settingsButton.onClick = [this] {if (onSettingsClicked) onSettingsClicked(); };
 }
 
 void MenuScreen::resized() {
@@ -36,6 +40,8 @@ void MenuScreen::resized() {
 
     speechInNoiseButton.setBounds(rightColumn.removeFromTop(buttonHeight).reduced(10));
     dualTaskButton.setBounds(rightColumn.reduced(10));
+
+    settingsButton.setBounds(getWidth() - 50, 10, 40, 40);
 }
 
 void MenuScreen::paint(juce::Graphics& g) {

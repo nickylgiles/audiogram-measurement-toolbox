@@ -24,6 +24,8 @@ public:
     std::function<void()> onSpeechInNoiseClicked;
     std::function<void()> onDualTaskClicked;
 
+    std::function<void()> onSettingsClicked;
+
     void resized() override;
     void paint(juce::Graphics& g) override;
 
@@ -33,6 +35,8 @@ private:
     juce::TextButton spatialButton{ "Spatialization Test" };
     juce::TextButton speechInNoiseButton{ "Speech-in-noise Test" };
     juce::TextButton dualTaskButton{ "Dual-task (spatial + speech) Test" };
+
+    juce::TextButton settingsButton{ "Settings" };
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuScreen)
 };
