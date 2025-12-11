@@ -53,11 +53,6 @@ void HRTFManager::loadBinaryData() {
         nIRs += m.second.size();
     }
     DBG(nIRs << " HRIR pairs loaded.");
-
-    const juce::String reverbIRName = "reverb_ir_wav";
-
-    loadIR(reverbIRName, reverbIR);
-    reverbIR.setSize(1, 2048, true, true, true);
 };
 
 

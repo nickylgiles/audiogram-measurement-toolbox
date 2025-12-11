@@ -20,9 +20,6 @@ public:
     const double getIRSampleRate();
 
     juce::AudioBuffer<float>& getIR(float elevation, float azimuth, int channel);
-    juce::AudioBuffer<float>& getReverb() {
-        return reverbIR;
-    };
 private:
     struct IRPair {
         juce::AudioBuffer<float> left;
@@ -42,6 +39,4 @@ private:
     void resampleBuffer(juce::AudioBuffer<float>& buffer, double srcRate, double destRate);
 
     juce::LagrangeInterpolator interpolator;
-
-    juce::AudioBuffer<float> reverbIR;
 };
