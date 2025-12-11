@@ -25,6 +25,10 @@ public:
 
     const SpeechResource& getDigit(int digit);
 
+    const SpeechResource& getWord(const juce::String& word);
+
 private:
     std::map<int, SpeechResource> digitsMap;
+
+    std::map<juce::String, SpeechResource> wordsMap;
 };
