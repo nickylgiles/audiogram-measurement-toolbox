@@ -10,8 +10,15 @@
 
 #include "SoundEngine.h"
 
-SoundEngine::SoundEngine() {
-
+SoundEngine::SoundEngine() 
+    : headphoneConvL(256), headphoneConvR(256)
+{
+    // initialize headphone calibration
+    juce::AudioBuffer<float> ir(1, 256);
+    ir.clear();
+    ir.setSample(0, 0, 0.2f);
+    headphoneConvL.loadIR(ir);
+    headphoneConvR.loadIR(ir);
 }
 
 void SoundEngine::playTone(float frequency, float amplitude, float duration, int channel) {
@@ -63,11 +70,18 @@ void SoundEngine::setSampleRate(double newSampleRate) {
 
 
 void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
- 
+
+    juce::AudioBuffer<float> sourcesL(1, numSamples);
+    juce::AudioBuffer<float> sourcesR(1, numSamples);
+
+    float* sourcesLPtr = sourcesL.getWritePointer(0);
+    float* sourcesRPtr = sourcesR.getWritePointer(0);
+
     for (int i = 0; i < numSamples; ++i) {
-        outputL[i] = 0.0f;
-        outputR[i] = 0.0f;
+        sourcesLPtr[i] = 0.0f;
+        sourcesRPtr[i] = 0.0f;
     }
+
     
     juce::AudioBuffer<float> leftBuf(1, numSamples);
     juce::AudioBuffer<float> rightBuf(1, numSamples);
@@ -81,8 +95,8 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
         (*it)->process(tempL, tempR, numSamples);
 
         for (int i = 0; i < numSamples; ++i) {
-            outputL[i] += tempL[i];
-            outputR[i] += tempR[i];
+            sourcesLPtr[i] += tempL[i];
+            sourcesRPtr[i] += tempR[i];
         }
 
         if ((*it)->isFinished()) {
@@ -93,7 +107,18 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
         ++it;
     }
 
-
+    // Apply headphone calibration
+    /*
+    headphoneConvL.processBlock(sourcesLPtr, outputL, numSamples);
+    headphoneConvR.processBlock(sourcesRPtr, outputR, numSamples);
+    */
+    
+    for (int i = 0; i < numSamples; ++i) {
+        outputL[i] = sourcesLPtr[i];
+        outputR[i] = sourcesRPtr[i];
+    }
+    
+    
 }
 
 void SoundEngine::addSource(std::unique_ptr<SoundSource> source) {

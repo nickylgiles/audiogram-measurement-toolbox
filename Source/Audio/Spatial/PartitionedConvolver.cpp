@@ -16,10 +16,11 @@ PartitionedConvolver::PartitionedConvolver(int partitionSize)
     NFFT = 2 * partSize;
     int fftOrder = computeFFTOrder(NFFT);
     fft = std::make_unique<juce::dsp::FFT>(fftOrder);
+    DBG("FFT size: " << fft->getSize());
 
-    inputTDL.resize(NFFT, 0.0f);
+    inputTDL.resize(NFFT, { 0.0f, 0.0f });
     outputFFT.resize(NFFT, {0.0f, 0.0f});
-    outputIFFT.resize(NFFT, 0.0f);
+    outputIFFT.resize(NFFT, { 0.0f, 0.0f });
     inputBuffer.clear();
     inputBuffer.reserve(partSize);
     outputBuffer.resize(partSize, 0.0f);
@@ -57,10 +58,12 @@ void PartitionedConvolver::loadIR(const juce::AudioBuffer<float>& irBuffer) {
         fft->perform(tempFFTBuffer.data(), tempFFTBuffer.data(), false);
 
         // Normalise here for output
+        /*
         float invNFFT = 1.0f / NFFT;
         for (int i = 0; i < tempFFTBuffer.size(); ++i) {
             tempFFTBuffer[i] *= invNFFT;
         }
+        */
 
         // Store result in H[p]
         irPartsFFT[p] = tempFFTBuffer;
@@ -132,13 +135,13 @@ void PartitionedConvolver::processPartition(float* inputPart, float* outputPart)
     inputFDLidx = (inputFDLidx + 1) % numIRParts;
 
     // take FFt of current block
-    fft->perform(inputTDL.data(), inputFDL[inputFDLidx /*0*/].data(), false);
+    fft->perform(inputTDL.data(), inputFDL[inputFDLidx].data(), false);
 
     // multiply-accumulate result
     std::vector<juce::dsp::Complex<float>> accumulator(NFFT, { 0.0f, 0.0f });
     for (int p = 0; p < numIRParts; ++p) {
         for (int k = 0; k < NFFT; ++k) {
-            int idx = (inputFDLidx + p) % numIRParts; // index of FDL to use (wrap around)
+            int idx = (inputFDLidx - p + numIRParts) % numIRParts; // index of FDL to use (wrap around)
             accumulator[k] += irPartsFFT[p][k] * inputFDL[idx][k];
         }
     }
@@ -146,7 +149,16 @@ void PartitionedConvolver::processPartition(float* inputPart, float* outputPart)
     // IFFT of accumulated spectral convolutions
     fft->perform(accumulator.data(), outputIFFT.data(), true);
 
-    // Output right half of output
+
+    
+    // Scale IFFT
+    float invNFFT = 1.0f / NFFT;
+    for (int i = 0; i < outputIFFT.size(); ++i) {
+        outputIFFT[i] *= invNFFT;
+    }
+    
+
+    // Output left half of output
     for (int n = 0; n < partSize; ++n)
-        outputPart[n] = outputIFFT[partSize + n].real();
+        outputPart[n] = outputIFFT[n].real();
 }

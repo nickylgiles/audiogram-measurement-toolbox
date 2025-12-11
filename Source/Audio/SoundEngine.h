@@ -47,5 +47,10 @@ private:
     juce::SpinLock sourceLock;
 
     HRTFManager hrtfManager;
+
+    // For headphone calibration
+    const int partitionSize = 256;
+    PartitionedConvolver headphoneConvL;
+    PartitionedConvolver headphoneConvR;
 };
 

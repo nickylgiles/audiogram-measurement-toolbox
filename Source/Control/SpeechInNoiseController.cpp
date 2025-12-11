@@ -91,12 +91,12 @@ void SpeechInNoiseController::playDigit(int digit) {
         return;
     }
     const auto& res = fm->getDigit(digit);
-    soundEngine.playSample(res.data, res.dataSize, digitAmplitude);
+    soundEngine.playSampleSpatial(res.data, res.dataSize, 0.0f, 30.0f, digitAmplitude);
 }
 
 void SpeechInNoiseController::playMaskingNoise() {
-    soundEngine.playNoise(maskingAmplitude, maskingDuration, 0);
-    soundEngine.playNoise(maskingAmplitude, maskingDuration, 1);
+   // soundEngine.playNoise(maskingAmplitude, maskingDuration, 0);
+   // soundEngine.playNoise(maskingAmplitude, maskingDuration, 1);
 }
 
 void SpeechInNoiseController::digitInput(int digit) {

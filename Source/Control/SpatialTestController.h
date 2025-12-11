@@ -57,7 +57,7 @@ private:
 
 	juce::Random random;
 
-	float signalAmplitude = 0.5f;
+	float signalAmplitude = 0.25f;
 	float maskingAmplitude = 0.1f;
 
 	float signalDuration = 1.0f;
