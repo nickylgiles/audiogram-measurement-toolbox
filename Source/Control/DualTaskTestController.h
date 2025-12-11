@@ -23,8 +23,12 @@ public:
 	void buttonClicked(const juce::String& id) override;
 
 	const DualTaskTestResults getResults();
+
+	std::function<void(bool)> setInputsEnabled;
+	std::function<void(const std::vector<juce::String>&)> setWords;
 private:
 	void timerCallback() override;
 
+	std::vector<juce::String> currentWordList = { "ant", "bat", "cart", "door" };
 	DualTaskTestResults results;
 };

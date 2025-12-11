@@ -48,7 +48,7 @@ void SpeechInNoiseTestScreen::resized() {
         digitButtons[0]->setBounds(buttonWidth, 3 * buttonHeight, buttonWidth, buttonHeight);
     }
 
-    stopButton.setBounds(0, 4 * buttonHeight, area.getWidth(), buttonHeight);
+    stopButton.setBounds(10, 4 * buttonHeight, area.getWidth(), buttonHeight);
 }
 
 void SpeechInNoiseTestScreen::paint(juce::Graphics& g) {

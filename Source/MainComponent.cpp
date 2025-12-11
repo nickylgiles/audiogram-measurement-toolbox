@@ -101,6 +101,7 @@ void MainComponent::showMenuScreen() {
     screen->onPureToneClicked = [this] {showPureToneTestScreen();};
     screen->onSpatialClicked = [this] {showSpatialTestScreen();};
     screen->onSpeechInNoiseClicked = [this] {showSpeechInNoiseTestScreen();};
+    screen->onDualTaskClicked = [this] {showDualTaskTestScreen();};
 
     screen->onSettingsClicked = [this] {showSettingsScreen();};
 
@@ -268,6 +269,61 @@ void MainComponent::showSpeechInNoiseResultsScreen() {
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());
     resized();
+}
+
+void MainComponent::showDualTaskTestScreen() {
+
+    testController.reset(new DualTaskTestController(*this, *soundEngine));
+    testStarted = true;
+
+    auto screen = std::make_unique<DualTaskTestScreen>();
+
+    screen->onStopClicked = [this] {
+        testStarted = false;
+        testController->buttonClicked("stopButton");
+        showMenuScreen();
+        };
+    screen->onLeftClicked = [this] {
+        testController->buttonClicked("leftButton");
+        };
+    screen->onRightClicked = [this] {
+        testController->buttonClicked("rightButton");
+        };
+
+    screen->onWordClicked = [this](int wordIdx) {
+        testController->buttonClicked("word" + wordIdx);
+        };
+
+
+    // Async callbacks for enabling/ disabling input buttons on the GUI and setting word list to show
+    if (auto* ctr = dynamic_cast<DualTaskTestController*>(testController.get())) {
+        auto* scr = dynamic_cast<DualTaskTestScreen*>(screen.get());
+        juce::Component::SafePointer<DualTaskTestScreen> scrPtr = scr;
+        if (scrPtr) {
+            ctr->setInputsEnabled = [scrPtr](bool enabled) {
+                juce::MessageManager::callAsync([scrPtr, enabled] {
+                    if (scrPtr) scrPtr->setInputEnabled(enabled);
+                    });
+                };
+            DBG("Dual task enable Callback set");
+
+            ctr->setWords = [scrPtr](std::vector<juce::String> words) {
+                juce::MessageManager::callAsync([scrPtr, words] {
+                    if (scrPtr) scrPtr->setWords(words);
+                    });
+                };
+        }
+    }
+
+
+
+    testController->startTest();
+    currentScreen = std::move(screen);
+    addAndMakeVisible(currentScreen.get());
+    resized();
+}
+
+void MainComponent::showDualTaskResultsScreen() {
 }
 
 void MainComponent::showPureToneResultsScreen() {

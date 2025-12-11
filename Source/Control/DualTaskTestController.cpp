@@ -9,3 +9,25 @@
 */
 
 #include "DualTaskTestController.h"
+
+DualTaskTestController::DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef) 
+    : TestController(mainComponentRef, soundEngineRef) {
+}
+
+void DualTaskTestController::startTest() {
+    setWords(currentWordList);
+    setInputsEnabled(true);
+}
+
+void DualTaskTestController::stopTest() {
+}
+
+void DualTaskTestController::buttonClicked(const juce::String& id) {
+}
+
+const DualTaskTestResults DualTaskTestController::getResults() {
+    return results;
+}
+
+void DualTaskTestController::timerCallback() {
+}

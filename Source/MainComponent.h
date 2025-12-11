@@ -5,6 +5,7 @@
 #include "Control/PureToneTestController.h"
 #include "Control/SpatialTestController.h"
 #include "Control/SpeechInNoiseController.h"
+#include "Control/DualTasktestController.h"
 
 #include "GUI/MenuScreen.h"
 #include "GUI/SettingsScreen.h"
@@ -17,6 +18,9 @@
 
 #include "GUI/SpeechInNoise/SpeechInNoiseTestScreen.h"
 #include "GUI/SpeechInNoise/SpeechInNoiseResultsScreen.h"
+
+#include "GUI/DualTask/DualTaskTestScreen.h"
+#include "GUI/DualTask/DualTaskResultsScreen.h"
 
 #include "Results/ResultsLogger.h"
 
@@ -54,6 +58,9 @@ public:
 
     void showSpeechInNoiseTestScreen();
     void showSpeechInNoiseResultsScreen();
+
+    void showDualTaskTestScreen();
+    void showDualTaskResultsScreen();
 
 private:
     //==============================================================================
