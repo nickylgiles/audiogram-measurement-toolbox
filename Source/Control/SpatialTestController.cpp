@@ -21,6 +21,10 @@ SpatialTestController::SpatialTestController(MainComponent& mainComponentRef, So
     secondAzimuth = 0.0f;
     moveLeft = false;
     responseLeft = false;
+
+    // Using a fixed SNR for the test
+    signalAmplitude = dbToAmplitude(signalAmplitudeDb);
+    maskingAmplitude = dbToAmplitude(maskingAmplitudeDb);
 }
 
 void SpatialTestController::startTest() {
@@ -54,6 +58,8 @@ void SpatialTestController::buttonClicked(const juce::String& id) {
         response.referenceAzimuth = firstAzimuth;
         response.targetAzimuth = secondAzimuth;
         response.spatialCorrect = (responseLeft == moveLeft);
+        response.snr = signalAmplitudeDb - maskingAmplitudeDb;
+
         results.responses.push_back(response);
 
         currentState = TestState::NEXT_TRIAL;
