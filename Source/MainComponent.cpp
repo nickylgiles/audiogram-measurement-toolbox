@@ -8,7 +8,7 @@ MainComponent::MainComponent()
     testController = nullptr;
 
     // Open logging database
-    juce::File dbFile = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory)
+    dbFile = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory)
         .getChildFile("Results.db");
     DBG("Database file path: " << dbFile.getFullPathName());
     bool openDB = resultsLogger.openDatabase(dbFile);
@@ -102,9 +102,39 @@ void MainComponent::showMenuScreen() {
     screen->onSpatialClicked = [this] {showSpatialTestScreen();};
     screen->onSpeechInNoiseClicked = [this] {showSpeechInNoiseTestScreen();};
 
+    screen->onSettingsClicked = [this] {showSettingsScreen();};
+
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());
     resized();
+}
+
+void MainComponent::showSettingsScreen() {
+    auto screen = std::make_unique<SettingsScreen>();
+
+    screen->onBackClicked = [this] {showMenuScreen();};
+
+    screen->onExportClicked = [this] {
+        fileChooser = std::make_unique<juce::FileChooser>(
+            "Export Results Database",
+            dbFile.getParentDirectory(),
+            "*.db");
+
+        auto fileChooserFlags = juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles;
+
+        fileChooser->launchAsync(fileChooserFlags, [this](const juce::FileChooser& fc) {
+                auto result = fc.getResult();
+                if (result != juce::File{}) {
+                    dbFile.copyFileTo(result);
+                }
+                fileChooser.reset();
+            });
+        };
+
+    currentScreen = std::move(screen);
+    addAndMakeVisible(currentScreen.get());
+    resized();
+
 }
 
 void MainComponent::showPureToneTestScreen() {

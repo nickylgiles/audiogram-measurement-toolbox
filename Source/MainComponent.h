@@ -7,9 +7,10 @@
 #include "Control/SpeechInNoiseController.h"
 
 #include "GUI/MenuScreen.h"
+#include "GUI/SettingsScreen.h"
 
-#include "GUI/PureToneTestScreen.h"
-#include "GUI/PureToneResultsScreen.h"
+#include "GUI/PureTone/PureToneTestScreen.h"
+#include "GUI/PureTone/PureToneResultsScreen.h"
 
 #include "GUI/Spatial/SpatialTestScreen.h"
 #include "GUI/Spatial/SpatialResultsScreen.h"
@@ -43,6 +44,7 @@ public:
     void testEnd();
 
     void showMenuScreen(); 
+    void showSettingsScreen();
 
     void showPureToneTestScreen();
     void showPureToneResultsScreen();
@@ -65,6 +67,9 @@ private:
     bool testStarted = false;
 
     std::unique_ptr<juce::Component> currentScreen;
+
+    juce::File dbFile;
+    std::unique_ptr<juce::FileChooser> fileChooser;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

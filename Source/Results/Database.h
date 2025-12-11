@@ -23,6 +23,7 @@ public:
 
     bool execute(const juce::String& sql);
     sqlite3* getHandle();
+
 private:
     sqlite3* db = nullptr;
 };

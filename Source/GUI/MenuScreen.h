@@ -36,7 +36,7 @@ private:
     juce::TextButton speechInNoiseButton{ "Speech-in-noise Test" };
     juce::TextButton dualTaskButton{ "Dual-task (spatial + speech) Test" };
 
-    juce::TextButton settingsButton{ "Settings" };
+    juce::TextButton settingsButton{ "..." };
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuScreen)
 };
