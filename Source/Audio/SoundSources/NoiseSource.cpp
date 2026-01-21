@@ -20,15 +20,13 @@ NoiseSource::NoiseSource(double sampleRate, float gain, float durationSeconds, i
         noiseGenerator.prepareFilter();
     }
 
-
     envelope = Envelope();
-    envelope.setRiseTime(sampleRate * 0.1f);
-    envelope.setFallTime(sampleRate * 0.1f);
-    envelope.start(sampleRate * durationSeconds);
+    envelope.setRiseTime(static_cast<int>(sampleRate * 0.1f));
+    envelope.setFallTime(static_cast<int>(sampleRate * 0.1f));
+    envelope.start(static_cast<int>(sampleRate * durationSeconds));
 
     channel = ch;
-    samplesRemaining = sampleRate * durationSeconds;
-    
+    samplesRemaining = static_cast<int>(sampleRate * durationSeconds);
 }
 
 void NoiseSource::process(float* outputL, float* outputR, int numSamples) {

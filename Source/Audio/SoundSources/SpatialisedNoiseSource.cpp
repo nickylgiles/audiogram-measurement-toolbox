@@ -18,11 +18,11 @@ SpatialisedNoiseSource::SpatialisedNoiseSource(double sampleRate, float gain, fl
     noiseGenerator.setAmplitude(gain);
 
     envelope = Envelope();
-    envelope.setRiseTime(sampleRate * 0.1f);
-    envelope.setFallTime(sampleRate * 0.1f);
-    envelope.start(sampleRate * durationSeconds);
+    envelope.setRiseTime(static_cast<int>(sampleRate * 0.1f));
+    envelope.setFallTime(static_cast<int>(sampleRate * 0.1f));
+    envelope.start(static_cast<int>(sampleRate * durationSeconds));
 
-    samplesRemaining = sampleRate * durationSeconds;
+    samplesRemaining = static_cast<int>(sampleRate * durationSeconds);
 
     spatialiser.setSampleRate(sampleRate);
     spatialiser.setDirection(elevation, azimuth);

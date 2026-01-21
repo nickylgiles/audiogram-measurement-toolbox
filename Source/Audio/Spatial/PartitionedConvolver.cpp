@@ -93,7 +93,7 @@ void PartitionedConvolver::processBlock(const float* input, float* output, int n
 
     while (inputPos < numSamples) {
         // Fill buffer with incoming samples until full or run out of input samples
-        int samplesToFill = partSize - inputBuffer.size();
+        int samplesToFill = static_cast<int>(partSize - inputBuffer.size());
         int samplesToCopy = juce::jmin(numSamples - inputPos, samplesToFill);
         inputBuffer.insert(inputBuffer.end(), input + inputPos, input + inputPos + samplesToCopy);
         inputPos += samplesToCopy;

@@ -63,7 +63,7 @@ void SpatialTestController::buttonClicked(const juce::String& id) {
         results.responses.push_back(response);
 
         currentState = TestState::NEXT_TRIAL;
-        scheduleNextState(interTrialDelay * 1000);
+        scheduleNextState(static_cast<int>(interTrialDelay * 1000));
     }
 }
 
@@ -79,24 +79,24 @@ void SpatialTestController::timerCallback() {
             currentTrial = 1;
             currentState = TestState::TRIAL_START;
             playMaskingNoise();
-            scheduleNextState(preSignalDelay * 1000);
+            scheduleNextState(static_cast<int>(preSignalDelay * 1000));
             break;
 
         case TestState::TRIAL_START:
             playFirstSound();
-            scheduleNextState(signalDuration * 1000);
+            scheduleNextState(static_cast<int>(signalDuration * 1000));
             currentState = TestState::FIRST_SOUND;
             break;
 
         case TestState::FIRST_SOUND:
             currentState = TestState::WAIT_BETWEEN_SOUNDS;
-            scheduleNextState(interSignalDelay * 1000);
+            scheduleNextState(static_cast<int>(interSignalDelay * 1000));
             break;
 
         case TestState::WAIT_BETWEEN_SOUNDS:
             currentState = TestState::SECOND_SOUND;
             playSecondSound();
-            scheduleNextState(signalDuration * 1000);
+            scheduleNextState(static_cast<int>(signalDuration * 1000));
             break;
 
         case TestState::SECOND_SOUND:
@@ -112,7 +112,7 @@ void SpatialTestController::timerCallback() {
                 currentTrial++;
                 currentState = TestState::TRIAL_START;
                 playMaskingNoise();
-                scheduleNextState(preSignalDelay * 1000);
+                scheduleNextState(static_cast<int>(preSignalDelay * 1000));
             }
             else {
                 currentState = TestState::END;
@@ -132,7 +132,8 @@ void SpatialTestController::scheduleNextState(int delayMs) {
 }
 
 void SpatialTestController::playFirstSound() {
-    firstAzimuth = testAzimuths[random.nextInt(testAzimuths.size())];
+    auto idx = static_cast<size_t>(random.nextInt((int)testAzimuths.size() ));
+    firstAzimuth = testAzimuths[idx];
     soundEngine.playNoiseSpatial(signalAmplitude, signalDuration, 0.0f, firstAzimuth);
 
 }

@@ -37,7 +37,7 @@ void HRTFManager::loadBinaryData() {
         int azimuth = tokens[2].getIntValue();
 
         
-        char channel = tokens[3][0];
+        auto channel = tokens[3][0];
 
         if (channel == 'L') {
             loadIR(name, irMap[elevation][azimuth].left);
@@ -48,7 +48,7 @@ void HRTFManager::loadBinaryData() {
 
     }
 
-    int nIRs = 0;
+    size_t nIRs = 0;
     for (auto m : irMap) {
         nIRs += m.second.size();
     }
@@ -98,8 +98,6 @@ juce::AudioBuffer<float>& HRTFManager::getIR(float elevation, float azimuth, int
             itAz = std::prev(itAz);
     }
     DBG("Get IR: az = " << azimuth << ". IR az = " << itAz->first);
-    int closestAz = itAz->first;
-
     
     // Return correct channel
     if (channel == 0) return itAz->second.left;
@@ -124,12 +122,11 @@ bool HRTFManager::loadIR(const juce::String& name, juce::AudioBuffer<float>& des
         return false;
     }
 
-    int length = reader->lengthInSamples;
+    juce::int64 length = reader->lengthInSamples;
     dest.setSize(1, length);
     reader->read(&dest, 0, length, 0, true, false);
 
     DBG("HRIR loaded. Length = " << length << " samples");
-
 
     irSampleRate = reader->sampleRate;
 

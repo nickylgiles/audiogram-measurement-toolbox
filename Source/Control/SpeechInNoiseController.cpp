@@ -149,7 +149,7 @@ void SpeechInNoiseController::timerCallback() {
         currentDigit = 0;
         makeRandomSequence();
         currentState = TestState::READ_DIGITS;
-        scheduleNextState(1000 * preDigitDelay);
+        scheduleNextState(static_cast<int>(1000 * preDigitDelay));
         break;
 
     case SpeechInNoiseController::TestState::READ_DIGITS:
@@ -157,7 +157,7 @@ void SpeechInNoiseController::timerCallback() {
             playDigit(currentSequence[currentDigit]);
             currentDigit++;
             float jitter = random.nextFloat() * interDigitJitter;
-            scheduleNextState(1000 * (interDigitDelay + jitter));
+            scheduleNextState(static_cast<int>(1000 * (interDigitDelay + jitter)));
         }
         else {
             currentState = TestState::AWAIT_RESPONSE;
@@ -187,7 +187,7 @@ void SpeechInNoiseController::timerCallback() {
         if (currentTrial < numTrials) {
             ++currentTrial;
             currentState = TestState::TRIAL_START;
-            scheduleNextState(1000 * interTrialDelay);
+            scheduleNextState(static_cast<int>(1000 * interTrialDelay));
         }
         else {
             currentState = TestState::END;

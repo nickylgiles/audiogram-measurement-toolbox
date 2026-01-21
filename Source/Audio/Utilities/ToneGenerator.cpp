@@ -30,7 +30,7 @@ void ToneGenerator::setFrequency(float newFrequency) {
 }
 
 float ToneGenerator::nextSample() {
-    float sample = amplitude * std::sin(currentPhase);
+    float sample = static_cast<float>(amplitude * std::sin(currentPhase));
     double phaseIncrement = (juce::MathConstants<double>::twoPi * frequency) / sampleRate;
     currentPhase += phaseIncrement;
 

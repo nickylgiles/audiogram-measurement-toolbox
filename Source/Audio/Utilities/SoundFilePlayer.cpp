@@ -30,8 +30,8 @@ bool SoundFilePlayer::loadFile(const juce::File& file) {
         return false;
     }
 
-    totalSamples = reader->lengthInSamples;
-    buffer.setSize((int)reader->numChannels, totalSamples);
+    totalSamples = static_cast<int>(reader->lengthInSamples);
+    buffer.setSize(static_cast<int>(reader->numChannels), totalSamples);
     reader->read(&buffer, 0, totalSamples, 0, true, true);
 
     currentSample = 0;
@@ -56,7 +56,7 @@ bool SoundFilePlayer::loadBinaryData(const void* data, size_t size) {
         return false;
     }
     
-    totalSamples = reader->lengthInSamples;
+    totalSamples = static_cast<int>(reader->lengthInSamples);
     buffer.setSize((int)reader->numChannels, totalSamples);
     reader->read(&buffer, 0, totalSamples, 0, true, true);
     currentSample = 0.0;
@@ -167,6 +167,5 @@ bool SoundFilePlayer::isFinished() const {
 }
 
 int SoundFilePlayer::samplesRemaining() {
-    return totalSamples - currentSample;
+    return totalSamples - static_cast<int>(currentSample);
 }
-
