@@ -21,7 +21,7 @@ public:
     // Callbacks set in MainComponent
     std::function<void()> onPureToneClicked;
     std::function<void()> onSpatialClicked;
-    std::function<void()> onSpeechInNoiseClicked;
+    std::function<void()> onDigitsInNoiseClicked;
     std::function<void()> onDualTaskClicked;
 
     std::function<void()> onSettingsClicked;
@@ -33,7 +33,7 @@ private:
 
     juce::TextButton pureToneButton{ "Pure Tone Test" };
     juce::TextButton spatialButton{ "Spatialization Test" };
-    juce::TextButton speechInNoiseButton{ "Speech-in-noise Test" };
+    juce::TextButton digitsInNoiseButton{ "Digits-in-noise Test" };
     juce::TextButton dualTaskButton{ "Dual-task (spatial + speech) Test" };
 
     juce::TextButton settingsButton{ "..." };

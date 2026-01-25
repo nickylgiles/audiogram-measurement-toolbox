@@ -122,7 +122,7 @@ bool HRTFManager::loadIR(const juce::String& name, juce::AudioBuffer<float>& des
         return false;
     }
 
-    juce::int64 length = reader->lengthInSamples;
+    int length = static_cast<int>(reader->lengthInSamples);
     dest.setSize(1, length);
     reader->read(&dest, 0, length, 0, true, false);
 

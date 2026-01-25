@@ -100,7 +100,7 @@ void MainComponent::showMenuScreen() {
 
     screen->onPureToneClicked = [this] {showPureToneTestScreen();};
     screen->onSpatialClicked = [this] {showSpatialTestScreen();};
-    screen->onSpeechInNoiseClicked = [this] {showSpeechInNoiseTestScreen();};
+    screen->onDigitsInNoiseClicked = [this] {showSpeechInNoiseTestScreen();};
     screen->onDualTaskClicked = [this] {showDualTaskTestScreen();};
 
     screen->onSettingsClicked = [this] {showSettingsScreen();};

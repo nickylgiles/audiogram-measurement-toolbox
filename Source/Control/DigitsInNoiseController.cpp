@@ -8,7 +8,7 @@
   ==============================================================================
 */
 
-#include "SpeechInNoiseController.h"
+#include "DigitsInNoiseController.h"
 #include "../MainComponent.h"
 
 class MainComponent;

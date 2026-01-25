@@ -4,7 +4,7 @@
 
 #include "Control/PureToneTestController.h"
 #include "Control/SpatialTestController.h"
-#include "Control/SpeechInNoiseController.h"
+#include "Control/DigitsInNoiseController.h"
 #include "Control/DualTasktestController.h"
 
 #include "GUI/MenuScreen.h"

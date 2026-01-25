@@ -17,8 +17,8 @@ MenuScreen::MenuScreen() {
     addAndMakeVisible(spatialButton);
     spatialButton.onClick = [this] {if (onSpatialClicked) onSpatialClicked(); };
 
-    addAndMakeVisible(speechInNoiseButton);
-    speechInNoiseButton.onClick = [this] {if (onSpeechInNoiseClicked) onSpeechInNoiseClicked(); };
+    addAndMakeVisible(digitsInNoiseButton);
+    digitsInNoiseButton.onClick = [this] {if (onDigitsInNoiseClicked) onDigitsInNoiseClicked(); };
 
     addAndMakeVisible(dualTaskButton);
     dualTaskButton.onClick = [this] {if (onDualTaskClicked) onDualTaskClicked(); };
@@ -38,7 +38,7 @@ void MenuScreen::resized() {
     pureToneButton.setBounds(leftColumn.removeFromTop(buttonHeight).reduced(10));
     spatialButton.setBounds(leftColumn.reduced(10));
 
-    speechInNoiseButton.setBounds(rightColumn.removeFromTop(buttonHeight).reduced(10));
+    digitsInNoiseButton.setBounds(rightColumn.removeFromTop(buttonHeight).reduced(10));
     dualTaskButton.setBounds(rightColumn.reduced(10));
 
     settingsButton.setBounds(getWidth() - 50, 10, 40, 40);

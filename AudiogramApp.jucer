@@ -392,10 +392,10 @@
               file="Source/Control/SpatialTestController.cpp"/>
         <FILE id="SvjQMr" name="SpatialTestController.h" compile="0" resource="0"
               file="Source/Control/SpatialTestController.h"/>
-        <FILE id="HcZt0y" name="SpeechInNoiseController.cpp" compile="1" resource="0"
-              file="Source/Control/SpeechInNoiseController.cpp"/>
-        <FILE id="eCZOn6" name="SpeechInNoiseController.h" compile="0" resource="0"
-              file="Source/Control/SpeechInNoiseController.h"/>
+        <FILE id="HcZt0y" name="DigitsInNoiseController.cpp" compile="1" resource="0"
+              file="Source/Control/DigitsInNoiseController.cpp"/>
+        <FILE id="eCZOn6" name="DigitsInNoiseController.h" compile="0" resource="0"
+              file="Source/Control/DigitsInNoiseController.h"/>
         <FILE id="SfnrgV" name="TestController.h" compile="0" resource="0"
               file="Source/Control/TestController.h"/>
       </GROUP>
