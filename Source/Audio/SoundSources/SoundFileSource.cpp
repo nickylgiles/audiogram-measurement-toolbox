@@ -21,6 +21,17 @@ SoundFileSource::SoundFileSource(double sampleRate, const void* data, size_t siz
     player.startPlaying();
 }
 
+SoundFileSource::SoundFileSource(double sampleRate, const juce::File& file, float newGain) {
+    player.setSampleRate(sampleRate);
+    gain = newGain;
+
+    if (!player.loadFile(file)) {
+        return;
+    }
+
+    player.startPlaying();
+}
+
 void SoundFileSource::process(float* outputL, float* outputR, int numSamples) {
     for (int i = 0; i < numSamples; ++i) {
         if (player.isFinished()) {

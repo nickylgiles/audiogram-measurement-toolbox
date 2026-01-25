@@ -16,7 +16,9 @@
 class SpeechFileManager {
 public:
     SpeechFileManager();
+
     void loadBinaryData(); 
+    void loadWordGroups(const juce::String& jsonFilePath);
 
     struct SpeechResource {
         const void* data;
@@ -25,10 +27,18 @@ public:
 
     const SpeechResource& getDigit(int digit);
 
-    const SpeechResource& getWord(const juce::String& word);
+    const juce::File& getWordFile(const juce::String& word);
+
+    const std::vector<juce::String> getWordsInGroup(const juce::String& groupId);
 
 private:
+    void loadWordFile(const juce::String& word, const juce::File& file);
+    void addWordGroup(const juce::String& groupId, const std::vector<juce::String>& words);
+
     std::map<int, SpeechResource> digitsMap;
 
-    std::map<juce::String, SpeechResource> wordsMap;
+    std::map<juce::String, juce::File> wordsMap;
+
+    std::map<juce::String, std::vector<juce::String>> wordGroups;
+
 };

@@ -16,6 +16,7 @@
 class SoundFileSource : public SoundSource {
 public:
     SoundFileSource(double sampleRate, const void* data, size_t size, float gain);
+    SoundFileSource(double sampleRate, const juce::File& file, float gain);
     void process(float* outputL, float* outputR, int numSamples) override;
     bool isFinished() const override;
 private:
