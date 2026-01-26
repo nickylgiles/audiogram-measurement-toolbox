@@ -14,9 +14,9 @@
 #include "../Audio/Speech/SpeechFileManager.h"
 #include "../Results/SpeechInNoiseTestResults.h"
 
-class SpeechInNoiseController : public TestController, private juce::Timer {
+class DigitsInNoiseController : public TestController, private juce::Timer {
 public:
-    SpeechInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+    DigitsInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
     void startTest() override;
     void stopTest() override;
 

@@ -91,10 +91,7 @@ void MainComponent::paint (juce::Graphics& g)
     // You can add your drawing code here!
    
 }
-void MainComponent::testEnd() {
-    testStarted = false;
-    showPureToneResultsScreen();
-}
+
 void MainComponent::showMenuScreen() {
     auto screen = std::make_unique<MenuScreen>();
 
@@ -182,33 +179,11 @@ void MainComponent::showSpatialTestScreen() {
 }
 
 void MainComponent::showSpatialResultsScreen() {
-    auto spaTestController = dynamic_cast<SpatialTestController*>(testController.get());
-    if (!spaTestController) {
-        return;
-    }
-    SpatialTestResults results = spaTestController->getResults();
-    auto screen = std::make_unique<SpatialResultsScreen>();
-
-    screen->setResults(results);
-    screen->onExportClicked = [this, results] {
-        if (resultsLogger.logSpatialResults(results)) {
-            DBG("Spatial results logged successfully.");
-        }
-        else {
-            DBG("Failed to save spatial results.");
-        }
-    };
-    screen->onMenuClicked = [this] {
-        showMenuScreen();
-    };
-
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+    showResultsScreen<SpatialResultsScreen, SpatialTestController>();
 }
 
 void MainComponent::showSpeechInNoiseTestScreen() {
-    testController.reset(new SpeechInNoiseController(*this, *soundEngine));
+    testController.reset(new DigitsInNoiseController(*this, *soundEngine));
     testStarted = true;
     testController->startTest();
 
@@ -224,10 +199,9 @@ void MainComponent::showSpeechInNoiseTestScreen() {
         testController->buttonClicked(juce::String(digit));
     };
 
-
     // Get inputsEnabled() from SpeechInNoiseController
     // SafePointer needed in case the screen is deleted before async call is executed
-    if (auto* sin = dynamic_cast<SpeechInNoiseController*>(testController.get())) {
+    if (auto* sin = dynamic_cast<DigitsInNoiseController*>(testController.get())) {
         auto* scr = dynamic_cast<SpeechInNoiseTestScreen*>(screen.get());
         juce::Component::SafePointer<SpeechInNoiseTestScreen> scrPtr = scr;
         if (scrPtr) {
@@ -245,34 +219,10 @@ void MainComponent::showSpeechInNoiseTestScreen() {
 }
 
 void MainComponent::showSpeechInNoiseResultsScreen() {
-    auto sinTestController = dynamic_cast<SpeechInNoiseController*>(testController.get());
-    if (!sinTestController) {
-        return;
-    }
-    SpeechInNoiseTestResults results = sinTestController->getResults();
-
-    auto screen = std::make_unique<SpeechInNoiseResultsScreen>();
-
-    screen->setResults(results);
-    screen->onExportClicked = [this, results] {
-        if (resultsLogger.logSpeechInNoiseResults(results)) {
-            DBG("Speech-in-noise results logged successfully.");
-        }
-        else {
-            DBG("Failed to save speechin-noise results.");
-        }
-    };
-    screen->onMenuClicked = [this] {
-        showMenuScreen();
-        };
-
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+    showResultsScreen<SpeechInNoiseResultsScreen, DigitsInNoiseController>();
 }
 
 void MainComponent::showDualTaskTestScreen() {
-
     testController.reset(new DualTaskTestController(*this, *soundEngine));
     testStarted = true;
 
@@ -315,8 +265,6 @@ void MainComponent::showDualTaskTestScreen() {
         }
     }
 
-
-
     testController->startTest();
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());
@@ -324,55 +272,11 @@ void MainComponent::showDualTaskTestScreen() {
 }
 
 void MainComponent::showDualTaskResultsScreen() {
-    auto dtTestController = dynamic_cast<DualTaskTestController*>(testController.get());
-    if (!dtTestController) {
-        return;
-    }
-    DualTaskTestResults results = dtTestController->getResults();
-    auto screen = std::make_unique<DualTaskResultsScreen>();
-
-    screen->setResults(results);
-    screen->onExportClicked = [this, results] {
-        if (resultsLogger.logDualTaskResults(results)) {
-            DBG("Dual task results logged succesfully.");
-        }
-        else {
-            DBG("Failed to save dual task results.");
-        }
-    };
-    screen->onMenuClicked = [this] {
-        showMenuScreen();
-    };
-
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+    showResultsScreen<DualTaskResultsScreen, DualTaskTestController>();
 }
 
 void MainComponent::showPureToneResultsScreen() {
-    auto ptTestController = dynamic_cast<PureToneTestController*>(testController.get());
-    if (!ptTestController) {
-        return;
-    }
-    PureToneTestResults results = ptTestController->getResults();
-    auto screen = std::make_unique<PureToneResultsScreen>();
-
-    screen->setResults(results);
-    screen->onExportClicked = [this, results] {
-        if (resultsLogger.logPureToneResults(results)) {
-            DBG("Pure tone results logged successfully.");
-        }
-        else {
-            DBG("Failed to save pure tone results.");
-        }
-    };
-    screen->onMenuClicked = [this] {
-        showMenuScreen();
-    };
-
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+    showResultsScreen<PureToneResultsScreen, PureToneTestController>();
 }
 
 void MainComponent::resized()

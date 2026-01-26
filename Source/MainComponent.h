@@ -45,8 +45,6 @@ public:
     void paint (juce::Graphics& g) override;
     void resized() override;
 
-    void testEnd();
-
     void showMenuScreen(); 
     void showSettingsScreen();
 
@@ -61,6 +59,33 @@ public:
 
     void showDualTaskTestScreen();
     void showDualTaskResultsScreen();
+
+    template <typename ScreenT, typename ControllerT>
+    void showResultsScreen() {
+        auto tc = dynamic_cast<ControllerT*>(testController.get());
+        if (!tc) {
+            return;
+        }
+        auto results = tc->getResults();
+        auto screen = std::make_unique<ScreenT>();
+
+        screen->setResults(results);
+        screen->onExportClicked = [this, results] {
+            if (resultsLogger.logResults(results)) {
+                DBG("Test results logged successfully.");
+            }
+            else {
+                DBG("Failed to save test results.");
+            }
+            };
+        screen->onMenuClicked = [this] {
+            showMenuScreen();
+            };
+
+        currentScreen = std::move(screen);
+        addAndMakeVisible(currentScreen.get());
+        resized();
+    }
 
 private:
     //==============================================================================

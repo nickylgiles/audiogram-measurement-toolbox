@@ -23,7 +23,7 @@ bool ResultsLogger::openDatabase(const juce::File& file) {
     return true;
 }
 
-bool ResultsLogger::logSpatialResults(const SpatialTestResults& results) {
+bool ResultsLogger::logResults(const SpatialTestResults& results) {
     if (!db.execute(
         "CREATE TABLE IF NOT EXISTS SpatialResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -58,7 +58,7 @@ bool ResultsLogger::logSpatialResults(const SpatialTestResults& results) {
     return true;
 }
 
-bool ResultsLogger::logPureToneResults(const PureToneTestResults& results) {
+bool ResultsLogger::logResults(const PureToneTestResults& results) {
     if (!db.execute(
         "CREATE TABLE IF NOT EXISTS PureToneResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -93,7 +93,7 @@ bool ResultsLogger::logPureToneResults(const PureToneTestResults& results) {
     return true;
 }
 
-bool ResultsLogger::logSpeechInNoiseResults(const SpeechInNoiseTestResults& results) {
+bool ResultsLogger::logResults(const SpeechInNoiseTestResults& results) {
     if (!db.execute(
         "CREATE TABLE IF NOT EXISTS DigitsInNoiseResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -128,7 +128,7 @@ bool ResultsLogger::logSpeechInNoiseResults(const SpeechInNoiseTestResults& resu
     return true;
 }
 
-bool ResultsLogger::logDualTaskResults(const DualTaskTestResults& results) {
+bool ResultsLogger::logResults(const DualTaskTestResults& results) {
     if (!db.execute(
         "CREATE TABLE IF NOT EXISTS DualTaskResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"

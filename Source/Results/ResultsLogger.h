@@ -23,11 +23,11 @@ public:
 
     bool openDatabase(const juce::File& file);
 
-    bool logSpatialResults(const SpatialTestResults& results);
-    bool logPureToneResults(const PureToneTestResults& results);
+    bool logResults(const SpatialTestResults& results);
+    bool logResults(const PureToneTestResults& results);
 
-    bool logSpeechInNoiseResults(const SpeechInNoiseTestResults& results);
-    bool logDualTaskResults(const DualTaskTestResults& results);
+    bool logResults(const SpeechInNoiseTestResults& results);
+    bool logResults(const DualTaskTestResults& results);
 
 private:
     Database db;
