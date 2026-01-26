@@ -9,27 +9,39 @@
 */
 
 #include "DualTaskTestController.h"
+#include "../MainComponent.h"
 
 DualTaskTestController::DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef) 
-    : TestController(mainComponentRef, soundEngineRef) {
-
+    : TestController(mainComponentRef, soundEngineRef) 
+{
     fm = std::make_unique<SpeechFileManager>();
+
+    currentState = TestState::END;
+
+    firstAzimuth = 0.0f;
+    secondAzimuth = 0.0f;
+    moveLeft = false;
+    spatialResponseLeft = false;
+
+    referenceWord = "";
+    targetWord = "";
+    chosenWord = "";
+
+    // Using a fixed SNR for the test
+    signalAmplitude = dbToAmplitude(signalAmplitudeDb);
+    maskingAmplitude = dbToAmplitude(maskingAmplitudeDb);
 }
 
 void DualTaskTestController::startTest() {
-    std::vector<juce::String> wordGroups = fm->getWordGroupIds();
-    DBG(wordGroups.size() << " word groups present.");
-    size_t idx = static_cast<size_t>(abs(random.nextInt()) % wordGroups.size());
-    juce::String currentGroup = wordGroups[idx];
-    std::vector<juce::String> words = fm->getWordsInGroup(currentGroup);
-    setWords(words);
-    setInputsEnabled(true);
+    //chooserandomwordgroup();
+    //setinputsenabled(true);
 
-    size_t correctIndex = abs(random.nextInt()) % words.size();
-    juce::String correctWord = words[correctIndex];
-    DBG("Correct word is " << correctWord);
+    //playreferenceword();
 
-    soundEngine.playSampleSpatial(fm->getWordFile(correctWord), 0.0f, -90.0f, 1.0f, true);
+    //playtargetword();
+    currentState = TestState::START;
+    currentTrial = 0;
+    scheduleNextState(2000);
 }
 
 void DualTaskTestController::stopTest() {
@@ -42,6 +54,9 @@ void DualTaskTestController::buttonClicked(const juce::String& id) {
         stopTest();
         return;
     }
+    if (currentState == TestState::AWAIT_RESPONSE) {
+        // TO-DO: get user input
+    }
 }
 
 const DualTaskTestResults DualTaskTestController::getResults() {
@@ -49,4 +64,111 @@ const DualTaskTestResults DualTaskTestController::getResults() {
 }
 
 void DualTaskTestController::timerCallback() {
+    stopTimer();
+
+    switch (currentState) {
+        case TestState::START:
+            currentTrial = 1;
+            currentState = TestState::TRIAL_START;
+            playMaskingNoise();
+            scheduleNextState(static_cast<int>(preSignalDelay * 1000));
+            break;
+        case TestState::TRIAL_START:
+            playReferenceWord();
+            scheduleNextState(static_cast<int>(signalDuration * 1000));
+            currentState = TestState::FIRST_SOUND;
+            break;
+
+        case TestState::FIRST_SOUND:
+            currentState = TestState::WAIT_BETWEEN_SOUNDS;
+            scheduleNextState(static_cast<int>(interSignalDelay * 1000));
+            break;
+
+        case TestState::WAIT_BETWEEN_SOUNDS:
+            currentState = TestState::SECOND_SOUND;
+            playTargetWord();
+            scheduleNextState(static_cast<int>(signalDuration * 1000));
+            break;
+
+        case TestState::SECOND_SOUND:
+            currentState = TestState::AWAIT_RESPONSE;
+            userRespondedSpatial = false;
+            userRespondedSpeech = false;
+            break;
+
+        case TestState::AWAIT_RESPONSE:
+            break;
+
+        case TestState::NEXT_TRIAL:
+            if (currentTrial < numTrials) {
+                currentTrial++;
+                currentState = TestState::TRIAL_START;
+                playMaskingNoise();
+                scheduleNextState(static_cast<int>(preSignalDelay * 1000));
+            }
+            else {
+                currentState = TestState::END;
+                scheduleNextState(1);
+            }
+            break;
+        case TestState::END:
+            mainComponent.showSpatialResultsScreen();
+            stopTest();
+            break;
+    }
+}
+
+void DualTaskTestController::scheduleNextState(int delayMs) {
+    stopTimer();
+    startTimer(delayMs);
+}
+
+void DualTaskTestController::playReferenceWord() {
+    auto azIdx = static_cast<size_t>(random.nextInt((int)testAzimuths.size()));
+    firstAzimuth = testAzimuths[azIdx];
+
+    size_t wordIdx = abs(random.nextInt()) % currentWordGroup.size();
+    referenceWord = currentWordGroup[wordIdx];
+
+    playWordSpatial(referenceWord, firstAzimuth);
+}
+
+void DualTaskTestController::playTargetWord() {
+    // Choose direction to move
+    if (firstAzimuth >= 90.0f) {
+        moveLeft = false;
+    }
+    else if (firstAzimuth <= -90.0f) {
+        moveLeft = true;
+    }
+    else {
+        moveLeft = random.nextBool();
+    }
+
+    secondAzimuth = moveLeft ? firstAzimuth + 15.0f : firstAzimuth - 15.0f;
+
+    size_t wordIdx = abs(random.nextInt()) % currentWordGroup.size();
+    targetWord = currentWordGroup[wordIdx];
+
+    playWordSpatial(targetWord, secondAzimuth);
+
+}
+
+void DualTaskTestController::playMaskingNoise() {
+    float maskingDuration = preSignalDelay + 2.0f * signalDuration + interSignalDelay + postSignalMasking;
+    for (float az : maskingAzimuths)
+        soundEngine.playNoiseSpatial(maskingAmplitude / maskingAzimuths.size(), maskingDuration, 0.0f, az);
+}
+
+void DualTaskTestController::playWordSpatial(juce::String word, float azimuth) {
+    soundEngine.playSampleSpatial(fm->getWordFile(word), 0.0f, azimuth, signalAmplitude, true);
+}
+
+void DualTaskTestController::chooseRandomWordGroup() {
+    std::vector<juce::String> wordGroups = fm->getWordGroupIds();
+
+    size_t idx = static_cast<size_t>(abs(random.nextInt()) % wordGroups.size());
+    juce::String currentGroupId = wordGroups[idx];
+    currentWordGroup = fm->getWordsInGroup(currentGroupId);
+    setWords(currentWordGroup);
 }

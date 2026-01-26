@@ -27,12 +27,37 @@ public:
 
 	std::function<void(bool)> setInputsEnabled;
 	std::function<void(const std::vector<juce::String>&)> setWords;
+
 private:
+	enum class TestState {
+		START,
+		TRIAL_START,
+		FIRST_SOUND,
+		WAIT_BETWEEN_SOUNDS,
+		SECOND_SOUND,
+		AWAIT_RESPONSE,
+		NEXT_TRIAL,
+		END
+	};
+
+	TestState currentState{ TestState::END };
+
 	void timerCallback() override;
+
+	void scheduleNextState(int delayMs);
+
+	void playReferenceWord();
+	void playTargetWord();
+	void playMaskingNoise();
+
+	void playWordSpatial(juce::String word, float azimuth);
+
+	void chooseRandomWordGroup();
 
 	std::unique_ptr<SpeechFileManager> fm;
 	juce::Random random;
 
+	std::vector<juce::String> currentWordGroup;
 	juce::String targetWord;
 	juce::String referenceWord;
 	
@@ -59,8 +84,11 @@ private:
 
 	float interTrialDelay = 1.0f;
 
-	bool userResponded = false;
-	bool responseLeft;
+	bool userRespondedSpatial = false;
+	bool spatialResponseLeft;
+
+	bool userRespondedSpeech = false;
+	juce::String chosenWord;
 
 	DualTaskTestResults results;
 };
