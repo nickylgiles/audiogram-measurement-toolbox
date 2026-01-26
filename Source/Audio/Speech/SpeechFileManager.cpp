@@ -169,3 +169,11 @@ const std::vector<juce::String> SpeechFileManager::getWordsInGroup(const juce::S
 
     return it->second;
 }
+
+const std::vector<juce::String> SpeechFileManager::getWordGroupIds() {
+    std::vector<juce::String> groups = {};
+    for (const auto& g : wordGroups) {
+        groups.push_back(g.first);
+    }
+    return groups;
+}

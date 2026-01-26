@@ -10,15 +10,8 @@
 
 #include "SoundEngine.h"
 
-SoundEngine::SoundEngine() 
-    : headphoneConvL(256), headphoneConvR(256)
-{
-    // initialize headphone calibration
-    juce::AudioBuffer<float> ir(1, 256);
-    ir.clear();
-    ir.setSample(0, 0, 0.2f);
-    headphoneConvL.loadIR(ir);
-    headphoneConvR.loadIR(ir);
+SoundEngine::SoundEngine() {
+
 }
 
 void SoundEngine::playTone(float frequency, float amplitude, float duration, int channel) {
@@ -26,19 +19,33 @@ void SoundEngine::playTone(float frequency, float amplitude, float duration, int
 }
 
 void SoundEngine::playToneMasked(float frequency, float amplitude, float duration, int channel) {
-    sources.push_back(std::make_unique<ToneSource>(sampleRate, frequency, amplitude, duration, channel));
+    addSource(std::make_unique<ToneSource>(sampleRate, frequency, amplitude, duration, channel));
     int noiseChannel = (channel == 0 ? 1 : 0);
     addSource(std::make_unique<NoiseSource>(sampleRate, amplitude, duration, noiseChannel, true, frequency));
 }
 
-void SoundEngine::playSample(const void* data, size_t size, float gain) {
-    sources.push_back(std::make_unique<SoundFileSource>(sampleRate, data, size, gain));
+void SoundEngine::playSample(const void* data, size_t size, float gain, bool normaliseAudio) {
+    addSource(std::make_unique<SoundFileSource>(
+        sampleRate, data, size, gain, normaliseAudio)
+    );
 }
 
-void SoundEngine::playSampleSpatial(const void* data, size_t size, float elevation, float azimuth, float gain) {
+void SoundEngine::playSampleSpatial(const void* data, size_t size, float elevation, float azimuth, float gain, bool normaliseAudio) {
     addSource(std::make_unique<SpatialisedSoundFileSource>(
-        sampleRate, data, size, hrtfManager, elevation, azimuth, gain));
+        sampleRate, data, size, hrtfManager, elevation, azimuth, gain, normaliseAudio)
+    );
+}
 
+void SoundEngine::playSample(const juce::File& file, float gain, bool normaliseAudio) {
+    addSource(std::make_unique<SoundFileSource>(
+        sampleRate, file, gain, normaliseAudio)
+    );
+}
+
+void SoundEngine::playSampleSpatial(const juce::File& file, float elevation, float azimuth, float gain, bool normaliseAudio) {
+    addSource(std::make_unique<SpatialisedSoundFileSource>(
+        sampleRate, file, hrtfManager, elevation, azimuth, gain, normaliseAudio)
+    );
 }
 
 void SoundEngine::playNoise(float amplitude, float duration, int channel) {
@@ -55,6 +62,7 @@ void SoundEngine::playNoiseSpatial(float amplitude, float duration, float elevat
 void SoundEngine::stop() {
     juce::SpinLock::ScopedLockType lock(sourceLock);
     sources.clear();
+    DBG("All sounds stopped");
 }
 
 bool SoundEngine::isPlaying() const {
@@ -108,11 +116,8 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
     }
 
     // Apply headphone calibration
-    /*
-    headphoneConvL.processBlock(sourcesLPtr, outputL, numSamples);
-    headphoneConvR.processBlock(sourcesRPtr, outputR, numSamples);
-    */
-    
+    // juce::dsp::IIR
+
     for (int i = 0; i < numSamples; ++i) {
         outputL[i] = sourcesLPtr[i];
         outputR[i] = sourcesRPtr[i];

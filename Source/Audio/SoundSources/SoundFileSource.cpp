@@ -10,22 +10,22 @@
 
 #include "SoundFileSource.h"
 
-SoundFileSource::SoundFileSource(double sampleRate, const void* data, size_t size, float newGain) {
+SoundFileSource::SoundFileSource(double sampleRate, const void* data, size_t size, float newGain, bool normaliseAudio) {
     player.setSampleRate(sampleRate);
     gain = newGain;
 
-    if (!player.loadBinaryData(data, size)) {
+    if (!player.loadBinaryData(data, size, normaliseAudio)) {
         return;
     }
 
     player.startPlaying();
 }
 
-SoundFileSource::SoundFileSource(double sampleRate, const juce::File& file, float newGain) {
+SoundFileSource::SoundFileSource(double sampleRate, const juce::File& file, float newGain, bool normaliseAudio) {
     player.setSampleRate(sampleRate);
     gain = newGain;
 
-    if (!player.loadFile(file)) {
+    if (!player.loadFile(file, normaliseAudio)) {
         return;
     }
 

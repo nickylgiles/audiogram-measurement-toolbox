@@ -16,7 +16,7 @@
 
 class Spatialiser {
 public:
-    Spatialiser(HRTFManager& hrtfManagerRef, int fftBlockSize = 256);
+    Spatialiser(HRTFManager& hrtfManagerRef, int fftBlockSize = 128);
     void setSampleRate(double newSampleRate);
     void setDirection(float newElevation, float newAzimuth);
     void reset();

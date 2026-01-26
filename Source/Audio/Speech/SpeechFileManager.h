@@ -31,6 +31,8 @@ public:
 
     const std::vector<juce::String> getWordsInGroup(const juce::String& groupId);
 
+    const std::vector<juce::String> getWordGroupIds();
+
 private:
     void loadWordFile(const juce::String& word, const juce::File& file);
     void addWordGroup(const juce::String& groupId, const std::vector<juce::String>& words);

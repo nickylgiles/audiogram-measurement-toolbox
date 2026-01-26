@@ -26,8 +26,11 @@ public:
     void playTone(float frequency, float amplitude, float duration, int channel);
     void playToneMasked(float frequency, float amplitude, float duration, int channel);
 
-    void playSample(const void* data, size_t size, float gain);
-    void playSampleSpatial(const void* data, size_t size, float elevation, float azimuth, float gain);
+    void playSample(const void* data, size_t size, float gain, bool normaliseAudio = false);
+    void playSampleSpatial(const void* data, size_t size, float elevation, float azimuth, float gain, bool normaliseAudio = false);
+
+    void playSample(const juce::File& file, float gain, bool normaliseAudio = false);
+    void playSampleSpatial(const juce::File& file, float elevation, float azimuth, float gain, bool normaliseAudio = false);
 
     void playNoise(float amplitude, float duration, int channel);
     void playNoiseSpatial(float amplitude, float duration, float elevation, float azimuth);
@@ -48,9 +51,5 @@ private:
 
     HRTFManager hrtfManager;
 
-    // For headphone calibration
-    const int partitionSize = 256;
-    PartitionedConvolver headphoneConvL;
-    PartitionedConvolver headphoneConvR;
 };
 

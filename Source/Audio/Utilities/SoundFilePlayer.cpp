@@ -21,7 +21,7 @@ SoundFilePlayer::SoundFilePlayer() {
     audioFormatManager.registerBasicFormats();
 }
 
-bool SoundFilePlayer::loadFile(const juce::File& file) {
+bool SoundFilePlayer::loadFile(const juce::File& file, bool normalise) {
     std::unique_ptr<juce::AudioFormatReader> reader(audioFormatManager.createReaderFor(file));
 
     if (reader.get() == nullptr) {
@@ -42,10 +42,13 @@ bool SoundFilePlayer::loadFile(const juce::File& file) {
     fileSampleRate = reader->sampleRate;
     playbackIncrement = fileSampleRate / sampleRate;
 
+    if (normalise) {
+        normaliseBuffer(buffer);
+    }
     return true;
 }
 
-bool SoundFilePlayer::loadBinaryData(const void* data, size_t size) {
+bool SoundFilePlayer::loadBinaryData(const void* data, size_t size, bool normalise) {
     auto inputStream = std::make_unique<juce::MemoryInputStream>(data, size, false);
 
     std::unique_ptr<juce::AudioFormatReader> reader(
@@ -68,8 +71,10 @@ bool SoundFilePlayer::loadBinaryData(const void* data, size_t size) {
     fileSampleRate = reader->sampleRate;
     playbackIncrement = fileSampleRate / sampleRate;
 
+    if (normalise) {
+        normaliseBuffer(buffer);
+    }
     return true;
-
 }
 
 bool SoundFilePlayer::loadNoise(int length) {
@@ -168,4 +173,18 @@ bool SoundFilePlayer::isFinished() const {
 
 int SoundFilePlayer::samplesRemaining() {
     return totalSamples - static_cast<int>(currentSample);
+}
+
+void SoundFilePlayer::normaliseBuffer(juce::AudioBuffer<float>& buffer) {
+    float maxMag = 0.0f;
+
+    for (int ch = 0; ch < buffer.getNumChannels(); ++ch) {
+        maxMag = std::max(maxMag, buffer.getMagnitude(ch, 0, buffer.getNumSamples()));
+    }
+
+    if (maxMag > 0.0f) {
+        buffer.applyGain(1.0f / maxMag);
+    }
+
+    DBG("Normalised buffer by " << (1.0f / maxMag));
 }

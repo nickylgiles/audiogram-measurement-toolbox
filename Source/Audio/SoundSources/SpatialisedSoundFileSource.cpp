@@ -11,12 +11,29 @@
 #include "SpatialisedSoundFileSource.h"
 #include "SoundFileSource.h"
 
-SpatialisedSoundFileSource::SpatialisedSoundFileSource(double sampleRate, const void* data, size_t size, HRTFManager& hrtfManager, float elevation, float azimuth, float newGain)
+SpatialisedSoundFileSource::SpatialisedSoundFileSource(double sampleRate, const void* data, size_t size, HRTFManager& hrtfManager, float elevation, float azimuth, float newGain, bool normaliseAudio)
     : spatialiser(hrtfManager), gain(newGain)
 {
     player.setSampleRate(sampleRate);
     
-    if (!player.loadBinaryData(data, size)) {
+    if (!player.loadBinaryData(data, size, normaliseAudio)) {
+        return;
+    }
+
+    player.startPlaying();
+
+    spatialiser.setSampleRate(sampleRate);
+    spatialiser.setDirection(elevation, azimuth);
+
+    tempBuffer.setSize(1, 0);
+}
+
+SpatialisedSoundFileSource::SpatialisedSoundFileSource(double sampleRate, const juce::File& file, HRTFManager& hrtfManager, float elevation, float azimuth, float newGain, bool normaliseAudio) 
+    : spatialiser(hrtfManager), gain(newGain)
+{
+    player.setSampleRate(sampleRate);
+
+    if (!player.loadFile(file, normaliseAudio)) {
         return;
     }
 

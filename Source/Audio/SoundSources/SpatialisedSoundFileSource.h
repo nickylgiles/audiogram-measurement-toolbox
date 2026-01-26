@@ -17,7 +17,8 @@
 
 class SpatialisedSoundFileSource : public SoundSource {
 public:
-    SpatialisedSoundFileSource(double sampleRate, const void* data, size_t size, HRTFManager& hrtfManager, float elevation, float azimuth, float gain);
+    SpatialisedSoundFileSource(double sampleRate, const void* data, size_t size, HRTFManager& hrtfManager, float elevation, float azimuth, float gain, bool normaliseAudio = false);
+    SpatialisedSoundFileSource(double sampleRate, const juce::File& file, HRTFManager& hrtfManager, float elevation, float azimuth, float gain, bool normaliseAudio = false);
     void process(float* outputL, float* outputR, int numSamples) override;
     bool isFinished() const override;
 private:

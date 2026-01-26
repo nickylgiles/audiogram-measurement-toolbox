@@ -120,7 +120,6 @@ void PartitionedConvolver::processBlock(const float* input, float* output, int n
 }
 
 
-
 void PartitionedConvolver::processPartition(float* inputPart, float* outputPart) {
 
     // Shift right half of input buffer to left
@@ -149,15 +148,12 @@ void PartitionedConvolver::processPartition(float* inputPart, float* outputPart)
     // IFFT of accumulated spectral convolutions
     fft->perform(accumulator.data(), outputIFFT.data(), true);
 
-
-    
     // Scale IFFT
     float invNFFT = 1.0f / NFFT;
     for (int i = 0; i < outputIFFT.size(); ++i) {
         outputIFFT[i] *= invNFFT;
     }
     
-
     // Output left half of output
     for (int n = 0; n < partSize; ++n)
         outputPart[n] = outputIFFT[n].real();

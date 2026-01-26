@@ -15,8 +15,8 @@
 class SoundFilePlayer {
 public:
     SoundFilePlayer();
-    bool loadFile(const juce::File& file);
-    bool loadBinaryData(const void* data, size_t size);
+    bool loadFile(const juce::File& file, bool normalise = false);
+    bool loadBinaryData(const void* data, size_t size, bool normalise = false);
     bool loadNoise(int length);
     bool loadNoise(int length, juce::dsp::IIR::Coefficients<float> filterCoeffs);
     void setSampleRate(double newSampleRate);
@@ -29,6 +29,7 @@ public:
     bool isFinished() const;
     int samplesRemaining();
 private:
+    void normaliseBuffer(juce::AudioBuffer<float>& buffer);
     juce::AudioBuffer<float> buffer;
     juce::AudioFormatManager audioFormatManager;
     double currentSample;
