@@ -54,9 +54,49 @@ void DualTaskTestController::buttonClicked(const juce::String& id) {
         stopTest();
         return;
     }
+
     if (currentState == TestState::AWAIT_RESPONSE) {
-        // TO-DO: get user input
+        if (id.startsWith("word")) {
+            int wordIdx = id.substring(4).getIntValue();
+            DBG("word index: " << wordIdx << " (" << currentWordGroup[wordIdx] << ")");
+            if (wordIdx >= 0 && wordIdx < currentWordGroup.size()) {
+                chosenWord = currentWordGroup[wordIdx];
+                userRespondedSpeech = true;
+            }
+        }
+        else if (id == "leftButton") {
+            userRespondedSpatial = true;
+        }
+        else if (id == "rightButton") {
+            userRespondedSpatial = true;
+        }
+
+        if (userRespondedSpatial && userRespondedSpeech) {
+            checkUserResponse();
+            currentState = TestState::NEXT_TRIAL;
+            scheduleNextState(static_cast<int>(interTrialDelay * 1000));
+        }
     }
+}
+
+void DualTaskTestController::checkUserResponse() {
+    DualTaskTestResponse response;
+    // Check if spatial correct
+    response.spatialTestResponse.referenceAzimuth = firstAzimuth;
+    response.spatialTestResponse.targetAzimuth = secondAzimuth;
+    response.spatialTestResponse.spatialCorrect = (spatialResponseLeft == moveLeft);
+    response.spatialTestResponse.snr = signalAmplitudeDb - maskingAmplitudeDb;
+
+    // Check if word correct
+    response.wordTestResponse.targetWord = targetWord;
+    response.wordTestResponse.reportedWord = chosenWord;
+    response.wordTestResponse.wordCorrect = (targetWord == chosenWord);
+    response.wordTestResponse.snr = signalAmplitudeDb - maskingAmplitudeDb;
+    
+    DBG("Spatial response " << (response.spatialTestResponse.spatialCorrect ? "correct" : "incorrect"));
+    DBG("Word response " << (response.wordTestResponse.wordCorrect ? "correct" : "incorrect"));
+
+    results.responses.push_back(response);
 }
 
 const DualTaskTestResults DualTaskTestController::getResults() {
@@ -74,6 +114,7 @@ void DualTaskTestController::timerCallback() {
             scheduleNextState(static_cast<int>(preSignalDelay * 1000));
             break;
         case TestState::TRIAL_START:
+            chooseRandomWordGroup();
             playReferenceWord();
             scheduleNextState(static_cast<int>(signalDuration * 1000));
             currentState = TestState::FIRST_SOUND;
@@ -92,14 +133,18 @@ void DualTaskTestController::timerCallback() {
 
         case TestState::SECOND_SOUND:
             currentState = TestState::AWAIT_RESPONSE;
+
             userRespondedSpatial = false;
             userRespondedSpeech = false;
+
+            setInputsEnabled(true);
             break;
 
         case TestState::AWAIT_RESPONSE:
             break;
 
         case TestState::NEXT_TRIAL:
+            setInputsEnabled(false);
             if (currentTrial < numTrials) {
                 currentTrial++;
                 currentState = TestState::TRIAL_START;
@@ -112,7 +157,7 @@ void DualTaskTestController::timerCallback() {
             }
             break;
         case TestState::END:
-            mainComponent.showSpatialResultsScreen();
+            mainComponent.showDualTaskResultsScreen();
             stopTest();
             break;
     }

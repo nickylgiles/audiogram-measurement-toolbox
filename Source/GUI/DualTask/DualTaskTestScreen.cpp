@@ -47,10 +47,11 @@ void DualTaskTestScreen::resized() {
                 y++;
             }
         }
+
+        leftButton.setBounds(10, 2 * buttonHeight, buttonWidth, buttonHeight);
+        rightButton.setBounds(buttonWidth, 2 * buttonHeight, buttonWidth, buttonHeight);
     }
 
-    leftButton.setBounds(10, 2 * buttonHeight, buttonWidth, buttonHeight);
-    rightButton.setBounds(buttonWidth, 2 * buttonHeight, buttonWidth, buttonHeight);
 
     stopButton.setBounds(10, 3 * buttonHeight, area.getWidth(), buttonHeight);
 }
@@ -63,7 +64,12 @@ void DualTaskTestScreen::addWordButtons() {
     for (int i = 0; i < words.size(); ++i) {
         auto button = std::make_unique<juce::TextButton>(words[i]);
         addAndMakeVisible(*button);
-        button->onClick = [this, i]() { if (onWordClicked) onWordClicked(i);};
+        button->onClick = [this, i]() {
+            if (onWordClicked) {
+                DBG("Word " << i << " clicked");
+                onWordClicked(i); 
+            }
+            };
 
         wordButtons.push_back(std::move(button));
     }

@@ -95,7 +95,7 @@ bool ResultsLogger::logPureToneResults(const PureToneTestResults& results) {
 
 bool ResultsLogger::logSpeechInNoiseResults(const SpeechInNoiseTestResults& results) {
     if (!db.execute(
-        "CREATE TABLE IF NOT EXISTS SpeechInNoiseResults ("
+        "CREATE TABLE IF NOT EXISTS DigitsInNoiseResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "timestamp TEXT NOT NULL,"
         "targetWord TEXT NOT NULL, "
@@ -114,7 +114,7 @@ bool ResultsLogger::logSpeechInNoiseResults(const SpeechInNoiseTestResults& resu
         float snr = r.snr;
         int correct = r.wordCorrect;
 
-        juce::String sql = "INSERT INTO SpeechInNoiseResults (timestamp, targetWord, reportedWord, snr, correct) VALUES ('"
+        juce::String sql = "INSERT INTO DigitsInNoiseResults (timestamp, targetWord, reportedWord, snr, correct) VALUES ('"
             + timestamp + "', '"
             + targWord + "', '"
             + repWord + "', "
@@ -129,5 +129,47 @@ bool ResultsLogger::logSpeechInNoiseResults(const SpeechInNoiseTestResults& resu
 }
 
 bool ResultsLogger::logDualTaskResults(const DualTaskTestResults& results) {
-    return false;
+    if (!db.execute(
+        "CREATE TABLE IF NOT EXISTS DualTaskResults ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "timestamp TEXT NOT NULL,"
+        "targetWord TEXT NOT NULL, "
+        "reportedWord TEXT NOT NULL,"
+        "snr REAL NOT NULL,"
+        "wordCorrect INTEGER NOT NULL,"
+        "referenceAzimuth REAL NOT NULL,"
+        "targetAzimuth REAL NOT NULL,"
+        "spatialCorrect INTEGER NOT NULL"
+        ");"
+    )) {
+        return false;
+    }
+
+    juce::String timestamp = juce::Time::getCurrentTime().toString(true, true, true, true);
+
+    for (auto& r : results.responses) {
+        juce::String targWord = r.wordTestResponse.targetWord;
+        juce::String repWord = r.wordTestResponse.reportedWord;
+        float snr = r.wordTestResponse.snr;
+        int wordCorrect = r.wordTestResponse.wordCorrect;
+
+        float refAz = r.spatialTestResponse.referenceAzimuth;
+        float targAz = r.spatialTestResponse.targetAzimuth;
+        int spatialCorrect = r.spatialTestResponse.spatialCorrect;
+
+        juce::String sql = "INSERT INTO DualTaskResults (timestamp, targetWord, reportedWord, snr, wordCorrect, referenceAzimuth, targetAzimuth, spatialCorrect) VALUES ('"
+            + timestamp + "', '"
+            + targWord + "', '"
+            + repWord + "', "
+            + juce::String(snr) + ", "
+            + juce::String(wordCorrect) + ","
+            + juce::String(refAz) + ", "
+            + juce::String(targAz) + ", "
+            + juce::String(spatialCorrect) + ");";
+
+        if (!db.execute(sql))
+            return false;
+    }
+
+    return true;
 }

@@ -291,7 +291,7 @@ void MainComponent::showDualTaskTestScreen() {
         };
 
     screen->onWordClicked = [this](int wordIdx) {
-        testController->buttonClicked("word" + wordIdx);
+        testController->buttonClicked("word" + juce::String(wordIdx));
         };
 
 
@@ -324,6 +324,29 @@ void MainComponent::showDualTaskTestScreen() {
 }
 
 void MainComponent::showDualTaskResultsScreen() {
+    auto dtTestController = dynamic_cast<DualTaskTestController*>(testController.get());
+    if (!dtTestController) {
+        return;
+    }
+    DualTaskTestResults results = dtTestController->getResults();
+    auto screen = std::make_unique<DualTaskResultsScreen>();
+
+    screen->setResults(results);
+    screen->onExportClicked = [this, results] {
+        if (resultsLogger.logDualTaskResults(results)) {
+            DBG("Dual task results logged succesfully.");
+        }
+        else {
+            DBG("Failed to save dual task results.");
+        }
+    };
+    screen->onMenuClicked = [this] {
+        showMenuScreen();
+    };
+
+    currentScreen = std::move(screen);
+    addAndMakeVisible(currentScreen.get());
+    resized();
 }
 
 void MainComponent::showPureToneResultsScreen() {

@@ -46,6 +46,8 @@ private:
 
 	void scheduleNextState(int delayMs);
 
+	void checkUserResponse();
+
 	void playReferenceWord();
 	void playTargetWord();
 	void playMaskingNoise();
@@ -71,7 +73,7 @@ private:
 	float firstAzimuth, secondAzimuth;
 	bool moveLeft;
 
-	float signalAmplitudeDb = -20.0f;
+	float signalAmplitudeDb = -10.0f;
 	float maskingAmplitudeDb = -25.0f;
 
 	float signalAmplitude = 0.25f;
