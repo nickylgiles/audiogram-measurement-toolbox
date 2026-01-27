@@ -23,6 +23,14 @@ DualTaskTestScreen::DualTaskTestScreen() {
 
 void DualTaskTestScreen::setInputEnabled(bool enable) {
     inputEnabled = enable;
+
+    for (int i = 0; i < wordButtons.size(); ++i) {
+        wordButtons[i]->setVisible(inputEnabled);
+    }
+
+    leftButton.setVisible(inputEnabled);
+    rightButton.setVisible(inputEnabled);
+
     resized();
 }
 
@@ -51,7 +59,6 @@ void DualTaskTestScreen::resized() {
         leftButton.setBounds(10, 2 * buttonHeight, buttonWidth, buttonHeight);
         rightButton.setBounds(buttonWidth, 2 * buttonHeight, buttonWidth, buttonHeight);
     }
-
 
     stopButton.setBounds(10, 3 * buttonHeight, area.getWidth(), buttonHeight);
 }
