@@ -33,12 +33,12 @@ DualTaskTestController::DualTaskTestController(MainComponent& mainComponentRef, 
 }
 
 void DualTaskTestController::startTest() {
-    //chooserandomwordgroup();
-    //setinputsenabled(true);
-
-    //playreferenceword();
-
-    //playtargetword();
+    // First check if word groups exist
+    if (fm->getWordGroupIds().empty()) {
+        currentState = TestState::END;
+        DBG("Unable to start test as no word groups were found.");
+        return;
+    }
     currentState = TestState::START;
     currentTrial = 0;
     scheduleNextState(2000);
@@ -171,11 +171,12 @@ void DualTaskTestController::scheduleNextState(int delayMs) {
 void DualTaskTestController::playReferenceWord() {
     auto azIdx = static_cast<size_t>(random.nextInt((int)testAzimuths.size()));
     firstAzimuth = testAzimuths[azIdx];
+    if (currentWordGroup.size() > 0) {
+        size_t wordIdx = abs(random.nextInt()) % currentWordGroup.size();
+        referenceWord = currentWordGroup[wordIdx];
 
-    size_t wordIdx = abs(random.nextInt()) % currentWordGroup.size();
-    referenceWord = currentWordGroup[wordIdx];
-
-    playWordSpatial(referenceWord, firstAzimuth);
+        playWordSpatial(referenceWord, firstAzimuth);
+    }
 }
 
 void DualTaskTestController::playTargetWord() {
@@ -191,11 +192,12 @@ void DualTaskTestController::playTargetWord() {
     }
 
     secondAzimuth = moveLeft ? firstAzimuth + 15.0f : firstAzimuth - 15.0f;
+    if (currentWordGroup.size() > 0) {
+        size_t wordIdx = abs(random.nextInt()) % currentWordGroup.size();
+        targetWord = currentWordGroup[wordIdx];
 
-    size_t wordIdx = abs(random.nextInt()) % currentWordGroup.size();
-    targetWord = currentWordGroup[wordIdx];
-
-    playWordSpatial(targetWord, secondAzimuth);
+        playWordSpatial(targetWord, secondAzimuth);
+    }
 
 }
 
@@ -212,8 +214,10 @@ void DualTaskTestController::playWordSpatial(juce::String word, float azimuth) {
 void DualTaskTestController::chooseRandomWordGroup() {
     std::vector<juce::String> wordGroups = fm->getWordGroupIds();
 
-    size_t idx = static_cast<size_t>(abs(random.nextInt()) % wordGroups.size());
-    juce::String currentGroupId = wordGroups[idx];
-    currentWordGroup = fm->getWordsInGroup(currentGroupId);
-    setWords(currentWordGroup);
+    if (wordGroups.size() > 0) {
+        size_t idx = static_cast<size_t>(abs(random.nextInt()) % wordGroups.size());
+        juce::String currentGroupId = wordGroups[idx];
+        currentWordGroup = fm->getWordsInGroup(currentGroupId);
+        setWords(currentWordGroup);
+    }
 }

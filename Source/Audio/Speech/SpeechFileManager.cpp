@@ -9,10 +9,29 @@
 */
 
 #include "SpeechFileManager.h"
+#include "../../AudiogramAppApplication.h"
 
 SpeechFileManager::SpeechFileManager() {
     loadBinaryData();
-    loadWordGroups("C:\\Users\\nicky_hgjk9m6\\Documents\\______ENG YEAR 5\\Project\\mrt\\wordgroups.json");
+    // loadWordGroups("C:\\Users\\nicky_hgjk9m6\\Documents\\______ENG YEAR 5\\Project\\mrt\\wordgroups.json");
+    juce::PropertiesFile* userSettings = static_cast<AudiogramAppApplication*>(
+        juce::JUCEApplication::getInstance())->applicationProperties.getUserSettings();
+
+    juce::String jsonPath = userSettings->getValue("wordGroupsJsonPath");
+
+    if (!jsonPath.isEmpty()) {
+        juce::File jsonFile(jsonPath);
+        if (jsonFile.existsAsFile()) {
+            loadWordGroups(jsonPath);
+        }
+        else {
+            DBG("JSON file set does not exist.");
+        }
+    }
+    else {
+        DBG("No JSON file set.");
+    }
+
 }
 
 /*

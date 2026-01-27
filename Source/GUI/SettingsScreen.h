@@ -21,11 +21,16 @@ public:
 
     std::function<void()> onExportClicked;
     std::function<void()> onBackClicked;
-
+    std::function<void()> onChooseWordGroupsJsonClicked;
+    
+    void setWordGroupsJsonPath(juce::String path);
 private:
 
     juce::TextButton backButton{ "Back" };
     juce::TextButton exportButton{ "Export Results Database" };
+
+    juce::TextButton chooseWordGroupsJsonButton{ "Select word groups JSON file" };
+    juce::Label wordGroupsFileLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsScreen)
 };

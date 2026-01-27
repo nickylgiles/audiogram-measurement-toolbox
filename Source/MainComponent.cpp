@@ -1,4 +1,5 @@
 #include "MainComponent.h"
+#include "AudiogramAppApplication.h"
 
 //==============================================================================
 MainComponent::MainComponent()
@@ -110,12 +111,18 @@ void MainComponent::showMenuScreen() {
 void MainComponent::showSettingsScreen() {
     auto screen = std::make_unique<SettingsScreen>();
 
+    auto* app = static_cast<AudiogramAppApplication*>(juce::JUCEApplication::getInstance());
+    auto* userSettings = app->applicationProperties.getUserSettings();
+    screen->setWordGroupsJsonPath(userSettings->getValue("wordGroupsJsonPath"));
+
     screen->onBackClicked = [this] {showMenuScreen();};
+
+    
 
     screen->onExportClicked = [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
             "Export Results Database",
-            dbFile.getParentDirectory(),
+            juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
             "*.db");
 
         auto fileChooserFlags = juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles;
@@ -129,6 +136,36 @@ void MainComponent::showSettingsScreen() {
             });
         };
 
+    screen->onChooseWordGroupsJsonClicked = [this] {
+        fileChooser = std::make_unique<juce::FileChooser>(
+            "Select word groups JSON file",
+            juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
+            "*.json");
+
+        auto fileChooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+
+        fileChooser->launchAsync(fileChooserFlags, [this](const juce::FileChooser& fc) {
+            auto result = fc.getResult();
+            if (result != juce::File{}) {
+                auto* app = static_cast<AudiogramAppApplication*>(juce::JUCEApplication::getInstance());
+                auto* userSettings = app->applicationProperties.getUserSettings();
+
+                userSettings->setValue("wordGroupsJsonPath", result.getFullPathName());
+                userSettings->saveIfNeeded();
+                DBG("Word groups JSON path set to " << userSettings->getValue("wordGroupsJsonPath"));
+
+                auto* screen = dynamic_cast<SettingsScreen*>(currentScreen.get());
+                if (screen) {
+                    screen->setWordGroupsJsonPath(userSettings->getValue("wordGroupsJsonPath"));
+                }
+            }
+            fileChooser.reset();
+            });
+
+        resized();
+        };
+
+   
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());
     resized();

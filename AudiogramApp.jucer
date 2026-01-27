@@ -325,6 +325,8 @@
             file="Matlab/HRIRs_test_elevation/HRIR_0_358_R.wav"/>
     </GROUP>
     <GROUP id="{8ACD6052-F8FD-9BBA-B215-8096667E1970}" name="Source">
+      <FILE id="TqqMSB" name="AudiogramAppApplication.h" compile="0" resource="0"
+            file="Source/AudiogramAppApplication.h"/>
       <GROUP id="{ABE302EF-2999-A2B1-B4F2-0A68B6276078}" name="Audio">
         <GROUP id="{8C2632EB-A318-E1FE-07D4-30C71CC7F6E0}" name="Speech">
           <FILE id="YqRL2f" name="SpeechFileManager.cpp" compile="1" resource="0"

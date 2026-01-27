@@ -16,12 +16,21 @@ SettingsScreen::SettingsScreen() {
 
     addAndMakeVisible(exportButton);
     exportButton.onClick = [this] {if (onExportClicked) onExportClicked(); };
+
+    addAndMakeVisible(chooseWordGroupsJsonButton);
+    chooseWordGroupsJsonButton.onClick = [this] {if (onChooseWordGroupsJsonClicked) onChooseWordGroupsJsonClicked(); };
+    
 }
 
 void SettingsScreen::resized() {
     auto area = getLocalBounds().reduced(40);
-    auto buttonHeight = area.getHeight() / 2;
+    auto buttonHeight = area.getHeight() / 3;
 
     exportButton.setBounds(area.removeFromTop(buttonHeight).reduced(10));
+    chooseWordGroupsJsonButton.setBounds(area.removeFromTop(buttonHeight).reduced(10));
     backButton.setBounds(area.reduced(10));
+}
+
+void SettingsScreen::setWordGroupsJsonPath(juce::String path) {
+    chooseWordGroupsJsonButton.setButtonText("Select word groups JSON file\n(" + ( path=="" ? "none" : path ) + ")");
 }
