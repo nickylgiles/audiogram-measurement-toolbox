@@ -9,3 +9,18 @@
 */
 
 #include "TestControllerTimer.h"
+
+TestControllerTimer::TestControllerTimer(std::function<void()> callbackFunction) 
+    : callback(callbackFunction)
+{}
+
+void TestControllerTimer::timerCallback() {
+    stopTimer(); // Timer does not repeat
+    if (callback) {
+        callback();
+    }
+}
+
+void TestControllerTimer::setCallback(std::function<void()> newCallback)  {
+    callback = newCallback;
+}

@@ -12,7 +12,7 @@
 #include "../MainComponent.h"
 
 PureToneTestController::PureToneTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef)
-    : TestController(mainComponentRef, soundEngineRef) {
+    : TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();}) {
     currentState = TestState::END;
     for (auto tone : testTones) {
         toneThresholds[0][tone] = dbLevelMax;
@@ -47,14 +47,14 @@ void PureToneTestController::toneHeard() {
 }
 
 void PureToneTestController::stopTest() {
-    stopTimer();
+    timer.stopTimer();
     soundEngine.stop();
 }
 
 
 
 void PureToneTestController::timerCallback() {
-    stopTimer(); 
+    timer.stopTimer();
 
     switch (currentState) {
         case TestState::START:
@@ -146,6 +146,6 @@ PureToneTestResults const PureToneTestController::getResults() {
 }
 
 void PureToneTestController::scheduleNextTone(int delayMs) {
-    stopTimer();
-    startTimer(delayMs);
+    timer.stopTimer();
+    timer.startTimer(delayMs);
 }

@@ -13,7 +13,7 @@
 #include <BinaryData.h>
 
 SpatialTestController::SpatialTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef)
-    	: TestController(mainComponentRef, soundEngineRef) 
+    	: TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();})
 {
     currentState = TestState::END;
 
@@ -34,7 +34,7 @@ void SpatialTestController::startTest() {
 }
 
 void SpatialTestController::stopTest() {
-    stopTimer();
+    timer.stopTimer();
     soundEngine.stop();
 }
 
@@ -72,7 +72,7 @@ const SpatialTestResults SpatialTestController::getResults() {
 }
 
 void SpatialTestController::timerCallback() {
-    stopTimer();
+    timer.stopTimer();
 
     switch (currentState) {
         case TestState::START:
@@ -127,8 +127,8 @@ void SpatialTestController::timerCallback() {
 }
 
 void SpatialTestController::scheduleNextState(int delayMs) {
-    stopTimer();
-    startTimer(delayMs);
+    timer.stopTimer();
+    timer.startTimer(delayMs);
 }
 
 void SpatialTestController::playFirstSound() {

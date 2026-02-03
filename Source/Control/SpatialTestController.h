@@ -12,8 +12,9 @@
 
 #include "TestController.h"
 #include "../Results/SpatialTestResults.h"
+#include "TestControllerTimer.h"
 
-class SpatialTestController : public TestController, private juce::Timer {
+class SpatialTestController : public TestController {
 public:
 	SpatialTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
 	void startTest() override;
@@ -23,6 +24,8 @@ public:
 
 	 const SpatialTestResults getResults();
 private:
+
+	TestControllerTimer timer;
 
 	enum class TestState {
 		START,
@@ -37,7 +40,7 @@ private:
 
 	TestState currentState{ TestState::END };
 
-	void timerCallback() override;
+	void timerCallback();
 
 	void scheduleNextState(int delayMs);
 

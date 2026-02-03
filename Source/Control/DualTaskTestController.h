@@ -14,8 +14,9 @@
 #include "TestController.h"
 #include "../Results/DualTaskTestResults.h"
 #include "../Audio/Speech/SpeechFileManager.h"
+#include "TestControllerTimer.h"
 
-class DualTaskTestController : public TestController, private juce::Timer {
+class DualTaskTestController : public TestController {
 public:
 	DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
 	void startTest() override;
@@ -29,6 +30,8 @@ public:
 	std::function<void(const std::vector<juce::String>&)> setWords;
 
 private:
+	TestControllerTimer timer;
+
 	enum class TestState {
 		START,
 		TRIAL_START,
@@ -42,7 +45,7 @@ private:
 
 	TestState currentState{ TestState::END };
 
-	void timerCallback() override;
+	void timerCallback();
 
 	void scheduleNextState(int delayMs);
 

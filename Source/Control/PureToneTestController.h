@@ -9,9 +9,10 @@
 */
 #include "TestController.h"
 #include "../Results/PureToneTestResults.h"
+#include "TestControllerTimer.h"
 #pragma once
 
-class PureToneTestController : public TestController, private juce::Timer {
+class PureToneTestController : public TestController {
 public:
     PureToneTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
     void startTest() override;
@@ -22,7 +23,8 @@ public:
     const PureToneTestResults getResults();
 
 private:
-    void timerCallback() override;
+    TestControllerTimer timer;
+    void timerCallback();
     void toneHeard();
     
     void playCurrentTone();

@@ -13,8 +13,9 @@
 #include "TestController.h"
 #include "../Audio/Speech/SpeechFileManager.h"
 #include "../Results/SpeechInNoiseTestResults.h"
+#include "TestControllerTimer.h"
 
-class DigitsInNoiseController : public TestController, private juce::Timer {
+class DigitsInNoiseController : public TestController {
 public:
     DigitsInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
     void startTest() override;
@@ -29,6 +30,7 @@ public:
     std::function<void(bool)> setInputsEnabled;
 
 private:
+    TestControllerTimer timer;
 
     enum class TestState {
         START,
@@ -52,7 +54,7 @@ private:
     
     std::unique_ptr<SpeechFileManager> fm;
 
-    void timerCallback() override;
+    void timerCallback();
 
     float digitAmplitude = 1.0f;
 

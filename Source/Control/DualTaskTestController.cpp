@@ -12,7 +12,7 @@
 #include "../MainComponent.h"
 
 DualTaskTestController::DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef) 
-    : TestController(mainComponentRef, soundEngineRef) 
+    : TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();})
 {
     fm = std::make_unique<SpeechFileManager>();
 
@@ -46,7 +46,7 @@ void DualTaskTestController::startTest() {
 
 void DualTaskTestController::stopTest() {
     soundEngine.stop();
-    stopTimer();
+    timer.stopTimer();
 }
 
 void DualTaskTestController::buttonClicked(const juce::String& id) {
@@ -104,7 +104,7 @@ const DualTaskTestResults DualTaskTestController::getResults() {
 }
 
 void DualTaskTestController::timerCallback() {
-    stopTimer();
+    timer.stopTimer();
 
     switch (currentState) {
         case TestState::START:
@@ -164,8 +164,8 @@ void DualTaskTestController::timerCallback() {
 }
 
 void DualTaskTestController::scheduleNextState(int delayMs) {
-    stopTimer();
-    startTimer(delayMs);
+    timer.stopTimer();
+    timer.startTimer(delayMs);
 }
 
 void DualTaskTestController::playReferenceWord() {

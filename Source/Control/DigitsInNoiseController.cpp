@@ -14,7 +14,7 @@
 class MainComponent;
 
 DigitsInNoiseController::DigitsInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef)
-    : TestController(mainComponentRef, soundEngineRef)
+    : TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();})
 {
     fm = std::make_unique<SpeechFileManager>();
     currentSequence.resize(numDigits);
@@ -28,7 +28,7 @@ void DigitsInNoiseController::startTest() {
 
 void DigitsInNoiseController::stopTest() {
     soundEngine.stop();
-    stopTimer();
+    timer.stopTimer();
 }
 
 void DigitsInNoiseController::buttonClicked(const juce::String& id) {
@@ -59,8 +59,8 @@ const SpeechInNoiseTestResults DigitsInNoiseController::getResults() {
 }
 
 void DigitsInNoiseController::scheduleNextState(int delayMs) {
-    stopTimer();
-    startTimer(delayMs);
+    timer.stopTimer();
+    timer.startTimer(delayMs);
 }
 
 void DigitsInNoiseController::setLevels(float snr) {
@@ -133,7 +133,7 @@ void DigitsInNoiseController::digitInput(int digit) {
 }
 
 void DigitsInNoiseController::timerCallback() {
-    stopTimer();
+    timer.stopTimer();
     switch (currentState) {
     case DigitsInNoiseController::TestState::START:
         currentSNR = dbInitial;

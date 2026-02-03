@@ -9,3 +9,14 @@
 */
 
 #pragma once
+
+#include <JuceHeader.h>
+
+class TestControllerTimer : public juce::Timer {
+public:
+    TestControllerTimer(std::function<void()> callbackFunction);
+    void timerCallback() override;
+    void setCallback(std::function<void()> callback);
+private:
+    std::function<void()> callback;
+};
