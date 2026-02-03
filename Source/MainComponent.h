@@ -24,6 +24,8 @@
 
 #include "Results/ResultsLogger.h"
 
+#include "GUI/AppLookAndFeel.h"
+
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
@@ -102,6 +104,8 @@ private:
 
     juce::File dbFile;
     std::unique_ptr<juce::FileChooser> fileChooser;
+
+    AppLookAndFeel lookAndFeel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

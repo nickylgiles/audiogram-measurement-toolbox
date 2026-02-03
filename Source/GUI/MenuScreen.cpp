@@ -11,40 +11,38 @@
 #include "MenuScreen.h"
 
 MenuScreen::MenuScreen() {
-    addAndMakeVisible(pureToneButton);
-    pureToneButton.onClick = [this] {if (onPureToneClicked) onPureToneClicked(); };
-
-    addAndMakeVisible(spatialButton);
-    spatialButton.onClick = [this] {if (onSpatialClicked) onSpatialClicked(); };
-
-    addAndMakeVisible(digitsInNoiseButton);
-    digitsInNoiseButton.onClick = [this] {if (onDigitsInNoiseClicked) onDigitsInNoiseClicked(); };
-
-    addAndMakeVisible(dualTaskButton);
-    dualTaskButton.onClick = [this] {if (onDualTaskClicked) onDualTaskClicked(); };
-
+    listModel = std::make_unique<MenuListModel>(this, testListBox);
+    testListBox.setModel(listModel.get());
+    testListBox.setRowHeight(50);
+    testListBox.setColour(juce::ListBox::backgroundColourId,
+        getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    
+    addAndMakeVisible(testListBox);
 
     addAndMakeVisible(settingsButton);
     settingsButton.onClick = [this] {if (onSettingsClicked) onSettingsClicked(); };
 }
 
+void MenuScreen::addTest(const juce::String& name, std::function<void()> onTestPressed) {
+    tests.push_back({ name, onTestPressed });
+    testListBox.updateContent();
+}
+
 void MenuScreen::resized() {
+    settingsButton.setBounds(getWidth() - 110, 10, 100, 40);
+
     auto area = getLocalBounds().reduced(40);
-    auto buttonHeight = area.getHeight() / 2;
+    area.removeFromTop(60);
 
-    auto leftColumn = area.removeFromLeft(area.getWidth() / 2);
-    auto rightColumn = area;
-
-    pureToneButton.setBounds(leftColumn.removeFromTop(buttonHeight).reduced(10));
-    spatialButton.setBounds(leftColumn.reduced(10));
-
-    digitsInNoiseButton.setBounds(rightColumn.removeFromTop(buttonHeight).reduced(10));
-    dualTaskButton.setBounds(rightColumn.reduced(10));
-
-    settingsButton.setBounds(getWidth() - 50, 10, 40, 40);
+    testListBox.setBounds(area);
 }
 
 void MenuScreen::paint(juce::Graphics& g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+
+    g.setColour(getLookAndFeel().findColour(juce::Label::textColourId));
+    g.setFont(juce::Font(40.0f, juce::Font::bold));
+    g.drawText("Select Test:", getLocalBounds().removeFromTop(120),
+        juce::Justification::centred, true);
 }
 

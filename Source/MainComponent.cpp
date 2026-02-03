@@ -4,7 +4,6 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-
     soundEngine = std::make_unique<SoundEngine>();
     testController = nullptr;
 
@@ -18,6 +17,9 @@ MainComponent::MainComponent()
         DBG("Database opened succesfully.");
     else
         DBG("Database failed to open.");
+
+    // Set look and feel globally
+    juce::LookAndFeel::setDefaultLookAndFeel(&lookAndFeel);
 
     showMenuScreen();
 
@@ -96,10 +98,26 @@ void MainComponent::paint (juce::Graphics& g)
 void MainComponent::showMenuScreen() {
     auto screen = std::make_unique<MenuScreen>();
 
+    /*
     screen->onPureToneClicked = [this] {showPureToneTestScreen();};
     screen->onSpatialClicked = [this] {showSpatialTestScreen();};
     screen->onDigitsInNoiseClicked = [this] {showSpeechInNoiseTestScreen();};
     screen->onDualTaskClicked = [this] {showDualTaskTestScreen();};
+    */
+
+    screen->addTest("Pure Tone Test", [this] {
+        juce::MessageManager::callAsync([this] { showPureToneTestScreen();});
+    });
+
+    screen->addTest("Spatial Test", [this] {
+        juce::MessageManager::callAsync([this] { showSpatialTestScreen(); });
+    });
+    screen->addTest("Digits-in-noise Test", [this] {
+        juce::MessageManager::callAsync([this] { showSpeechInNoiseTestScreen(); });
+    });
+    screen->addTest("Dual-Task Test", [this] {
+        juce::MessageManager::callAsync([this] { showDualTaskTestScreen(); });
+    });
 
     screen->onSettingsClicked = [this] {showSettingsScreen();};
 

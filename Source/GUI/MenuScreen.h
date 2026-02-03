@@ -17,12 +17,7 @@ public:
     MenuScreen();
     ~MenuScreen() override = default;
 
-
-    // Callbacks set in MainComponent
-    std::function<void()> onPureToneClicked;
-    std::function<void()> onSpatialClicked;
-    std::function<void()> onDigitsInNoiseClicked;
-    std::function<void()> onDualTaskClicked;
+    void addTest(const juce::String& name, std::function<void()> onTestPressed);
 
     std::function<void()> onSettingsClicked;
 
@@ -31,12 +26,60 @@ public:
 
 private:
 
-    juce::TextButton pureToneButton{ "Pure Tone Test" };
-    juce::TextButton spatialButton{ "Spatialization Test" };
-    juce::TextButton digitsInNoiseButton{ "Digits-in-noise Test" };
-    juce::TextButton dualTaskButton{ "Dual-task (spatial + speech) Test" };
+    // Model for listbox
+    class MenuListModel : public juce::ListBoxModel {
+    public:
+        MenuListModel(MenuScreen* owner, juce::ListBox& listBox) : owner(owner), listBox(listBox) {
+        }
 
-    juce::TextButton settingsButton{ "..." };
+        int getNumRows() override {
+            return static_cast<int>(owner->tests.size());
+        }
+
+        void paintListBoxItem(int row, juce::Graphics& g, int width, int height, bool selected) override {
+            if (row < 0 || row >= static_cast<int>(owner->tests.size())) return;
+            
+            auto& lookAndFeel = listBox.getLookAndFeel();
+
+            juce::Colour bg = selected
+                ? lookAndFeel.findColour(juce::TextButton::buttonOnColourId)
+                : lookAndFeel.findColour(juce::TextButton::buttonColourId);
+
+            juce::Colour text = selected
+                ? lookAndFeel.findColour(juce::TextButton::textColourOnId)
+                : lookAndFeel.findColour(juce::TextButton::textColourOffId);
+
+            g.setColour(juce::Colours::black);
+            g.fillRect(0, 0, width, height - 1);
+
+            g.setColour(bg);
+            g.fillRect(1, 1, width - 2, height - 3);
+
+            g.setColour(text);
+            g.setFont(18.0f);
+
+            g.drawText(owner->tests[row].first, 10, 0, width - 20, height, juce::Justification::centredLeft);
+        }
+
+        void selectedRowsChanged(int lastRowSelected) override {
+            if (lastRowSelected < 0 || lastRowSelected >= static_cast<int>(owner->tests.size())) return;
+
+            auto& onTestPressed = owner->tests[lastRowSelected].second;
+
+            if (onTestPressed) onTestPressed();
+        }
+
+    private:
+        MenuScreen* owner;
+        juce::ListBox& listBox;
+    };
+
+    juce::ListBox testListBox;
+    std::unique_ptr<MenuListModel> listModel;
+
+    std::vector<std::pair<juce::String, std::function<void()>>> tests;
+
+    juce::TextButton settingsButton{ "Settings" };
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuScreen)
 };

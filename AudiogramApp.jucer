@@ -382,6 +382,10 @@
         <FILE id="p9ATjb" name="SoundEngine.h" compile="0" resource="0" file="Source/Audio/SoundEngine.h"/>
       </GROUP>
       <GROUP id="{943F7013-3B33-5071-AA95-51CCE457EC05}" name="Controller">
+        <FILE id="iUHpY7" name="TestControllerTimer.cpp" compile="1" resource="0"
+              file="Source/Control/TestControllerTimer.cpp"/>
+        <FILE id="i8e4s1" name="TestControllerTimer.h" compile="0" resource="0"
+              file="Source/Control/TestControllerTimer.h"/>
         <FILE id="l6xPD2" name="DualTaskTestController.cpp" compile="1" resource="0"
               file="Source/Control/DualTaskTestController.cpp"/>
         <FILE id="xqXKfC" name="DualTaskTestController.h" compile="0" resource="0"
@@ -406,6 +410,8 @@
       <FILE id="Zx0RZL" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <GROUP id="{8F5E5A1D-8BFE-3270-DA73-9A53E2F30F6B}" name="GUI">
+        <FILE id="hInAmR" name="AppLookAndFeel.h" compile="0" resource="0"
+              file="Source/GUI/AppLookAndFeel.h"/>
         <FILE id="FiOuJb" name="SettingsScreen.cpp" compile="1" resource="0"
               file="Source/GUI/SettingsScreen.cpp"/>
         <FILE id="ksB9av" name="SettingsScreen.h" compile="0" resource="0"
