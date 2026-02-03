@@ -110,9 +110,7 @@ void MainComponent::showMenuScreen() {
             [this] { showMenuScreen();}
         );
 
-        currentScreen = std::move(infoScreen);
-        addAndMakeVisible(currentScreen.get());
-        resized();
+        showScreen(std::move(infoScreen));
         });});
     
     screen->addTest("Spatial Test", [this] { juce::MessageManager::callAsync([this] {
@@ -126,9 +124,7 @@ void MainComponent::showMenuScreen() {
             [this] { showMenuScreen();}
         );
 
-        currentScreen = std::move(infoScreen);
-        addAndMakeVisible(currentScreen.get());
-        resized();
+        showScreen(std::move(infoScreen));
         });});
 
     screen->addTest("Digits-in-noise Test", [this] { juce::MessageManager::callAsync([this] {
@@ -141,9 +137,7 @@ void MainComponent::showMenuScreen() {
             [this] { showMenuScreen();}
         );
 
-        currentScreen = std::move(infoScreen);
-        addAndMakeVisible(currentScreen.get());
-        resized();
+        showScreen(std::move(infoScreen));
         });});
     
     screen->addTest("Dual-Task Test", [this] { juce::MessageManager::callAsync([this] {
@@ -158,14 +152,10 @@ void MainComponent::showMenuScreen() {
             [this] { showMenuScreen();}
         );
 
-        currentScreen = std::move(infoScreen);
-        addAndMakeVisible(currentScreen.get());
-        resized();
+        showScreen(std::move(infoScreen));
         });});
     
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+    showScreen(std::move(screen));
 }
 
 void MainComponent::showSettingsScreen() {
@@ -219,9 +209,7 @@ void MainComponent::showSettingsScreen() {
 
     screen->addSetting("Select headphone calibration", [] {});
    
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+    showScreen(std::move(screen));
 
 }
 
@@ -240,9 +228,7 @@ void MainComponent::showPureToneTestScreen() {
         showMenuScreen();
         };
 
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+    showScreen(std::move(screen));
 }
 
 void MainComponent::showSpatialTestScreen() {
@@ -263,9 +249,7 @@ void MainComponent::showSpatialTestScreen() {
         showMenuScreen();
         };
 
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+    showScreen(std::move(screen));
 }
 
 void MainComponent::showSpatialResultsScreen() {
@@ -303,9 +287,7 @@ void MainComponent::showSpeechInNoiseTestScreen() {
         }
     }
     
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+    showScreen(std::move(screen));
 }
 
 void MainComponent::showSpeechInNoiseResultsScreen() {
@@ -356,13 +338,18 @@ void MainComponent::showDualTaskTestScreen() {
     }
 
     testController->startTest();
-    currentScreen = std::move(screen);
-    addAndMakeVisible(currentScreen.get());
-    resized();
+
+    showScreen(std::move(screen));
 }
 
 void MainComponent::showDualTaskResultsScreen() {
     showResultsScreen<DualTaskResultsScreen, DualTaskTestController>();
+}
+
+void MainComponent::showScreen(std::unique_ptr<juce::Component>&& screen) {
+    currentScreen = std::move(screen);
+    addAndMakeVisible(currentScreen.get());
+    resized();
 }
 
 void MainComponent::showPureToneResultsScreen() {

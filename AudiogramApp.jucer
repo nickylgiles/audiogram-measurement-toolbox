@@ -325,6 +325,21 @@
             file="Matlab/HRIRs_test_elevation/HRIR_0_358_R.wav"/>
     </GROUP>
     <GROUP id="{8ACD6052-F8FD-9BBA-B215-8096667E1970}" name="Source">
+      <GROUP id="{50D75710-64D4-41BF-6589-CC83358675D3}" name="HearingTests">
+        <FILE id="f2oCn5" name="DigitsInNoiseTest.cpp" compile="1" resource="0"
+              file="Source/Tests/DigitsInNoiseTest.cpp"/>
+        <FILE id="kHqi1Z" name="DigitsInNoiseTest.h" compile="0" resource="0"
+              file="Source/Tests/DigitsInNoiseTest.h"/>
+        <FILE id="MLcIZu" name="DualTaskTest.cpp" compile="1" resource="0"
+              file="Source/Tests/DualTaskTest.cpp"/>
+        <FILE id="ES7kYg" name="DualTaskTest.h" compile="0" resource="0" file="Source/Tests/DualTaskTest.h"/>
+        <FILE id="KrUfki" name="PureToneTest.cpp" compile="1" resource="0"
+              file="Source/Tests/PureToneTest.cpp"/>
+        <FILE id="Bmzl2s" name="PureToneTest.h" compile="0" resource="0" file="Source/Tests/PureToneTest.h"/>
+        <FILE id="eU1LgH" name="SpatialTest.cpp" compile="1" resource="0" file="Source/Tests/SpatialTest.cpp"/>
+        <FILE id="YPXOur" name="SpatialTest.h" compile="0" resource="0" file="Source/Tests/SpatialTest.h"/>
+        <FILE id="yQQpvu" name="Test.h" compile="0" resource="0" file="Source/Tests/Test.h"/>
+      </GROUP>
       <FILE id="TqqMSB" name="AudiogramAppApplication.h" compile="0" resource="0"
             file="Source/AudiogramAppApplication.h"/>
       <GROUP id="{ABE302EF-2999-A2B1-B4F2-0A68B6276078}" name="Audio">

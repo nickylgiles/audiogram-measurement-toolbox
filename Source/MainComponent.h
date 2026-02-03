@@ -64,6 +64,8 @@ public:
     void showDualTaskTestScreen();
     void showDualTaskResultsScreen();
 
+    void showScreen(std::unique_ptr<juce::Component>&& screen);
+
     template <typename ScreenT, typename ControllerT>
     void showResultsScreen() {
         auto tc = dynamic_cast<ControllerT*>(testController.get());
