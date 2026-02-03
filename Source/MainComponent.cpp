@@ -131,13 +131,10 @@ void MainComponent::showSettingsScreen() {
 
     auto* app = static_cast<AudiogramAppApplication*>(juce::JUCEApplication::getInstance());
     auto* userSettings = app->applicationProperties.getUserSettings();
-    screen->setWordGroupsJsonPath(userSettings->getValue("wordGroupsJsonPath"));
 
     screen->onBackClicked = [this] {showMenuScreen();};
 
-    
-
-    screen->onExportClicked = [this] {
+    screen->addSetting("Export results database", [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
             "Export Results Database",
             juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
@@ -152,9 +149,9 @@ void MainComponent::showSettingsScreen() {
                 }
                 fileChooser.reset();
             });
-        };
+        });
 
-    screen->onChooseWordGroupsJsonClicked = [this] {
+    screen->addSetting("Select word groups JSON file", [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
             "Select word groups JSON file",
             juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
@@ -171,18 +168,14 @@ void MainComponent::showSettingsScreen() {
                 userSettings->setValue("wordGroupsJsonPath", result.getFullPathName());
                 userSettings->saveIfNeeded();
                 DBG("Word groups JSON path set to " << userSettings->getValue("wordGroupsJsonPath"));
-
-                auto* screen = dynamic_cast<SettingsScreen*>(currentScreen.get());
-                if (screen) {
-                    screen->setWordGroupsJsonPath(userSettings->getValue("wordGroupsJsonPath"));
-                }
             }
             fileChooser.reset();
             });
 
         resized();
-        };
+        });
 
+    screen->addSetting("Select headphone calibration", [] {});
    
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());
