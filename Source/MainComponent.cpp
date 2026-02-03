@@ -98,29 +98,71 @@ void MainComponent::paint (juce::Graphics& g)
 void MainComponent::showMenuScreen() {
     auto screen = std::make_unique<MenuScreen>();
 
-    /*
-    screen->onPureToneClicked = [this] {showPureToneTestScreen();};
-    screen->onSpatialClicked = [this] {showSpatialTestScreen();};
-    screen->onDigitsInNoiseClicked = [this] {showSpeechInNoiseTestScreen();};
-    screen->onDualTaskClicked = [this] {showDualTaskTestScreen();};
-    */
-
-    screen->addTest("Pure Tone Test", [this] {
-        juce::MessageManager::callAsync([this] { showPureToneTestScreen();});
-    });
-
-    screen->addTest("Spatial Test", [this] {
-        juce::MessageManager::callAsync([this] { showSpatialTestScreen(); });
-    });
-    screen->addTest("Digits-in-noise Test", [this] {
-        juce::MessageManager::callAsync([this] { showSpeechInNoiseTestScreen(); });
-    });
-    screen->addTest("Dual-Task Test", [this] {
-        juce::MessageManager::callAsync([this] { showDualTaskTestScreen(); });
-    });
-
     screen->onSettingsClicked = [this] {showSettingsScreen();};
 
+    screen->addTest("Pure Tone Test", [this] { juce::MessageManager::callAsync([this] {
+        auto infoScreen = std::make_unique<TestInfoScreen>(
+            "Pure Tone Test",
+            "You will hear a series of tones. Press the button when you hear a tone. "
+            "Otherwise, do not press anything. "
+            "\n\nPress \"Start\" to begin the test.",
+            [this] { showPureToneTestScreen();},
+            [this] { showMenuScreen();}
+        );
+
+        currentScreen = std::move(infoScreen);
+        addAndMakeVisible(currentScreen.get());
+        resized();
+        });});
+    
+    screen->addTest("Spatial Test", [this] { juce::MessageManager::callAsync([this] {
+        auto infoScreen = std::make_unique<TestInfoScreen>(
+            "Spatial Test",
+            "Two sounds will play from different directions.  Press \"Left\" if the second sound comes to the left of the first; "
+            "press \"Right\" if the second sound comes to the right of the first. "
+            "If you are unsure, guess."
+            "\n\nPress \"Start\" to begin the test.",
+            [this] { showSpatialTestScreen();},
+            [this] { showMenuScreen();}
+        );
+
+        currentScreen = std::move(infoScreen);
+        addAndMakeVisible(currentScreen.get());
+        resized();
+        });});
+
+    screen->addTest("Digits-in-noise Test", [this] { juce::MessageManager::callAsync([this] {
+        auto infoScreen = std::make_unique<TestInfoScreen>(
+            "Digits-in-noise Test",
+            "You will hear three digits read aloud.  Afterwards, you must input the digits you hear in the correct order to the keypad."
+            "If you are unsure, guess."
+            "\n\nPress \"Start\" to begin the test.",
+            [this] { showSpeechInNoiseTestScreen();},
+            [this] { showMenuScreen();}
+        );
+
+        currentScreen = std::move(infoScreen);
+        addAndMakeVisible(currentScreen.get());
+        resized();
+        });});
+    
+    screen->addTest("Dual-Task Test", [this] { juce::MessageManager::callAsync([this] {
+        auto infoScreen = std::make_unique<TestInfoScreen>(
+            "Dual-Task Test",
+            "You will hear two words spoken from different directions.  Afterwards, you must choose the second word that was spoken from the options presented. "
+            "Press \"Left\" if the second sound comes to the left of the first; "
+            "press \"Right\" if the second sound comes to the right of the first. "
+            "If you are unsure, guess. "
+            "\n\nPress \"Start\" to begin the test.",
+            [this] { showDualTaskTestScreen();},
+            [this] { showMenuScreen();}
+        );
+
+        currentScreen = std::move(infoScreen);
+        addAndMakeVisible(currentScreen.get());
+        resized();
+        });});
+    
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());
     resized();

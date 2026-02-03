@@ -410,6 +410,10 @@
       <FILE id="Zx0RZL" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <GROUP id="{8F5E5A1D-8BFE-3270-DA73-9A53E2F30F6B}" name="GUI">
+        <FILE id="pU6ynl" name="TestInfoScreen.cpp" compile="1" resource="0"
+              file="Source/GUI/TestInfoScreen.cpp"/>
+        <FILE id="ho7ZsE" name="TestInfoScreen.h" compile="0" resource="0"
+              file="Source/GUI/TestInfoScreen.h"/>
         <FILE id="hInAmR" name="AppLookAndFeel.h" compile="0" resource="0"
               file="Source/GUI/AppLookAndFeel.h"/>
         <FILE id="FiOuJb" name="SettingsScreen.cpp" compile="1" resource="0"

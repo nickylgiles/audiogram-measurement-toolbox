@@ -22,6 +22,8 @@
 #include "GUI/DualTask/DualTaskTestScreen.h"
 #include "GUI/DualTask/DualTaskResultsScreen.h"
 
+#include "GUI/TestInfoScreen.h"
+
 #include "Results/ResultsLogger.h"
 
 #include "GUI/AppLookAndFeel.h"

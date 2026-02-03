@@ -61,10 +61,11 @@ private:
             g.drawText(owner->tests[row].first, 10, 0, width - 20, height, juce::Justification::centredLeft);
         }
 
-        void selectedRowsChanged(int lastRowSelected) override {
-            if (lastRowSelected < 0 || lastRowSelected >= static_cast<int>(owner->tests.size())) return;
+        void listBoxItemClicked(int row, const juce::MouseEvent& event) override {
+            if (!event.mouseWasClicked()) return;
+            if (row < 0 || row >= static_cast<int>(owner->tests.size())) return;
 
-            auto& onTestPressed = owner->tests[lastRowSelected].second;
+            auto& onTestPressed = owner->tests[row].second;
 
             if (onTestPressed) onTestPressed();
         }
