@@ -199,7 +199,8 @@ void DigitsInNoiseController::timerCallback() {
         DBG("Test Complete.  SRT = " << getSRT());
         results.srt = getSRT();
         stopTest();
-        mainComponent.showSpeechInNoiseResultsScreen();
+        if (onTestFinished)
+            onTestFinished();
         break;
 
     default:

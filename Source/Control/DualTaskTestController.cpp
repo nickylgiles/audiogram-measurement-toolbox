@@ -157,7 +157,8 @@ void DualTaskTestController::timerCallback() {
             }
             break;
         case TestState::END:
-            mainComponent.showDualTaskResultsScreen();
+            if (onTestFinished)
+                onTestFinished();
             stopTest();
             break;
     }

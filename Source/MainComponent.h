@@ -2,16 +2,12 @@
 
 #include <JuceHeader.h>
 
-#include "Control/PureToneTestController.h"
 #include "Control/SpatialTestController.h"
 #include "Control/DigitsInNoiseController.h"
 #include "Control/DualTasktestController.h"
 
 #include "GUI/MenuScreen.h"
 #include "GUI/SettingsScreen.h"
-
-#include "GUI/PureTone/PureToneTestScreen.h"
-#include "GUI/PureTone/PureToneResultsScreen.h"
 
 #include "GUI/Spatial/SpatialTestScreen.h"
 #include "GUI/Spatial/SpatialResultsScreen.h"
@@ -27,6 +23,8 @@
 #include "Results/ResultsLogger.h"
 
 #include "GUI/AppLookAndFeel.h"
+
+class Test;
 
 //==============================================================================
 /*
@@ -52,9 +50,6 @@ public:
     void showMenuScreen(); 
     void showSettingsScreen();
 
-    void showPureToneTestScreen();
-    void showPureToneResultsScreen();
-
     void showSpatialTestScreen();
     void showSpatialResultsScreen();
 
@@ -67,12 +62,9 @@ public:
     void showScreen(std::unique_ptr<juce::Component>&& screen);
 
     template <typename ScreenT, typename ControllerT>
-    void showResultsScreen() {
-        auto tc = dynamic_cast<ControllerT*>(testController.get());
-        if (!tc) {
-            return;
-        }
-        auto results = tc->getResults();
+    void showResultsScreen(ControllerT& tc) {
+
+        auto results = tc.getResults();
         auto screen = std::make_unique<ScreenT>();
 
         screen->setResults(results);
@@ -96,6 +88,8 @@ public:
 private:
     //==============================================================================
     // Your private member variables go here...
+
+    std::unique_ptr<Test> currentTest;
 
     std::unique_ptr<TestController> testController;
     std::unique_ptr<SoundEngine> soundEngine;

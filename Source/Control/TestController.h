@@ -33,6 +33,8 @@ public:
             std::pow( 10.0, db / 20.0));
     }
 
+    std::function<void()> onTestFinished;
+
 protected:
     MainComponent& mainComponent;
     SoundEngine& soundEngine;

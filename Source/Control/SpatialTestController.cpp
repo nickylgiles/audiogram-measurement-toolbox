@@ -120,7 +120,8 @@ void SpatialTestController::timerCallback() {
             }
             break;
         case TestState::END:
-            mainComponent.showSpatialResultsScreen();
+            if (onTestFinished)
+                onTestFinished();
             stopTest();
             break;
     }

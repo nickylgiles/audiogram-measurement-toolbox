@@ -113,7 +113,8 @@ void PureToneTestController::timerCallback() {
 
         case TestState::END:
             stopTest();
-            mainComponent.showPureToneResultsScreen();
+            if (onTestFinished)
+                onTestFinished();
             return;
     }
 

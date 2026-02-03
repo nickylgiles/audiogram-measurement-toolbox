@@ -1,5 +1,7 @@
 #include "MainComponent.h"
 #include "AudiogramAppApplication.h"
+#include "Tests/Test.h"
+#include "Tests/PureToneTest.h"
 
 //==============================================================================
 MainComponent::MainComponent()
@@ -100,19 +102,12 @@ void MainComponent::showMenuScreen() {
 
     screen->onSettingsClicked = [this] {showSettingsScreen();};
 
-    screen->addTest("Pure Tone Test", [this] { juce::MessageManager::callAsync([this] {
-        auto infoScreen = std::make_unique<TestInfoScreen>(
-            "Pure Tone Test",
-            "You will hear a series of tones. Press the button when you hear a tone. "
-            "Otherwise, do not press anything. "
-            "\n\nPress \"Start\" to begin the test.",
-            [this] { showPureToneTestScreen();},
-            [this] { showMenuScreen();}
-        );
+    screen->addTest("Pure Tone Test", 
+        [this] {
+            currentTest = std::make_unique<PureToneTest>(*this, *soundEngine);
+            currentTest->displayInfo();
+        });
 
-        showScreen(std::move(infoScreen));
-        });});
-    
     screen->addTest("Spatial Test", [this] { juce::MessageManager::callAsync([this] {
         auto infoScreen = std::make_unique<TestInfoScreen>(
             "Spatial Test",
@@ -213,28 +208,13 @@ void MainComponent::showSettingsScreen() {
 
 }
 
-void MainComponent::showPureToneTestScreen() {
-    testController.reset(new PureToneTestController(*this, *soundEngine));
-    testStarted = true;
-    testController->startTest();
-
-    auto screen = std::make_unique<PureToneTestScreen>();
-    screen->onHearClicked = [this] {
-        testController->buttonClicked("hearButton");
-        };
-    screen->onStopClicked = [this] {
-        testStarted = false;
-        testController->buttonClicked("stopButton");
-        showMenuScreen();
-        };
-
-    showScreen(std::move(screen));
-}
 
 void MainComponent::showSpatialTestScreen() {
     testController.reset(new SpatialTestController(*this, *soundEngine));
     testStarted = true;
     testController->startTest();
+
+    testController->onTestFinished = [this] {showSpatialResultsScreen();};
 
     auto screen = std::make_unique<SpatialTestScreen>();
     screen->onLeftClicked = [this] {
@@ -253,13 +233,15 @@ void MainComponent::showSpatialTestScreen() {
 }
 
 void MainComponent::showSpatialResultsScreen() {
-    showResultsScreen<SpatialResultsScreen, SpatialTestController>();
+    //showResultsScreen<SpatialResultsScreen, SpatialTestController>();
 }
 
 void MainComponent::showSpeechInNoiseTestScreen() {
     testController.reset(new DigitsInNoiseController(*this, *soundEngine));
     testStarted = true;
     testController->startTest();
+
+    testController->onTestFinished = [this] {showSpeechInNoiseResultsScreen();};
 
     auto screen = std::make_unique<SpeechInNoiseTestScreen>();
 
@@ -291,12 +273,16 @@ void MainComponent::showSpeechInNoiseTestScreen() {
 }
 
 void MainComponent::showSpeechInNoiseResultsScreen() {
-    showResultsScreen<SpeechInNoiseResultsScreen, DigitsInNoiseController>();
+    auto tc = dynamic_cast<DigitsInNoiseController*>(testController.get());
+    if (tc)
+        showResultsScreen<SpeechInNoiseResultsScreen, DigitsInNoiseController>(*tc);
 }
 
 void MainComponent::showDualTaskTestScreen() {
     testController.reset(new DualTaskTestController(*this, *soundEngine));
     testStarted = true;
+
+    testController->onTestFinished = [this] { showDualTaskResultsScreen();};
 
     auto screen = std::make_unique<DualTaskTestScreen>();
 
@@ -343,17 +329,13 @@ void MainComponent::showDualTaskTestScreen() {
 }
 
 void MainComponent::showDualTaskResultsScreen() {
-    showResultsScreen<DualTaskResultsScreen, DualTaskTestController>();
+    //showResultsScreen<DualTaskResultsScreen, DualTaskTestController>();
 }
 
 void MainComponent::showScreen(std::unique_ptr<juce::Component>&& screen) {
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());
     resized();
-}
-
-void MainComponent::showPureToneResultsScreen() {
-    showResultsScreen<PureToneResultsScreen, PureToneTestController>();
 }
 
 void MainComponent::resized()

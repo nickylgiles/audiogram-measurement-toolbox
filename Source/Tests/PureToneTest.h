@@ -11,13 +11,18 @@
 #pragma once
 
 #include "Test.h"
+#include "../Control/PureToneTestController.h"
+#include "../GUI/PureTone/PureToneTestScreen.h"
+#include "../GUI/PureTone/PureToneResultsScreen.h"
+#include "../GUI/TestInfoScreen.h""
 
 class PureToneTest : public Test {
 public:
     PureToneTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
     void displayInfo() override;
     void startTest() override;
-    void stopTest() override;
+    void exitTest() override;
+    void onTestFinish() override;
 private:
-    
+    PureToneTestController controller;
 };

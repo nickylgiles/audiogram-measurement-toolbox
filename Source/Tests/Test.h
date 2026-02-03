@@ -15,15 +15,16 @@
 class Test {
 public:
     Test(MainComponent& mainComponentRef, SoundEngine& soundEngineRef)
-        : mainComponent(mainComponentRef), soundEngine(soundEngineRef) {
+        : mainComponent(mainComponentRef) {
     }
 
     virtual ~Test() = default;
     virtual void displayInfo() = 0;
     virtual void startTest() = 0;
-    virtual void stopTest() = 0;
+    virtual void exitTest() = 0;
+
+    virtual void onTestFinish() = 0;
 
 protected:
     MainComponent& mainComponent;
-    SoundEngine& soundEngine;
 };
