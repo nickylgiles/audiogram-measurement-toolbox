@@ -9,3 +9,20 @@
 */
 
 #pragma once
+
+#include "Test.h"
+#include "../Control/DigitsInNoiseController.h"
+#include "../GUI/SpeechInNoise/SpeechInNoiseTestScreen.h"
+#include "../GUI/SpeechInNoise/SpeechInNoiseResultsScreen.h"
+#include "../GUI/TestInfoScreen.h""
+
+class DigitsInNoiseTest : public Test {
+public:
+    DigitsInNoiseTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+    void displayInfo() override;
+    void startTest() override;
+    void exitTest() override;
+    void onTestFinish() override;
+private:
+    DigitsInNoiseController controller;
+};

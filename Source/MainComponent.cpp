@@ -2,6 +2,9 @@
 #include "AudiogramAppApplication.h"
 #include "Tests/Test.h"
 #include "Tests/PureToneTest.h"
+#include "Tests/SpatialTest.h"
+#include "Tests/DigitsInNoiseTest.h"
+#include "Tests/DualTaskTest.h"
 
 //==============================================================================
 MainComponent::MainComponent()
@@ -108,6 +111,13 @@ void MainComponent::showMenuScreen() {
             currentTest->displayInfo();
         });
 
+    screen->addTest("Spatial Test",
+        [this] {
+            currentTest = std::make_unique<SpatialTest>(*this, *soundEngine);
+            currentTest->displayInfo();
+        });
+
+    /*
     screen->addTest("Spatial Test", [this] { juce::MessageManager::callAsync([this] {
         auto infoScreen = std::make_unique<TestInfoScreen>(
             "Spatial Test",
@@ -121,6 +131,7 @@ void MainComponent::showMenuScreen() {
 
         showScreen(std::move(infoScreen));
         });});
+        */
 
     screen->addTest("Digits-in-noise Test", [this] { juce::MessageManager::callAsync([this] {
         auto infoScreen = std::make_unique<TestInfoScreen>(

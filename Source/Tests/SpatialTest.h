@@ -9,3 +9,20 @@
 */
 
 #pragma once
+
+#include "Test.h"
+#include "../Control/SpatialTestController.h"
+#include "../GUI/Spatial/SpatialTestScreen.h"
+#include "../GUI/Spatial/SpatialResultsScreen.h"
+#include "../GUI/TestInfoScreen.h""
+
+class SpatialTest : public Test {
+public:
+    SpatialTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+    void displayInfo() override;
+    void startTest() override;
+    void exitTest() override;
+    void onTestFinish() override;
+private:
+    SpatialTestController controller;
+};

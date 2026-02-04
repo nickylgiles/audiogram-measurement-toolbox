@@ -9,3 +9,52 @@
 */
 
 #include "SpatialTest.h"
+
+SpatialTest::SpatialTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef)
+    : Test(mainComponentRef, soundEngineRef), controller(mainComponentRef, soundEngineRef) 
+{
+    controller.onTestFinished = [this] {onTestFinish();};
+}
+
+void SpatialTest::displayInfo() {
+    auto infoScreen = std::make_unique<TestInfoScreen>(
+        "Spatial Test",
+        "Two sounds will play from different directions.  Press \"Left\" if the second sound comes to the left of the first; "
+        "press \"Right\" if the second sound comes to the right of the first. "
+        "If you are unsure, guess."
+        "\n\nPress \"Start\" to begin the test.",
+        [this] { startTest();},
+        [this] { exitTest();}
+    );
+
+    mainComponent.showScreen(std::move(infoScreen));
+}
+
+void SpatialTest::startTest() {
+    controller.startTest();
+
+    controller.onTestFinished = [this] {onTestFinish();};
+
+    auto screen = std::make_unique<SpatialTestScreen>();
+    screen->onLeftClicked = [this] {
+        controller.buttonClicked("leftButton");
+        };
+    screen->onRightClicked = [this] {
+        controller.buttonClicked("rightButton");
+        };
+    screen->onStopClicked = [this] {
+        controller.buttonClicked("stopButton");
+        exitTest();
+        };
+
+    mainComponent.showScreen(std::move(screen));
+}
+
+void SpatialTest::exitTest() {
+    controller.stopTest();
+    mainComponent.showMenuScreen();
+}
+
+void SpatialTest::onTestFinish() {
+    mainComponent.showResultsScreen<SpatialResultsScreen, SpatialTestController>(controller);
+}
