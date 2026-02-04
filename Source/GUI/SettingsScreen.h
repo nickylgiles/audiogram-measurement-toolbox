@@ -21,9 +21,9 @@ public:
 
     std::function<void()> onBackClicked;
 
-    void addSetting(const juce::String& settingName, std::function<void()> onSettingClicked);
-
-    void renameSetting(int index, const juce::String& settingName);
+    // Return the index of the added setting
+    size_t addButtonSetting(const juce::String& settingName, std::function<void()> onSettingClicked);
+    size_t addTextSetting(const juce::String& settingName, std::function<void(const juce::String&)> onTextChanged, const juce::String& defaultValue = "");
 
 
 private:
@@ -41,13 +41,13 @@ private:
         void paintListBoxItem(int row, juce::Graphics& g, int width, int height, bool selected) override {
             if (row < 0 || row >= static_cast<int>(owner->settings.size())) return;
 
+            auto& setting = owner->settings[row];
+
             auto& lookAndFeel = listBox.getLookAndFeel();
 
             juce::Colour bg = lookAndFeel.findColour(juce::TextButton::buttonColourId);
 
-            juce::Colour text = selected
-                ? lookAndFeel.findColour(juce::TextButton::textColourOnId)
-                : lookAndFeel.findColour(juce::TextButton::textColourOffId);
+            juce::Colour text = lookAndFeel.findColour(juce::TextButton::textColourOffId);
 
             g.setColour(juce::Colours::black);
             g.fillRect(0, 0, width, height - 1);
@@ -58,15 +58,57 @@ private:
             g.setColour(text);
             g.setFont(18.0f);
 
-            g.drawText(owner->settings[row].first, 10, 0, width - 20, height, juce::Justification::centredLeft);
+            g.drawText(owner->settings[row].name, 10, 0, 150, height, juce::Justification::centredLeft);
         }
 
         void selectedRowsChanged(int lastRowSelected) override {
             if (lastRowSelected < 0 || lastRowSelected >= static_cast<int>(owner->settings.size())) return;
 
-            auto& onTestPressed = owner->settings[lastRowSelected].second;
+            if (owner->settings[lastRowSelected].type == Setting::Type::Button) {
+                auto& onSettingPressed = owner->settings[lastRowSelected].onClick;
+                if (onSettingPressed) onSettingPressed();
+            }
 
-            if (onTestPressed) onTestPressed();
+            // Resize all text editor bars to the correct size
+            for (auto& s : owner->settings) {
+                if (s.type == Setting::Type::TextInput && s.editorComponent != nullptr) {
+                    s.editorComponent->setBounds(160, 5, owner->settingsListBox.getWidth() - 170, 40);
+                }
+            }
+            
+        }
+
+        juce::Component* refreshComponentForRow(int row, bool, juce::Component* existing) override {
+            if (row < 0 || row >= static_cast<int>(owner->settings.size()))
+                return nullptr;
+
+            auto& setting = owner->settings[row];
+            
+            if (setting.type == Setting::Type::Button) {
+                return existing;
+            }
+
+            if (setting.type == Setting::Type::TextInput) {
+                juce::TextEditor* editor = nullptr;
+
+                if (setting.editorComponent != nullptr) {
+                    editor = setting.editorComponent;
+                }
+                else {
+                    editor = new juce::TextEditor();
+                    setting.editorComponent = editor;
+                }
+
+                editor->setText(setting.textValue);
+                
+                editor->onTextChange = [&setting, editor]() {
+                    setting.textValue = editor->getText();
+                    if (setting.onTextChanged)
+                        setting.onTextChanged(setting.textValue);
+                    };
+
+                return editor;
+            }
         }
 
     private:
@@ -74,12 +116,21 @@ private:
         juce::ListBox& listBox;
     };
 
+    struct Setting {
+        enum class Type { Button, TextInput } type;
+        juce::String name;
+        std::function<void()> onClick;
+        juce::String textValue;
+        std::function<void(const juce::String&)> onTextChanged;
+        juce::TextEditor* editorComponent = nullptr;
+    };
+
     juce::ListBox settingsListBox;
     std::unique_ptr<SettingsListModel> listModel;
 
     juce::TextButton backButton{ "Back" };
 
-    std::vector<std::pair<juce::String, std::function<void()>>> settings;
+    std::vector<Setting> settings;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsScreen)
 };

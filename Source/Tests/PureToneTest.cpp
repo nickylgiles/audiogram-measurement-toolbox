@@ -54,3 +54,7 @@ void PureToneTest::exitTest() {
 void PureToneTest::onTestFinish() {
     mainComponent.showResultsScreen<PureToneResultsScreen, PureToneTestController>(controller);
 }
+
+juce::String PureToneTest::getName() {
+    return "Pure Tone Test";
+}

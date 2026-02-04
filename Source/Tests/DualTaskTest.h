@@ -23,6 +23,7 @@ public:
     void startTest() override;
     void exitTest() override;
     void onTestFinish() override;
+    static juce::String getName();
 private:
     DualTaskTestController controller;
 };

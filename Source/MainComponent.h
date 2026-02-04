@@ -13,6 +13,8 @@
 
 class Test;
 
+class AudiogramAppApplication;
+
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
@@ -45,9 +47,13 @@ public:
         auto results = tc.getResults();
         auto screen = std::make_unique<ScreenT>();
 
+        juce::String userId = userSettings->getValue("userId", "");
+
         screen->setResults(results);
-        screen->onExportClicked = [this, results] {
-            if (resultsLogger.logResults(results)) {
+        screen->onExportClicked = [this, results, userId] {
+            
+
+            if (resultsLogger.logResults(userId, results)) {
                 DBG("Test results logged successfully.");
             }
             else {
@@ -66,8 +72,8 @@ private:
     // Your private member variables go here...
 
     template<typename TestType>
-    void addTestToMenu(MenuScreen* screen, const juce::String& name) {
-        screen->addTest(name,
+    void addTestToMenu(MenuScreen* screen) {
+        screen->addTest(TestType::getName(),
             [this] {
                 currentTest = std::make_unique<TestType>(*this, *soundEngine);
                 currentTest->displayInfo();
@@ -86,6 +92,8 @@ private:
     std::unique_ptr<juce::FileChooser> fileChooser;
 
     AppLookAndFeel lookAndFeel;
+
+    juce::PropertiesFile* userSettings = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

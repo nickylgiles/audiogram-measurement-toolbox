@@ -36,6 +36,8 @@ public:
 
         setColour(juce::Label::textColourId,
             juce::Colour(0xff000000)); // black
+
+        // setDefaultSansSerifTypefaceName("MingLiU-ExtB");
     }
 
     juce::Font getTextButtonFont(juce::TextButton&, int buttonHeight) override {

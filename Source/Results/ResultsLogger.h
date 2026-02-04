@@ -23,12 +23,14 @@ public:
 
     bool openDatabase(const juce::File& file);
 
-    bool logResults(const SpatialTestResults& results);
-    bool logResults(const PureToneTestResults& results);
+    bool logResults(const juce::String& userId, const SpatialTestResults& results);
+    bool logResults(const juce::String& userId, const PureToneTestResults& results);
 
-    bool logResults(const SpeechInNoiseTestResults& results);
-    bool logResults(const DualTaskTestResults& results);
+    bool logResults(const juce::String& userId, const SpeechInNoiseTestResults& results);
+    bool logResults(const juce::String& userId, const DualTaskTestResults& results);
 
 private:
+    int getNextTestId(const juce::String& tableName);
+
     Database db;
 };

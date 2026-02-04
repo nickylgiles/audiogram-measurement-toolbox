@@ -83,3 +83,7 @@ void DualTaskTest::exitTest() {
 void DualTaskTest::onTestFinish() {
     mainComponent.showResultsScreen<DualTaskResultsScreen, DualTaskTestController>(controller);
 }
+
+juce::String DualTaskTest::getName() {
+    return "Dual-task Test";
+}

@@ -24,6 +24,8 @@ public:
     bool execute(const juce::String& sql);
     sqlite3* getHandle();
 
+    int getIntValue(const juce::String& sql);
+
 private:
     sqlite3* db = nullptr;
 };

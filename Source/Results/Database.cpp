@@ -30,6 +30,10 @@ void Database::close() {
 }
 
 bool Database::execute(const juce::String& sql) {
+    if (!db) {
+        DBG("Database not open");
+        return false;
+    }
     char* errMsg = nullptr;
     if (sqlite3_exec(db, sql.toRawUTF8(), nullptr, nullptr, &errMsg) != SQLITE_OK) {
         DBG(errMsg);
@@ -41,4 +45,31 @@ bool Database::execute(const juce::String& sql) {
 
 sqlite3* Database::getHandle() {
     return db;
+}
+
+int Database::getIntValue(const juce::String& sql) {
+    if (!db) {
+        DBG("Database not open");
+        return false;
+    }
+
+    sqlite3_stmt* stmt = nullptr;
+
+    int rc = sqlite3_prepare_v2(db, sql.toRawUTF8(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        DBG("Database: Prepare failed");
+        return 0;
+    }
+
+    int val = 0;
+    rc = sqlite3_step(stmt);
+    if (rc == SQLITE_ROW) {
+        val = sqlite3_column_int(stmt, 0);
+    }
+    else {
+        DBG("Database: no row returned.  Error: " << sqlite3_errmsg(db));
+    }
+
+    sqlite3_finalize(stmt);
+    return val;
 }

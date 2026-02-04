@@ -32,16 +32,36 @@ void SettingsScreen::resized() {
     area.removeFromTop(60);
 
     settingsListBox.setBounds(area);
+
+    for (auto& s : settings) {
+        if (s.type == Setting::Type::TextInput && s.editorComponent != nullptr) {
+            s.editorComponent->setBounds(160, 5, settingsListBox.getWidth() - 170, 40);
+        }
+    }
 }
 
-void SettingsScreen::addSetting(const juce::String& settingName, std::function<void()> onSettingClicked) {
-    settings.push_back({ settingName, onSettingClicked });
+size_t SettingsScreen::addTextSetting(const juce::String& settingName, std::function<void(const juce::String&)> onTextChanged, const juce::String& defaultValue) {
+    Setting setting;
+    setting.type = Setting::Type::TextInput;
+    setting.name = settingName;
+    setting.textValue = defaultValue;
+    setting.onTextChanged = onTextChanged;
+    setting.onClick = nullptr;
+    settings.push_back(setting);
     settingsListBox.updateContent();
+
+    return settings.size() - 1;
 }
 
-void SettingsScreen::renameSetting(int index, const juce::String& settingName) {
-    if (index < 0 || index >= settings.size())
-        return;
+size_t SettingsScreen::addButtonSetting(const juce::String& settingName, std::function<void()> onSettingClicked) {
+    Setting setting;
+    setting.type = Setting::Type::Button;
+    setting.name = settingName;
+    setting.onClick = onSettingClicked;
 
-    settings[index].first = settingName;
+    settings.push_back(setting);
+    settingsListBox.updateContent();
+
+    return settings.size() - 1;
 }
+

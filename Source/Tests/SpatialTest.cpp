@@ -58,3 +58,7 @@ void SpatialTest::exitTest() {
 void SpatialTest::onTestFinish() {
     mainComponent.showResultsScreen<SpatialResultsScreen, SpatialTestController>(controller);
 }
+
+juce::String SpatialTest::getName() {
+    return "Spatial Test";
+}

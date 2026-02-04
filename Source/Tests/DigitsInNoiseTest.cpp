@@ -66,3 +66,7 @@ void DigitsInNoiseTest::onTestFinish() {
     mainComponent.showResultsScreen<SpeechInNoiseResultsScreen, DigitsInNoiseController>(controller);
 }
 
+juce::String DigitsInNoiseTest::getName() {
+    return "Digits-in-noise Test";
+}
+

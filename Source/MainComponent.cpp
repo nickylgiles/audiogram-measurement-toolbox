@@ -26,6 +26,10 @@ MainComponent::MainComponent()
     // Set look and feel globally
     juce::LookAndFeel::setDefaultLookAndFeel(&lookAndFeel);
 
+    // Get pointer to user settings
+    auto* app = static_cast<AudiogramAppApplication*>(juce::JUCEApplication::getInstance());
+    userSettings = app->applicationProperties.getUserSettings();
+
     showMenuScreen();
 
     // Make sure you set the size of the component after
@@ -105,10 +109,10 @@ void MainComponent::showMenuScreen() {
 
     screen->onSettingsClicked = [this] {showSettingsScreen();};
 
-    addTestToMenu<PureToneTest>(screen.get(), "Pure Tone Test");
-    addTestToMenu<SpatialTest>(screen.get(), "Spatial Test");
-    addTestToMenu<DigitsInNoiseTest>(screen.get(), "Digits-in-noise Test");
-    addTestToMenu<DualTaskTest>(screen.get(), "Dual-task Test");
+    addTestToMenu<PureToneTest>(screen.get());
+    addTestToMenu<SpatialTest>(screen.get());
+    addTestToMenu<DigitsInNoiseTest>(screen.get());
+    addTestToMenu<DualTaskTest>(screen.get());
 
     showScreen(std::move(screen));
     
@@ -117,12 +121,9 @@ void MainComponent::showMenuScreen() {
 void MainComponent::showSettingsScreen() {
     auto screen = std::make_unique<SettingsScreen>();
 
-    auto* app = static_cast<AudiogramAppApplication*>(juce::JUCEApplication::getInstance());
-    auto* userSettings = app->applicationProperties.getUserSettings();
-
     screen->onBackClicked = [this] {showMenuScreen();};
 
-    screen->addSetting("Export results database", [this] {
+    screen->addButtonSetting("Export results database", [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
             "Export Results Database",
             juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
@@ -139,7 +140,7 @@ void MainComponent::showSettingsScreen() {
             });
         });
 
-    screen->addSetting("Select word groups JSON file", [this] {
+    screen->addButtonSetting("Select word groups JSON file", [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
             "Select word groups JSON file",
             juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
@@ -150,8 +151,6 @@ void MainComponent::showSettingsScreen() {
         fileChooser->launchAsync(fileChooserFlags, [this](const juce::FileChooser& fc) {
             auto result = fc.getResult();
             if (result != juce::File{}) {
-                auto* app = static_cast<AudiogramAppApplication*>(juce::JUCEApplication::getInstance());
-                auto* userSettings = app->applicationProperties.getUserSettings();
 
                 userSettings->setValue("wordGroupsJsonPath", result.getFullPathName());
                 userSettings->saveIfNeeded();
@@ -163,10 +162,20 @@ void MainComponent::showSettingsScreen() {
         resized();
         });
 
-    screen->addSetting("Select headphone calibration", [] {});
+    juce::String currentId = userSettings->getValue("userId", "");
+
+    screen->addTextSetting("Set User ID", [this] (const juce::String& newId){
+
+        userSettings->setValue("userId", newId);
+
+        DBG("User ID set to: " << userSettings->getValue("userId"));
+        },
+        currentId
+    );
+
+    screen->addButtonSetting("Select headphone calibration", [] {});
    
     showScreen(std::move(screen));
-
 }
 
 void MainComponent::showScreen(std::unique_ptr<juce::Component>&& screen) {
