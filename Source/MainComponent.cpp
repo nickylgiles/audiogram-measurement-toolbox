@@ -11,7 +11,6 @@
 MainComponent::MainComponent()
 {
     soundEngine = std::make_unique<SoundEngine>();
-    testController = nullptr;
 
     // Open logging database
     dbFile = juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory)

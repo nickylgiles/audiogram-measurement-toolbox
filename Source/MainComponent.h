@@ -2,9 +2,7 @@
 
 #include <JuceHeader.h>
 
-#include "Control/SpatialTestController.h"
-#include "Control/DigitsInNoiseController.h"
-#include "Control/DualTasktestController.h"
+#include "Audio/SoundEngine.h"
 
 #include "GUI/MenuScreen.h"
 #include "GUI/SettingsScreen.h"
@@ -60,9 +58,7 @@ public:
             showMenuScreen();
             };
 
-        currentScreen = std::move(screen);
-        addAndMakeVisible(currentScreen.get());
-        resized();
+        showScreen(std::move(screen));
     }
 
 private:
@@ -80,12 +76,9 @@ private:
 
     std::unique_ptr<Test> currentTest;
 
-    std::unique_ptr<TestController> testController;
     std::unique_ptr<SoundEngine> soundEngine;
 
     ResultsLogger resultsLogger;
-
-    bool testStarted = false;
 
     std::unique_ptr<juce::Component> currentScreen;
 
