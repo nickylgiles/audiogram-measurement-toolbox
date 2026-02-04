@@ -9,17 +9,6 @@
 #include "GUI/MenuScreen.h"
 #include "GUI/SettingsScreen.h"
 
-#include "GUI/Spatial/SpatialTestScreen.h"
-#include "GUI/Spatial/SpatialResultsScreen.h"
-
-#include "GUI/SpeechInNoise/SpeechInNoiseTestScreen.h"
-#include "GUI/SpeechInNoise/SpeechInNoiseResultsScreen.h"
-
-#include "GUI/DualTask/DualTaskTestScreen.h"
-#include "GUI/DualTask/DualTaskResultsScreen.h"
-
-#include "GUI/TestInfoScreen.h"
-
 #include "Results/ResultsLogger.h"
 
 #include "GUI/AppLookAndFeel.h"
@@ -50,15 +39,6 @@ public:
     void showMenuScreen(); 
     void showSettingsScreen();
 
-    void showSpatialTestScreen();
-    void showSpatialResultsScreen();
-
-    void showSpeechInNoiseTestScreen();
-    void showSpeechInNoiseResultsScreen();
-
-    void showDualTaskTestScreen();
-    void showDualTaskResultsScreen();
-
     void showScreen(std::unique_ptr<juce::Component>&& screen);
 
     template <typename ScreenT, typename ControllerT>
@@ -88,6 +68,15 @@ public:
 private:
     //==============================================================================
     // Your private member variables go here...
+
+    template<typename TestType>
+    void addTestToMenu(MenuScreen* screen, const juce::String& name) {
+        screen->addTest(name,
+            [this] {
+                currentTest = std::make_unique<TestType>(*this, *soundEngine);
+                currentTest->displayInfo();
+            });
+    }
 
     std::unique_ptr<Test> currentTest;
 

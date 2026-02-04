@@ -1,5 +1,6 @@
 #include "MainComponent.h"
 #include "AudiogramAppApplication.h"
+
 #include "Tests/Test.h"
 #include "Tests/PureToneTest.h"
 #include "Tests/SpatialTest.h"
@@ -105,63 +106,13 @@ void MainComponent::showMenuScreen() {
 
     screen->onSettingsClicked = [this] {showSettingsScreen();};
 
-    screen->addTest("Pure Tone Test", 
-        [this] {
-            currentTest = std::make_unique<PureToneTest>(*this, *soundEngine);
-            currentTest->displayInfo();
-        });
+    addTestToMenu<PureToneTest>(screen.get(), "Pure Tone Test");
+    addTestToMenu<SpatialTest>(screen.get(), "Spatial Test");
+    addTestToMenu<DigitsInNoiseTest>(screen.get(), "Digits-in-noise Test");
+    addTestToMenu<DualTaskTest>(screen.get(), "Dual-task Test");
 
-    screen->addTest("Spatial Test",
-        [this] {
-            currentTest = std::make_unique<SpatialTest>(*this, *soundEngine);
-            currentTest->displayInfo();
-        });
-
-    /*
-    screen->addTest("Spatial Test", [this] { juce::MessageManager::callAsync([this] {
-        auto infoScreen = std::make_unique<TestInfoScreen>(
-            "Spatial Test",
-            "Two sounds will play from different directions.  Press \"Left\" if the second sound comes to the left of the first; "
-            "press \"Right\" if the second sound comes to the right of the first. "
-            "If you are unsure, guess."
-            "\n\nPress \"Start\" to begin the test.",
-            [this] { showSpatialTestScreen();},
-            [this] { showMenuScreen();}
-        );
-
-        showScreen(std::move(infoScreen));
-        });});
-        */
-
-    screen->addTest("Digits-in-noise Test", [this] { juce::MessageManager::callAsync([this] {
-        auto infoScreen = std::make_unique<TestInfoScreen>(
-            "Digits-in-noise Test",
-            "You will hear three digits read aloud.  Afterwards, you must input the digits you hear in the correct order to the keypad."
-            "If you are unsure, guess."
-            "\n\nPress \"Start\" to begin the test.",
-            [this] { showSpeechInNoiseTestScreen();},
-            [this] { showMenuScreen();}
-        );
-
-        showScreen(std::move(infoScreen));
-        });});
-    
-    screen->addTest("Dual-Task Test", [this] { juce::MessageManager::callAsync([this] {
-        auto infoScreen = std::make_unique<TestInfoScreen>(
-            "Dual-Task Test",
-            "You will hear two words spoken from different directions.  Afterwards, you must choose the second word that was spoken from the options presented. "
-            "Press \"Left\" if the second sound comes to the left of the first; "
-            "press \"Right\" if the second sound comes to the right of the first. "
-            "If you are unsure, guess. "
-            "\n\nPress \"Start\" to begin the test.",
-            [this] { showDualTaskTestScreen();},
-            [this] { showMenuScreen();}
-        );
-
-        showScreen(std::move(infoScreen));
-        });});
-    
     showScreen(std::move(screen));
+    
 }
 
 void MainComponent::showSettingsScreen() {
@@ -217,130 +168,6 @@ void MainComponent::showSettingsScreen() {
    
     showScreen(std::move(screen));
 
-}
-
-
-void MainComponent::showSpatialTestScreen() {
-    testController.reset(new SpatialTestController(*this, *soundEngine));
-    testStarted = true;
-    testController->startTest();
-
-    testController->onTestFinished = [this] {showSpatialResultsScreen();};
-
-    auto screen = std::make_unique<SpatialTestScreen>();
-    screen->onLeftClicked = [this] {
-        testController->buttonClicked("leftButton");
-        };
-    screen->onRightClicked = [this] {
-        testController->buttonClicked("rightButton");
-        };
-    screen->onStopClicked = [this] {
-        testStarted = false;
-        testController->buttonClicked("stopButton");
-        showMenuScreen();
-        };
-
-    showScreen(std::move(screen));
-}
-
-void MainComponent::showSpatialResultsScreen() {
-    //showResultsScreen<SpatialResultsScreen, SpatialTestController>();
-}
-
-void MainComponent::showSpeechInNoiseTestScreen() {
-    testController.reset(new DigitsInNoiseController(*this, *soundEngine));
-    testStarted = true;
-    testController->startTest();
-
-    testController->onTestFinished = [this] {showSpeechInNoiseResultsScreen();};
-
-    auto screen = std::make_unique<SpeechInNoiseTestScreen>();
-
-    screen->onStopClicked = [this] {
-        testStarted = false;
-        testController->buttonClicked("stopButton");
-        showMenuScreen();
-    };
-
-    screen->onDigitClicked = [this](int digit) {
-        testController->buttonClicked(juce::String(digit));
-    };
-
-    // Get inputsEnabled() from SpeechInNoiseController
-    // SafePointer needed in case the screen is deleted before async call is executed
-    if (auto* sin = dynamic_cast<DigitsInNoiseController*>(testController.get())) {
-        auto* scr = dynamic_cast<SpeechInNoiseTestScreen*>(screen.get());
-        juce::Component::SafePointer<SpeechInNoiseTestScreen> scrPtr = scr;
-        if (scrPtr) {
-            sin->setInputsEnabled = [scrPtr](bool enabled) {
-                juce::MessageManager::callAsync([scrPtr, enabled] {
-                    if (scrPtr) scrPtr->setDigitsEnabled(enabled);
-                    });
-                };
-        }
-    }
-    
-    showScreen(std::move(screen));
-}
-
-void MainComponent::showSpeechInNoiseResultsScreen() {
-    auto tc = dynamic_cast<DigitsInNoiseController*>(testController.get());
-    if (tc)
-        showResultsScreen<SpeechInNoiseResultsScreen, DigitsInNoiseController>(*tc);
-}
-
-void MainComponent::showDualTaskTestScreen() {
-    testController.reset(new DualTaskTestController(*this, *soundEngine));
-    testStarted = true;
-
-    testController->onTestFinished = [this] { showDualTaskResultsScreen();};
-
-    auto screen = std::make_unique<DualTaskTestScreen>();
-
-    screen->onStopClicked = [this] {
-        testStarted = false;
-        testController->buttonClicked("stopButton");
-        showMenuScreen();
-        };
-    screen->onLeftClicked = [this] {
-        testController->buttonClicked("leftButton");
-        };
-    screen->onRightClicked = [this] {
-        testController->buttonClicked("rightButton");
-        };
-
-    screen->onWordClicked = [this](int wordIdx) {
-        testController->buttonClicked("word" + juce::String(wordIdx));
-        };
-
-
-    // Async callbacks for enabling/ disabling input buttons on the GUI and setting word list to show
-    if (auto* ctr = dynamic_cast<DualTaskTestController*>(testController.get())) {
-        auto* scr = dynamic_cast<DualTaskTestScreen*>(screen.get());
-        juce::Component::SafePointer<DualTaskTestScreen> scrPtr = scr;
-        if (scrPtr) {
-            ctr->setInputsEnabled = [scrPtr](bool enabled) {
-                juce::MessageManager::callAsync([scrPtr, enabled] {
-                    if (scrPtr) scrPtr->setInputEnabled(enabled);
-                    });
-                };
-            DBG("Dual task enable Callback set");
-
-            ctr->setWords = [scrPtr](std::vector<juce::String> words) {
-                juce::MessageManager::callAsync([scrPtr, words] {
-                    if (scrPtr) scrPtr->setWords(words);
-                    });
-                };
-        }
-    }
-
-    testController->startTest();
-
-    showScreen(std::move(screen));
-}
-
-void MainComponent::showDualTaskResultsScreen() {
-    //showResultsScreen<DualTaskResultsScreen, DualTaskTestController>();
 }
 
 void MainComponent::showScreen(std::unique_ptr<juce::Component>&& screen) {
