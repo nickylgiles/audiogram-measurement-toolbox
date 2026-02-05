@@ -15,6 +15,7 @@
 #include "../GUI/SpeechInNoise/SpeechInNoiseTestScreen.h"
 #include "../GUI/SpeechInNoise/SpeechInNoiseResultsScreen.h"
 #include "../GUI/TestInfoScreen.h""
+#include "../MainComponent.h"
 
 class DigitsInNoiseTest : public Test {
 public:

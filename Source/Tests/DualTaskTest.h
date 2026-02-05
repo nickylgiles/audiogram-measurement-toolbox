@@ -15,6 +15,7 @@
 #include "../GUI/DualTask/DualTaskTestScreen.h"
 #include "../GUI/DualTask/DualTaskResultsScreen.h"
 #include "../GUI/TestInfoScreen.h""
+#include "../MainComponent.h"
 
 class DualTaskTest : public Test {
 public:

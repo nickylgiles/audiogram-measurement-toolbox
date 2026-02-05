@@ -10,7 +10,8 @@
 
 #pragma once
 
-#include "../MainComponent.h"
+class MainComponent;
+class SoundEngine;
 
 class Test {
 public:

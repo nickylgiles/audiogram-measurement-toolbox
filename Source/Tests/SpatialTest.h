@@ -15,6 +15,7 @@
 #include "../GUI/Spatial/SpatialTestScreen.h"
 #include "../GUI/Spatial/SpatialResultsScreen.h"
 #include "../GUI/TestInfoScreen.h""
+#include "../MainComponent.h"
 
 class SpatialTest : public Test {
 public:

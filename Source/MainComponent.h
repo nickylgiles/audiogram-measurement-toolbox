@@ -11,7 +11,8 @@
 
 #include "GUI/AppLookAndFeel.h"
 
-class Test;
+#include "Tests/Test.h"
+
 
 class AudiogramAppApplication;
 

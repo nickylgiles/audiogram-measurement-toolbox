@@ -15,6 +15,7 @@
 #include "../GUI/PureTone/PureToneTestScreen.h"
 #include "../GUI/PureTone/PureToneResultsScreen.h"
 #include "../GUI/TestInfoScreen.h""
+#include "../MainComponent.h"
 
 class PureToneTest : public Test {
 public:
