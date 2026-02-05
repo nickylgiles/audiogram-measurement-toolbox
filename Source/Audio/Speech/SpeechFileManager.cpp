@@ -13,7 +13,7 @@
 
 SpeechFileManager::SpeechFileManager() {
     loadBinaryData();
-    // loadWordGroups("C:\\Users\\nicky_hgjk9m6\\Documents\\______ENG YEAR 5\\Project\\mrt\\wordgroups.json");
+
     juce::PropertiesFile* userSettings = static_cast<AudiogramAppApplication*>(
         juce::JUCEApplication::getInstance())->applicationProperties.getUserSettings();
 

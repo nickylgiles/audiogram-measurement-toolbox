@@ -18,12 +18,14 @@ public:
     ~SettingsScreen() override = default;
 
     void resized() override;
+    void paint(juce::Graphics& g) override;
 
     std::function<void()> onBackClicked;
 
     // Return the index of the added setting
     size_t addButtonSetting(const juce::String& settingName, std::function<void()> onSettingClicked);
     size_t addTextSetting(const juce::String& settingName, std::function<void(const juce::String&)> onTextChanged, const juce::String& defaultValue = "");
+    size_t addTitleSetting(const juce::String& title);
 
 
 private:
@@ -45,20 +47,37 @@ private:
 
             auto& lookAndFeel = listBox.getLookAndFeel();
 
-            juce::Colour bg = lookAndFeel.findColour(juce::TextButton::buttonColourId);
+            juce::Colour textColour = lookAndFeel.findColour(juce::TextButton::textColourOffId);
 
-            juce::Colour text = lookAndFeel.findColour(juce::TextButton::textColourOffId);
+            if (owner->settings[row].type != Setting::Type::Title) {
+                juce::Colour bg = lookAndFeel.findColour(juce::TextButton::buttonColourId);
 
-            g.setColour(juce::Colours::black);
-            g.fillRect(0, 0, width, height - 1);
+                g.setColour(juce::Colours::black);
+                g.fillRect(0, 0, width, height - 1);
 
-            g.setColour(bg);
-            g.fillRect(1, 1, width - 2, height - 3);
+                g.setColour(bg);
+                g.fillRect(1, 1, width - 2, height - 3);
+            } 
+            else {
+                juce::Font f(g.getCurrentFont());
+                f.setBold(true);
+                g.setFont(f);
 
-            g.setColour(text);
+                textColour = lookAndFeel.findColour(juce::Label::textColourId);
+            }
+
+            g.setColour(textColour);
             g.setFont(18.0f);
 
-            g.drawText(owner->settings[row].name, 10, 0, 150, height, juce::Justification::centredLeft);
+
+
+            g.drawText(owner->settings[row].name,
+                10,
+                0,
+                (owner->settings[row].type == Setting::Type::TextInput) ? 150 : width,
+                height,
+                juce::Justification::centredLeft
+            );
         }
 
         void selectedRowsChanged(int lastRowSelected) override {
@@ -73,6 +92,8 @@ private:
             for (auto& s : owner->settings) {
                 if (s.type == Setting::Type::TextInput && s.editorComponent != nullptr) {
                     s.editorComponent->setBounds(160, 5, owner->settingsListBox.getWidth() - 170, 40);
+                    s.editorComponent->setFont(18.0f);
+                    s.editorComponent->setJustification(juce::Justification::centredLeft);
                 }
             }
             
@@ -83,10 +104,6 @@ private:
                 return nullptr;
 
             auto& setting = owner->settings[row];
-            
-            if (setting.type == Setting::Type::Button) {
-                return existing;
-            }
 
             if (setting.type == Setting::Type::TextInput) {
                 juce::TextEditor* editor = nullptr;
@@ -97,10 +114,12 @@ private:
                 else {
                     editor = new juce::TextEditor();
                     setting.editorComponent = editor;
+                    editor->setFont(18.0f);
+                    editor->setJustification(juce::Justification::centredLeft);
                 }
 
                 editor->setText(setting.textValue);
-                
+
                 editor->onTextChange = [&setting, editor]() {
                     setting.textValue = editor->getText();
                     if (setting.onTextChanged)
@@ -109,6 +128,8 @@ private:
 
                 return editor;
             }
+
+            return existing;
         }
 
     private:
@@ -117,11 +138,11 @@ private:
     };
 
     struct Setting {
-        enum class Type { Button, TextInput } type;
-        juce::String name;
-        std::function<void()> onClick;
-        juce::String textValue;
-        std::function<void(const juce::String&)> onTextChanged;
+        enum class Type { Button, TextInput, Title } type;
+        juce::String name = "";
+        std::function<void()> onClick = nullptr;
+        juce::String textValue = "";
+        std::function<void(const juce::String&)> onTextChanged = nullptr;
         juce::TextEditor* editorComponent = nullptr;
     };
 

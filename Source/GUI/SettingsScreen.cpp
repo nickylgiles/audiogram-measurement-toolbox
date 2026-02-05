@@ -36,8 +36,19 @@ void SettingsScreen::resized() {
     for (auto& s : settings) {
         if (s.type == Setting::Type::TextInput && s.editorComponent != nullptr) {
             s.editorComponent->setBounds(160, 5, settingsListBox.getWidth() - 170, 40);
+            s.editorComponent->setFont(18.0f);
+            s.editorComponent->setJustification(juce::Justification::centredLeft);
         }
     }
+}
+
+void SettingsScreen::paint(juce::Graphics& g) {
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+
+    g.setColour(getLookAndFeel().findColour(juce::Label::textColourId));
+    g.setFont(juce::Font(40.0f, juce::Font::bold));
+    g.drawText("Settings", getLocalBounds().removeFromTop(120),
+        juce::Justification::centred, true);
 }
 
 size_t SettingsScreen::addTextSetting(const juce::String& settingName, std::function<void(const juce::String&)> onTextChanged, const juce::String& defaultValue) {
@@ -46,7 +57,18 @@ size_t SettingsScreen::addTextSetting(const juce::String& settingName, std::func
     setting.name = settingName;
     setting.textValue = defaultValue;
     setting.onTextChanged = onTextChanged;
-    setting.onClick = nullptr;
+
+    settings.push_back(setting);
+    settingsListBox.updateContent();
+
+    return settings.size() - 1;
+}
+
+size_t SettingsScreen::addTitleSetting(const juce::String& title) {
+    Setting setting;
+    setting.type = Setting::Type::Title;
+    setting.name = title;
+
     settings.push_back(setting);
     settingsListBox.updateContent();
 

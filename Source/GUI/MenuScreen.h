@@ -29,8 +29,8 @@ private:
     // Model for listbox
     class MenuListModel : public juce::ListBoxModel {
     public:
-        MenuListModel(MenuScreen* owner, juce::ListBox& listBox) : owner(owner), listBox(listBox) {
-        }
+        MenuListModel(MenuScreen* owner, juce::ListBox& listBox)
+            : owner(owner), listBox(listBox) {}
 
         int getNumRows() override {
             return static_cast<int>(owner->tests.size());
@@ -58,7 +58,14 @@ private:
             g.setColour(text);
             g.setFont(18.0f);
 
-            g.drawText(owner->tests[row].first, 10, 0, width - 20, height, juce::Justification::centredLeft);
+            g.drawText(
+                owner->tests[row].first, 
+                10,
+                0, 
+                width - 20,
+                height,
+                juce::Justification::centredLeft
+            );
         }
 
         void listBoxItemClicked(int row, const juce::MouseEvent& event) override {

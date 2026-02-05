@@ -123,7 +123,20 @@ void MainComponent::showSettingsScreen() {
 
     screen->onBackClicked = [this] {showMenuScreen();};
 
-    screen->addButtonSetting("Export results database", [this] {
+    juce::String currentId = userSettings->getValue("userId", "");
+
+    screen->addTextSetting("Set User ID", [this](const juce::String& newId) {
+
+        userSettings->setValue("userId", newId);
+
+        DBG("User ID set to: " << userSettings->getValue("userId"));
+        },
+        currentId
+    );
+
+    screen->addTitleSetting("A Title");
+
+    screen->addButtonSetting("Export result DB", [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
             "Export Results Database",
             juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
@@ -161,17 +174,6 @@ void MainComponent::showSettingsScreen() {
 
         resized();
         });
-
-    juce::String currentId = userSettings->getValue("userId", "");
-
-    screen->addTextSetting("Set User ID", [this] (const juce::String& newId){
-
-        userSettings->setValue("userId", newId);
-
-        DBG("User ID set to: " << userSettings->getValue("userId"));
-        },
-        currentId
-    );
 
     screen->addButtonSetting("Select headphone calibration", [] {});
    
