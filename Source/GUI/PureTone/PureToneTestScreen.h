@@ -17,7 +17,6 @@ public:
     PureToneTestScreen();
     ~PureToneTestScreen() override = default;
 
-
     // Callbacks set in MainComponent
     std::function<void()> onHearClicked;
     std::function<void()> onStopClicked;
@@ -26,8 +25,10 @@ public:
     void paint(juce::Graphics& g) override;
 
 private:
-    juce::TextButton hearButton{ "I hear this" };
-    juce::TextButton stopButton{ "Stop Test" };
+    juce::TextButton hearButton{ juce::translate("I hear this") };
+    juce::TextButton stopButton{ juce::translate("Stop Test") };
+
+    juce::Label instructionLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PureToneTestScreen)
 };

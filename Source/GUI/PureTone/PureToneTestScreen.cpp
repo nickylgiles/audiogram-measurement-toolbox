@@ -16,14 +16,26 @@ PureToneTestScreen::PureToneTestScreen() {
 
     addAndMakeVisible(stopButton);
     stopButton.onClick = [this] {if (onStopClicked) onStopClicked(); };
+
+    instructionLabel.setText(juce::translate(
+        "Press the button below when you hear the tone.  If you do not hear "
+        "anything, wait and do not press the button."),
+        juce::dontSendNotification
+    );
+    addAndMakeVisible(instructionLabel);
+
 }
 
 void PureToneTestScreen::resized() {
     auto area = getLocalBounds().reduced(40);
-    auto buttonHeight = area.getHeight() / 2;
+    auto buttonHeight = area.getHeight() / 3;
 
-    hearButton.setBounds(area.removeFromTop(buttonHeight).reduced(10));
-    stopButton.setBounds(area.reduced(10));
+    stopButton.setBounds(10, 10, 100, 40);
+    
+    hearButton.setBounds(area.removeFromBottom(buttonHeight));
+
+    instructionLabel.setBounds(area);
+    
 }
 
 void PureToneTestScreen::paint(juce::Graphics& g) {
