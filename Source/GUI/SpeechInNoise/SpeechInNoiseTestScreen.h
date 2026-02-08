@@ -25,11 +25,14 @@ public:
     void resized() override;
     void paint(juce::Graphics& g) override;
 
+    bool keyPressed(const juce::KeyPress& key) override;
+
 private:
     std::vector<std::unique_ptr<juce::TextButton>> digitButtons;
     juce::TextButton stopButton{ "Stop Test" };
 
     bool digitsEnabled = false;
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpeechInNoiseTestScreen)
 };

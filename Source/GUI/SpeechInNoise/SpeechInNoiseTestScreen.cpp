@@ -21,6 +21,8 @@ SpeechInNoiseTestScreen::SpeechInNoiseTestScreen() {
 
         digitButtons.push_back(std::move(button));
     }
+
+    setWantsKeyboardFocus(true);
 }
 
 void SpeechInNoiseTestScreen::setDigitsEnabled(bool enable) {
@@ -57,4 +59,25 @@ void SpeechInNoiseTestScreen::resized() {
 }
 
 void SpeechInNoiseTestScreen::paint(juce::Graphics& g) {
+    
+    if (!hasKeyboardFocus(false)) {
+        grabKeyboardFocus();
+    }
+}
+
+bool SpeechInNoiseTestScreen::keyPressed(const juce::KeyPress& key) {
+    if (key == juce::KeyPress::escapeKey) {
+        if (onStopClicked)
+            onStopClicked();
+        return true;
+    }
+    
+    else if (std::isdigit(key.getTextCharacter())) {
+        int digit = key.getTextCharacter() - '0';
+        if (onDigitClicked)
+            onDigitClicked(digit);
+        return true;
+    }
+
+    return false;
 }
