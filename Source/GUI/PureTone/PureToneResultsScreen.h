@@ -29,18 +29,10 @@ public:
     void paint(juce::Graphics& g) override;
 
 private:
-    void drawO(juce::Graphics& g, juce::Point<float> p, float diameter) {
-        float r = diameter * 0.5f;
+    void drawO(juce::Graphics& g, juce::Point<float> p, float diameter);
+    void drawX(juce::Graphics& g, juce::Point<float> p, float length);
 
-        g.drawEllipse(p.x - r, p.y - r, diameter, diameter, 2.0f);
-    }
-
-    void drawX(juce::Graphics& g, juce::Point<float> p, float length) {
-        float r = length * 0.5f;
-
-        g.drawLine(p.x - r, p.y - r, p.x + r, p.y + r, 2.0f);
-        g.drawLine(p.x - r, p.y + r, p.x + r, p.y - r, 2.0f);
-    }
+    void drawAudiogram(juce::Graphics& g, juce::Rectangle<int> bounds);
 
     juce::TextButton exportButton{ "Export Results" };
     juce::TextButton menuButton{ "Back to menu" };

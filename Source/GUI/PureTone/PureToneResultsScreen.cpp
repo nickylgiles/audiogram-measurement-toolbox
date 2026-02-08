@@ -38,7 +38,26 @@ void PureToneResultsScreen::paint(juce::Graphics& g) {
     auto bounds = getLocalBounds().reduced(20);
     bounds.removeFromBottom(bounds.getHeight() / 3  + 30);
 
-    bounds.removeFromLeft(80);
+    drawAudiogram(g, bounds);
+
+}
+
+void PureToneResultsScreen::drawO(juce::Graphics& g, juce::Point<float> p, float diameter) {
+    float r = diameter * 0.5f;
+
+    g.drawEllipse(p.x - r, p.y - r, diameter, diameter, 2.0f);
+}
+
+void PureToneResultsScreen::drawX(juce::Graphics& g, juce::Point<float> p, float length) {
+    float r = length * 0.5f;
+
+    g.drawLine(p.x - r, p.y - r, p.x + r, p.y + r, 2.0f);
+    g.drawLine(p.x - r, p.y + r, p.x + r, p.y - r, 2.0f);
+}
+
+void PureToneResultsScreen::drawAudiogram(juce::Graphics& g, juce::Rectangle<int> bounds) {
+
+    bounds.removeFromLeft(80); // for axis labels
 
 
     auto h = bounds.getHeight();
@@ -54,13 +73,13 @@ void PureToneResultsScreen::paint(juce::Graphics& g) {
     g.drawText(juce::String("Frequency (Hz)"), x, y + h + 10, w, 20, juce::Justification::centred);
     for (auto r : results.left) {
         float f = r.first;
-        g.drawText(juce::String(f), x + (std::log10(f)-std::log10(minF)) / (std::log10(maxF)-std::log10(minF))*(w-40), y + h + 5, 40, 10, juce::Justification::centred, true);
+        g.drawText(juce::String(f), x + (std::log10(f) - std::log10(minF)) / (std::log10(maxF) - std::log10(minF)) * (w - 40), y + h + 5, 40, 10, juce::Justification::centred, true);
     }
 
     // Y labels
-    g.drawText(juce::String("Level (dB)"), 5, y + (h/2), 80, 20, juce::Justification::centred);
+    g.drawText(juce::String("Level (dB)"), 5, y + (h / 2), 80, 20, juce::Justification::centred);
     for (int i = 0; i <= 5; ++i) {
-        g.drawText(juce::String(-i * 10), x-40, y + i * (h / 5), 40, 10, juce::Justification::centred, true);
+        g.drawText(juce::String(-i * 10), x - 40, y + i * (h / 5), 40, 10, juce::Justification::centred, true);
     }
 
     g.setColour(juce::Colours::lightgrey);
@@ -123,17 +142,4 @@ void PureToneResultsScreen::paint(juce::Graphics& g) {
         prevY = pY;
         connectPrev = true;
     }
-}
-
-void PureToneResultsScreen::drawO(juce::Graphics& g, juce::Point<float> p, float diameter) {
-    float r = diameter * 0.5f;
-
-    g.drawEllipse(p.x - r, p.y - r, diameter, diameter, 2.0f);
-}
-
-void PureToneResultsScreen::drawX(juce::Graphics& g, juce::Point<float> p, float length) {
-    float r = length * 0.5f;
-
-    g.drawLine(p.x - r, p.y - r, p.x + r, p.y + r, 2.0f);
-    g.drawLine(p.x - r, p.y + r, p.x + r, p.y - r, 2.0f);
 }
