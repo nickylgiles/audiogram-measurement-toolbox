@@ -41,14 +41,19 @@ void DualTaskTestScreen::setWords(const std::vector<juce::String>& newWords) {
 }
 
 void DualTaskTestScreen::resized() {
-    auto area = getLocalBounds().reduced(10);
+    auto area = getLocalBounds().reduced(20);
+    area.removeFromTop(40);
+
     auto buttonWidth = area.getWidth() / 2;
     auto buttonHeight = area.getHeight() / 4;
 
     if (inputEnabled) {
         int x = 0, y = 0;
         for (int i = 0; i < wordButtons.size(); ++i) {
-            wordButtons[i]->setBounds(x * buttonWidth, y * buttonHeight, buttonWidth, buttonHeight);
+            wordButtons[i]->setBounds(
+                juce::Rectangle(area.getX() + x * buttonWidth, area.getY() + y * buttonHeight, buttonWidth, buttonHeight)
+                .reduced(5)
+            );
             ++x;
             if (x > 1) {
                 x = 0;
@@ -56,11 +61,16 @@ void DualTaskTestScreen::resized() {
             }
         }
 
-        leftButton.setBounds(10, 2 * buttonHeight, buttonWidth, buttonHeight);
-        rightButton.setBounds(buttonWidth, 2 * buttonHeight, buttonWidth, buttonHeight);
+        area.removeFromTop(buttonHeight * 3);
+
+        leftButton.setBounds(area.removeFromLeft(area.getWidth() / 2)
+            .reduced(5));
+
+        rightButton.setBounds(area
+            .reduced(5));
     }
 
-    stopButton.setBounds(10, 3 * buttonHeight, area.getWidth(), buttonHeight);
+    stopButton.setBounds(10, 10, 100, 40);
 }
 
 void DualTaskTestScreen::paint(juce::Graphics& g) {

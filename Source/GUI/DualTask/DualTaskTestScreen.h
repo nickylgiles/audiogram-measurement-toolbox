@@ -23,7 +23,6 @@ public:
     std::function<void()> onLeftClicked;
     std::function<void()> onRightClicked;
 
-
     void setInputEnabled(bool enable);
     void setWords(const std::vector<juce::String>& newWords);
     void resized() override;

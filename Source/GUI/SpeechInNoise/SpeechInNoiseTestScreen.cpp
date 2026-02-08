@@ -32,23 +32,28 @@ void SpeechInNoiseTestScreen::setDigitsEnabled(bool enable) {
 
 void SpeechInNoiseTestScreen::resized() {
     auto area = getLocalBounds().reduced(10);
+    area.removeFromTop(40);
+
     auto buttonWidth = area.getWidth() / 3;
-    auto buttonHeight = area.getHeight() / 5;
+    auto buttonHeight = area.getHeight() / 4;
 
     if (digitsEnabled) {
         int x = 0, y = 0;
         for (int i = 1; i < digitButtons.size(); ++i) {
-            digitButtons[i]->setBounds(x * buttonWidth, y * buttonHeight, buttonWidth, buttonHeight);
+            digitButtons[i]->setBounds(juce::Rectangle(area.getX() + x * buttonWidth, area.getY() + y * buttonHeight, buttonWidth, buttonHeight)
+                .reduced(5));
+
             ++x;
             if (x > 2) {
                 x = 0;
                 y++;
             }
         }
-        digitButtons[0]->setBounds(buttonWidth, 3 * buttonHeight, buttonWidth, buttonHeight);
+        digitButtons[0]->setBounds(juce::Rectangle(area.getX() + buttonWidth, area.getY() + 3 * buttonHeight, buttonWidth, buttonHeight)
+            .reduced(5));
     }
 
-    stopButton.setBounds(10, 4 * buttonHeight, area.getWidth(), buttonHeight);
+    stopButton.setBounds(10, 10, 100, 40);
 }
 
 void SpeechInNoiseTestScreen::paint(juce::Graphics& g) {

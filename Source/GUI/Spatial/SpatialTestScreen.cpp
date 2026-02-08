@@ -22,13 +22,16 @@ SpatialTestScreen::SpatialTestScreen() {
 }
 
 void SpatialTestScreen::resized() {
-    auto area = getLocalBounds().reduced(40);
-    auto buttonHeight = area.getHeight() / 2;
+    auto area = getLocalBounds().reduced(20);
+    auto buttonHeight = area.getHeight() / 3;
 
-    auto topArea = area.removeFromTop(buttonHeight).reduced(10);
-    leftButton.setBounds(topArea.removeFromLeft(topArea.getWidth() / 2).reduced(10));
-    rightButton.setBounds(topArea.reduced(10));
-    stopButton.setBounds(area.reduced(10));
+    auto bottomArea = area.removeFromBottom(buttonHeight).reduced(10);
+
+    stopButton.setBounds(10, 10, 100, 40);
+
+    leftButton.setBounds(bottomArea.removeFromLeft(bottomArea.getWidth() / 2).reduced(10));
+    rightButton.setBounds(bottomArea.reduced(10));
+    
 }
 
 void SpatialTestScreen::paint(juce::Graphics& g) {
