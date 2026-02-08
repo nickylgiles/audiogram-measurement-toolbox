@@ -19,6 +19,8 @@ DualTaskTestScreen::DualTaskTestScreen() {
 
     addAndMakeVisible(stopButton);
     stopButton.onClick = [this] {if (onStopClicked) onStopClicked(); };
+
+    setWantsKeyboardFocus(true);
 }
 
 void DualTaskTestScreen::setInputEnabled(bool enable) {
@@ -74,6 +76,9 @@ void DualTaskTestScreen::resized() {
 }
 
 void DualTaskTestScreen::paint(juce::Graphics& g) {
+    if (!hasKeyboardFocus(false)) {
+        grabKeyboardFocus();
+    }
 }
 
 void DualTaskTestScreen::addWordButtons() {
@@ -90,4 +95,14 @@ void DualTaskTestScreen::addWordButtons() {
 
         wordButtons.push_back(std::move(button));
     }
+}
+
+bool DualTaskTestScreen::keyPressed(const juce::KeyPress& key) {
+    if (key == juce::KeyPress::escapeKey) {
+        if (onStopClicked)
+            onStopClicked();
+        return true;
+    }
+
+    return false;
 }

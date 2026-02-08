@@ -24,6 +24,8 @@ PureToneTestScreen::PureToneTestScreen() {
     );
     addAndMakeVisible(instructionLabel);
 
+    setWantsKeyboardFocus(true);
+
 }
 
 void PureToneTestScreen::resized() {
@@ -39,6 +41,24 @@ void PureToneTestScreen::resized() {
 }
 
 void PureToneTestScreen::paint(juce::Graphics& g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    if (!hasKeyboardFocus(false)) {
+        grabKeyboardFocus();
+    }
 }
 
+bool PureToneTestScreen::keyPressed(const juce::KeyPress& key) {
+    if (key == juce::KeyPress::escapeKey) {
+        if (onStopClicked)
+            onStopClicked();
+        return true;
+    }
+
+    else if (key == juce::KeyPress::spaceKey) {
+        if (onHearClicked)
+            onHearClicked();
+        return true;
+    }
+
+
+    return false;
+}

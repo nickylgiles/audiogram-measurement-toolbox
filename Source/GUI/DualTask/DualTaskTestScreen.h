@@ -27,6 +27,7 @@ public:
     void setWords(const std::vector<juce::String>& newWords);
     void resized() override;
     void paint(juce::Graphics& g) override;
+    bool keyPressed(const juce::KeyPress& key) override;
 
 private:
     void addWordButtons();

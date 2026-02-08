@@ -19,6 +19,8 @@ SpatialTestScreen::SpatialTestScreen() {
 
     addAndMakeVisible(stopButton);
     stopButton.onClick = [this] {if (onStopClicked) onStopClicked(); };
+
+    setWantsKeyboardFocus(true);
 }
 
 void SpatialTestScreen::resized() {
@@ -35,6 +37,18 @@ void SpatialTestScreen::resized() {
 }
 
 void SpatialTestScreen::paint(juce::Graphics& g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+
+    if (!hasKeyboardFocus(false)) {
+        grabKeyboardFocus();
+    }
 }
 
+bool SpatialTestScreen::keyPressed(const juce::KeyPress& key) {
+    if (key == juce::KeyPress::escapeKey) {
+        if (onStopClicked)
+            onStopClicked();
+        return true;
+    }
+
+    return false;
+}

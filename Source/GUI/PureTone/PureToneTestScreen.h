@@ -23,6 +23,7 @@ public:
 
     void resized() override;
     void paint(juce::Graphics& g) override;
+    bool keyPressed(const juce::KeyPress& key) override;
 
 private:
     juce::TextButton hearButton{ juce::translate("I hear this") };
