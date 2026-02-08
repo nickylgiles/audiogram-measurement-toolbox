@@ -29,6 +29,19 @@ public:
     void paint(juce::Graphics& g) override;
 
 private:
+    void drawO(juce::Graphics& g, juce::Point<float> p, float diameter) {
+        float r = diameter * 0.5f;
+
+        g.drawEllipse(p.x - r, p.y - r, diameter, diameter, 2.0f);
+    }
+
+    void drawX(juce::Graphics& g, juce::Point<float> p, float length) {
+        float r = length * 0.5f;
+
+        g.drawLine(p.x - r, p.y - r, p.x + r, p.y + r, 2.0f);
+        g.drawLine(p.x - r, p.y + r, p.x + r, p.y - r, 2.0f);
+    }
+
     juce::TextButton exportButton{ "Export Results" };
     juce::TextButton menuButton{ "Back to menu" };
 
