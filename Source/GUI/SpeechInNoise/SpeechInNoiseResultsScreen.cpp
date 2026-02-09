@@ -47,8 +47,8 @@ void SpeechInNoiseResultsScreen::paint(juce::Graphics& g) {
 
     float percentCorrect = (total > 0 ? (100.0f * correct / total) : 0.0f);
     juce::String scoreText;
-    scoreText << "Correct: " << correct << "/" << total << "\n"
-        << "SRT: " << juce::String(results.srt, 2) <<" dB";
+    scoreText << juce::translate("Correct") << ": " << correct << " / " << total << "\n"
+        << juce::translate("SRT") << ": " << juce::String(results.srt, 2) <<" dB";
 
     g.drawText(scoreText, bounds, juce::Justification::centred);
 

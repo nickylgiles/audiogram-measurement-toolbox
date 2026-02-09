@@ -47,6 +47,6 @@ void SpatialResultsScreen::paint(juce::Graphics& g) {
 
     float percentCorrect = (total > 0 ? (100.0f * correct / total) : 0.0f);
     juce::String text;
-    text << "Correct: " << correct << "/" << total << " (" << percentCorrect << "%)";
+    text << juce::translate("Correct") << ": " << correct << " / " << total << " (" << percentCorrect << "%)";
     g.drawText(text, bounds, juce::Justification::centred);
 }

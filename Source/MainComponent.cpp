@@ -126,7 +126,7 @@ void MainComponent::showSettingsScreen() {
 
     juce::String currentId = userSettings->getValue("userId", "");
 
-    screen->addTextSetting("Set User ID", [this](const juce::String& newId) {
+    screen->addTextSetting(juce::translate("Set User ID"), [this](const juce::String& newId) {
 
         userSettings->setValue("userId", newId);
 
@@ -137,9 +137,9 @@ void MainComponent::showSettingsScreen() {
 
     screen->addTitleSetting("A Title");
 
-    screen->addButtonSetting("Export result DB", [this] {
+    screen->addButtonSetting(juce::translate("Export result DB"), [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
-            "Export Results Database",
+            juce::translate("Export Results DB"),
             juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
             "*.db");
 
@@ -154,9 +154,9 @@ void MainComponent::showSettingsScreen() {
             });
         });
 
-    screen->addButtonSetting("Select word groups JSON file", [this] {
+    screen->addButtonSetting(juce::translate("Select word groups JSON file"), [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
-            "Select word groups JSON file",
+            juce::translate("Select word groups JSON file"),
             juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
             "*.json");
 
@@ -176,7 +176,7 @@ void MainComponent::showSettingsScreen() {
         resized();
         });
 
-    screen->addButtonSetting("Select headphone calibration", [] {});
+    screen->addButtonSetting(juce::translate("Select headphone calibration"), [] {});
    
     showScreen(std::move(screen));
 }

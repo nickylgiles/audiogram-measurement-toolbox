@@ -17,7 +17,7 @@ TestInfoScreen::TestInfoScreen(const juce::String& title, const juce::String& in
     instructionsLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(instructionsLabel);
 
-    startButton.setButtonText("Start");
+    startButton.setButtonText(juce::translate("Start"));
     startButton.onClick = [this] { if (onStart) onStart();};
     addAndMakeVisible(startButton);
 

@@ -149,7 +149,7 @@ private:
     juce::ListBox settingsListBox;
     std::unique_ptr<SettingsListModel> listModel;
 
-    juce::TextButton backButton{ "Back" };
+    juce::TextButton backButton{ juce::translate("Back") };
 
     std::vector<Setting> settings;
 

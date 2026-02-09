@@ -34,10 +34,10 @@ private:
     std::vector<std::unique_ptr<juce::TextButton>> wordButtons;
     std::vector<juce::String> words;
 
-    juce::TextButton leftButton{ "Left" };
-    juce::TextButton rightButton{ "Right" };
+    juce::TextButton leftButton{ juce::translate("Left") };
+    juce::TextButton rightButton{ juce::translate("Right") };
 
-    juce::TextButton stopButton{ "Stop Test" };
+    juce::TextButton stopButton{ juce::translate("Stop Test") };
 
     bool inputEnabled = false;
 

@@ -29,7 +29,7 @@ public:
 
 private:
     std::vector<std::unique_ptr<juce::TextButton>> digitButtons;
-    juce::TextButton stopButton{ "Stop Test" };
+    juce::TextButton stopButton{ juce::translate("Stop Test") };
 
     bool digitsEnabled = false;
 

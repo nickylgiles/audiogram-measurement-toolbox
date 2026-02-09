@@ -4,6 +4,7 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="lnMh6c" name="AudiogramApp">
     <GROUP id="{46B42F38-5DC4-96AB-47E8-1842A2EF02B4}" name="Resources">
+      <GROUP id="{E7B9FCC9-451B-BD39-1BB3-E228F20465F1}" name="Localisation"/>
       <GROUP id="{5442CB66-3BAD-C3E9-2257-95FB1F20DC62}" name="Digits">
         <FILE id="ODUExG" name="speech_0.wav" compile="0" resource="1" file="Resources/Digits/speech_0.wav"/>
         <FILE id="EYQ94S" name="speech_1.wav" compile="0" resource="1" file="Resources/Digits/speech_1.wav"/>

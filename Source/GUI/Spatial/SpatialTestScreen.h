@@ -27,9 +27,9 @@ public:
     bool keyPressed(const juce::KeyPress& key) override;
 
 private:
-    juce::TextButton leftButton{ "Left" };
-    juce::TextButton rightButton{ "Right" };
-    juce::TextButton stopButton{ "Stop Test" };
+    juce::TextButton leftButton{ juce::translate("Left") };
+    juce::TextButton rightButton{ juce::translate("Right") };
+    juce::TextButton stopButton{ juce::translate("Stop Test") };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpatialTestScreen)
 };

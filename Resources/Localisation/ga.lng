@@ -1,0 +1,39 @@
+language: Irish
+countries: ie
+
+Settings:
+"Settings" = ""
+"Set User ID" = ""
+"Export result DB" = ""
+"Select word groups JSON file" = ""
+"Select headphone calibration" = ""
+
+Menu:
+"Select Test" = ""
+"Back" = ""
+"Start" = ""
+
+Tests:
+"Digits-in-noise Test" = ""
+"Dual-task Test" = ""
+"Pure Tone Test" = ""
+"Spatial Test" = ""
+
+Test:
+"Stop Test" = ""
+"Left" = ""
+"Right" = ""
+"I hear this" =  ""
+"Stop Test" = ""
+"Press the button below when you hear the tone.  If you do not hear anything, wait and do not press the button." = ""
+
+Results:
+"Export Results" = ""
+"Back to menu" = ""
+"Correct" = ""
+"SRT" = "SRT"
+"Frequency" = ""
+"Level" = ""
+"Spatial" = ""
+"Speech" = ""
+

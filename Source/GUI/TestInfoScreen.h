@@ -22,7 +22,7 @@ private:
     juce::String title;
     juce::Label instructionsLabel;
     juce::TextButton startButton;
-    juce::TextButton backButton{ "Back" };
+    juce::TextButton backButton{ juce::translate("Back") };
 
     std::function<void()> onStart;
     std::function<void()> onBack;

@@ -34,8 +34,8 @@ private:
 
     void drawAudiogram(juce::Graphics& g, juce::Rectangle<int> bounds);
 
-    juce::TextButton exportButton{ "Export Results" };
-    juce::TextButton menuButton{ "Back to menu" };
+    juce::TextButton exportButton{ juce::translate("Export Results") };
+    juce::TextButton menuButton{ juce::translate("Back to menu") };
 
     PureToneTestResults results;
     std::vector<float> frequencies;

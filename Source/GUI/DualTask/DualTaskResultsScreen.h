@@ -29,8 +29,8 @@ public:
     void paint(juce::Graphics& g) override;
 
 private:
-    juce::TextButton exportButton{ "Export Results" };
-    juce::TextButton menuButton{ "Back to menu" };
+    juce::TextButton exportButton{ juce::translate("Export Results") };
+    juce::TextButton menuButton{ juce::translate("Back to menu") };
 
     DualTaskTestResults results;
 

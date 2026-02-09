@@ -47,7 +47,7 @@ void SettingsScreen::paint(juce::Graphics& g) {
 
     g.setColour(getLookAndFeel().findColour(juce::Label::textColourId));
     g.setFont(juce::Font(40.0f, juce::Font::bold));
-    g.drawText("Settings", getLocalBounds().removeFromTop(120),
+    g.drawText(juce::translate("Settings"), getLocalBounds().removeFromTop(120),
         juce::Justification::centred, true);
 }
 

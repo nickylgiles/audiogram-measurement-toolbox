@@ -42,7 +42,7 @@ void MenuScreen::paint(juce::Graphics& g) {
 
     g.setColour(getLookAndFeel().findColour(juce::Label::textColourId));
     g.setFont(juce::Font(40.0f, juce::Font::bold));
-    g.drawText("Select Test:", getLocalBounds().removeFromTop(120),
+    g.drawText(juce::translate("Select Test") + juce::String(":"), getLocalBounds().removeFromTop(120),
         juce::Justification::centred, true);
 }
 

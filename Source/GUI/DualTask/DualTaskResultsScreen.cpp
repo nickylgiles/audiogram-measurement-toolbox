@@ -54,8 +54,8 @@ void DualTaskResultsScreen::paint(juce::Graphics& g) {
     float percentWordsCorrect = (total > 0 ? (100.0f * wordsCorrect / total) : 0.0f);
 
     juce::String text;
-    text << "Spatial: " << spatialCorrect << "/" << total << " correct (" << percentSpatialCorrect << "%)";
-    text << "\nSpeech: " << wordsCorrect << "/" << total << " correct (" << percentWordsCorrect << "%)";
+    text << juce::translate("Spatial") << ": " << spatialCorrect << " / " << total << " " << juce::translate("correct") << " (" << percentSpatialCorrect << "%)";
+    text << "\n" << juce::translate("Speech") << ": " << wordsCorrect << " / " << total << juce::translate("correct") << " (" << percentWordsCorrect << "%)";
 
     g.drawText(text, bounds, juce::Justification::centred);
 }

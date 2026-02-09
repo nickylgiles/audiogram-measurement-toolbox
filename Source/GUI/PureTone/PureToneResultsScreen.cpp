@@ -70,14 +70,14 @@ void PureToneResultsScreen::drawAudiogram(juce::Graphics& g, juce::Rectangle<int
     float minF = results.left.begin()->first * 0.5f;
 
     // X labels
-    g.drawText(juce::String("Frequency (Hz)"), x, y + h + 10, w, 20, juce::Justification::centred);
+    g.drawText(juce::translate("Frequency") + juce::String(" (Hz)"), x, y + h + 10, w, 20, juce::Justification::centred);
     for (auto r : results.left) {
         float f = r.first;
-        g.drawText(juce::String(f), x + (std::log10(f) - std::log10(minF)) / (std::log10(maxF) - std::log10(minF)) * (w - 40), y + h + 5, 40, 10, juce::Justification::centred, true);
+        g.drawText(juce::translate(juce::String(f)), x + (std::log10(f) - std::log10(minF)) / (std::log10(maxF) - std::log10(minF)) * (w - 40), y + h + 5, 40, 10, juce::Justification::centred, true);
     }
 
     // Y labels
-    g.drawText(juce::String("Level (dB)"), 5, y + (h / 2), 80, 20, juce::Justification::centred);
+    g.drawText(juce::translate("Level") + juce::String(" (dB)"), 5, y + (h / 2), 80, 20, juce::Justification::centred);
     for (int i = 0; i <= 5; ++i) {
         g.drawText(juce::String(-i * 10), x - 40, y + i * (h / 5), 40, 10, juce::Justification::centred, true);
     }

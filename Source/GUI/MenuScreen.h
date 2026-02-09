@@ -87,7 +87,7 @@ private:
 
     std::vector<std::pair<juce::String, std::function<void()>>> tests;
 
-    juce::TextButton settingsButton{ "Settings" };
+    juce::TextButton settingsButton{ juce::translate("Settings") };
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuScreen)
 };
