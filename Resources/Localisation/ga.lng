@@ -2,38 +2,37 @@ language: Irish
 countries: ie
 
 Settings:
-"Settings" = ""
-"Set User ID" = ""
-"Export result DB" = ""
-"Select word groups JSON file" = ""
-"Select headphone calibration" = ""
+"Settings" = "Socruithe"
+"Set User ID" = "Socraigh úsáideoir ID"
+"Export result DB" = "Easpórtáil torthaí"
+"Select word groups JSON file" = "Roghnaigh grúpaí focail JSON"
+"Select headphone calibration" = "Roghnaigh calabrúchán cluasáin"
 
 Menu:
-"Select Test" = ""
-"Back" = ""
-"Start" = ""
+"Select Test" = "Roghnaigh Tástáil"
+"Back" = "Siar"
+"Start" = "Tosaigh"
 
 Tests:
-"Digits-in-noise Test" = ""
-"Dual-task Test" = ""
-"Pure Tone Test" = ""
-"Spatial Test" = ""
+"Digits-in-noise Test" = "Tástáil Digití i Dtorann"
+"Dual-task Test" = "Tástáil Tasc Déach"
+"Pure Tone Test" = "Tástáil Íon-ton"
+"Spatial Test" = "Tástáil Spásúlachta"
 
 Test:
-"Stop Test" = ""
-"Left" = ""
-"Right" = ""
-"I hear this" =  ""
-"Stop Test" = ""
-"Press the button below when you hear the tone.  If you do not hear anything, wait and do not press the button." = ""
+"Stop Test" = "Stop Tástáil"
+"Left" = "Clé"
+"Right" = "Deas"
+"I hear this" =  "Cloisim é seo"
+"Press the button below when you hear the tone.  If you do not hear anything, wait and do not press the button." = "Brúigh an cnaipe seo nuair a cloiseann tú an ton.  Má ní cloiseann tú aon rud, fan agus ná brúigh an cnaipe."
 
 Results:
-"Export Results" = ""
-"Back to menu" = ""
-"Correct" = ""
+"Export Results" = "Easpórtáil torthaí"
+"Back to menu" = "Ar ais go dtí an roghchlár"
+"Correct" = "Ceart"
 "SRT" = "SRT"
-"Frequency" = ""
-"Level" = ""
-"Spatial" = ""
-"Speech" = ""
+"Frequency" = "Minicíocht"
+"Level" = "Leibhéal"
+"Spatial" = "Spásúil"
+"Speech" = "Caint"
 

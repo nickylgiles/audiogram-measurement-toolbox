@@ -30,6 +30,13 @@ MainComponent::MainComponent()
     auto* app = static_cast<AudiogramAppApplication*>(juce::JUCEApplication::getInstance());
     userSettings = app->applicationProperties.getUserSettings();
 
+    // Create localised strings object and set translations
+    /*auto* localisedStrings = new juce::LocalisedStrings(
+        juce::String::createStringFromData(BinaryData::ga_lng, BinaryData::ga_lngSize),
+        false);
+
+    juce::LocalisedStrings::setCurrentMappings(localisedStrings);*/
+
     showMenuScreen();
 
     // Make sure you set the size of the component after
@@ -177,6 +184,14 @@ void MainComponent::showSettingsScreen() {
         });
 
     screen->addButtonSetting(juce::translate("Select headphone calibration"), [] {});
+    
+    screen->addButtonSetting(juce::translate("Change language"), [this] {
+        auto* localisedStrings = new juce::LocalisedStrings(
+            juce::String::createStringFromData(BinaryData::ga_lng, BinaryData::ga_lngSize),
+            false);
+
+        juce::LocalisedStrings::setCurrentMappings(localisedStrings);
+    });
    
     showScreen(std::move(screen));
 }

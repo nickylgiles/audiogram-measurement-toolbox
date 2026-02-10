@@ -18,7 +18,7 @@ DualTaskTest::DualTaskTest(MainComponent& mainComponentRef, SoundEngine& soundEn
 
 void DualTaskTest::displayInfo() {
     auto infoScreen = std::make_unique<TestInfoScreen>(
-        "Dual-Task Test",
+        juce::translate("Dual-Task Test"),
         "You will hear two words spoken from different directions.  Afterwards, you must choose the second word that was spoken from the options presented. "
         "Press \"Left\" if the second sound comes to the left of the first; "
         "press \"Right\" if the second sound comes to the right of the first. "
@@ -85,5 +85,5 @@ void DualTaskTest::onTestFinish() {
 }
 
 juce::String DualTaskTest::getName() {
-    return "Dual-task Test";
+    return juce::translate("Dual-task Test");
 }
