@@ -3,24 +3,24 @@ countries: ie
 
 Settings:
 "Settings" = "Socruithe"
-"Set User ID" = "Socraigh úsáideoir ID"
-"Export result DB" = "Easpórtáil torthaí"
-"Select word groups JSON file" = "Roghnaigh grúpaí focail JSON"
+"Set User ID" = "Socraigh ID úsáideora"
+"Export result DB" = "Easpórtáil bunachar sonraí torthaí"
+"Select word groups JSON file" = "Roghnaigh comhad JSON le grúpaí focail"
 "Select headphone calibration" = "Roghnaigh calabrúchán cluasáin"
 
 Menu:
-"Select Test" = "Roghnaigh Tástáil"
+"Select Test" = "Roghnaigh an Tástáil"
 "Back" = "Siar"
 "Start" = "Tosaigh"
 
 Tests:
-"Digits-in-noise Test" = "Tástáil Digití i Dtorann"
-"Dual-task Test" = "Tástáil Tasc Déach"
+"Digits-in-noise Test" = "Tástáil Digití i Dtorainn"
+"Dual-task Test" = "Tástáil Dé-thasc"
 "Pure Tone Test" = "Tástáil Íon-ton"
 "Spatial Test" = "Tástáil Spásúlachta"
 
 Test:
-"Stop Test" = "Stop Tástáil"
+"Stop Test" = "Stop an Tástáil"
 "Left" = "Clé"
 "Right" = "Deas"
 "I hear this" =  "Cloisim é seo"
