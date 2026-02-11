@@ -12,6 +12,8 @@ Menu:
 "Select Test" = "Roghnaigh an Tástáil"
 "Back" = "Siar"
 "Start" = "Tosaigh"
+"User ID: " = "ID úsáideora: "
+"User ID not set." = "Níl ID úsáideora socraithe."
 
 Tests:
 "Digits-in-noise Test" = "Tástáil Digití i Dtorainn"

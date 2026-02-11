@@ -33,10 +33,10 @@ void MenuScreen::addTest(const juce::String& name, std::function<void()> onTestP
 
 void MenuScreen::setUserId(const juce::String& userId) {
     if (userId == "") {
-        userIdLabel.setText("User ID not set", juce::dontSendNotification);
+        userIdLabel.setText(juce::translate("User ID not set."), juce::dontSendNotification);
     }
     else {
-        userIdLabel.setText(juce::String("User ID: ") + userId, juce::dontSendNotification);
+        userIdLabel.setText(juce::translate("User ID: ") + userId, juce::dontSendNotification);
     }
 }
 

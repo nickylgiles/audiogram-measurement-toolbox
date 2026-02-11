@@ -12,7 +12,7 @@ namespace BinaryData
     const int            en_lngSize = 0;
 
     extern const char*   ga_lng;
-    const int            ga_lngSize = 3177;
+    const int            ga_lngSize = 3266;
 
     extern const char*   speech_0_wav;
     const int            speech_0_wavSize = 126190;
