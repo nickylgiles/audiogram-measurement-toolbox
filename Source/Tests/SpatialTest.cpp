@@ -19,10 +19,12 @@ SpatialTest::SpatialTest(MainComponent& mainComponentRef, SoundEngine& soundEngi
 void SpatialTest::displayInfo() {
     auto infoScreen = std::make_unique<TestInfoScreen>(
         juce::translate("Spatial Test"),
-        "Two sounds will play from different directions.  Press \"Left\" if the second sound comes to the left of the first; "
-        "press \"Right\" if the second sound comes to the right of the first. "
-        "If you are unsure, guess."
-        "\n\nPress \"Start\" to begin the test.",
+
+        juce::translate("Two sounds will play from different directions. ")
+        + juce::translate("Press 'Left' if the second sound comes to the left of the first; ") 
+        + juce::translate("press 'Right' if the second sound comes to the right of the first. ")
+        + juce::translate("If you are unsure, guess.")
+        + "\n\n" + juce::translate("Press 'Start' to begin the test."),
         [this] { startTest();},
         [this] { exitTest();}
     );

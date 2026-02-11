@@ -18,9 +18,10 @@ DigitsInNoiseTest::DigitsInNoiseTest(MainComponent& mainComponentRef, SoundEngin
 void DigitsInNoiseTest::displayInfo() {
     auto infoScreen = std::make_unique<TestInfoScreen>(
         juce::translate("Digits-in-noise Test"),
-        "You will hear three digits read aloud.  Afterwards, you must input the digits you hear in the correct order to the keypad."
-        "If you are unsure, guess."
-        "\n\nPress \"Start\" to begin the test.",
+        juce::translate("You will hear three digits read aloud. ")
+        + juce::translate("Afterwards, you must input the digits you hear in the correct order to the keypad. ")
+        + juce::translate("If you are unsure, guess.")
+        + "\n\n" + juce::translate("Press 'Start' to begin the test."),
         [this] { startTest();},
         [this] { exitTest();}
     );

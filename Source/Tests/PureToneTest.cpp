@@ -20,9 +20,9 @@ PureToneTest::PureToneTest(MainComponent& mainComponentRef, SoundEngine& soundEn
 void PureToneTest::displayInfo() {
     auto infoScreen = std::make_unique<TestInfoScreen>(
         juce::translate("Pure Tone Test"),
-        "You will hear a series of tones. Press the button when you hear a tone. "
-        "Otherwise, do not press anything. "
-        "\n\nPress \"Start\" to begin the test.",
+        juce::translate("You will hear a series of tones. Press the button when you hear a tone. ")
+        + juce::translate("Otherwise, do not press anything. ")
+        + "\n\n" + juce::translate("Press 'Start' to begin the test."),
         [this] { startTest();},
         [this] { exitTest();}
     );

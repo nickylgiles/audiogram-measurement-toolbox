@@ -19,11 +19,12 @@ DualTaskTest::DualTaskTest(MainComponent& mainComponentRef, SoundEngine& soundEn
 void DualTaskTest::displayInfo() {
     auto infoScreen = std::make_unique<TestInfoScreen>(
         juce::translate("Dual-Task Test"),
-        "You will hear two words spoken from different directions.  Afterwards, you must choose the second word that was spoken from the options presented. "
-        "Press \"Left\" if the second sound comes to the left of the first; "
-        "press \"Right\" if the second sound comes to the right of the first. "
-        "If you are unsure, guess. "
-        "\n\nPress \"Start\" to begin the test.",
+        juce::translate("You will hear two words spoken from different directions. ")
+        + juce::translate("Afterwards, you must choose the second word that was spoken from the options presented. ")
+        + juce::translate("Press 'Left' if the second sound comes to the left of the first; ")
+        + juce::translate("press 'Right' if the second sound comes to the right of the first. ")
+        + juce::translate("If you are unsure, guess.")
+        + "\n\n" +juce::translate("Press 'Start' to begin the test."),
         [this] { startTest();},
         [this] { exitTest();}
     );

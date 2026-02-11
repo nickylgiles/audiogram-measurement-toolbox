@@ -21,11 +21,23 @@ MenuScreen::MenuScreen() {
 
     addAndMakeVisible(settingsButton);
     settingsButton.onClick = [this] {if (onSettingsClicked) onSettingsClicked(); };
+
+    userIdLabel.setJustificationType(juce::Justification::centredRight);
+    addAndMakeVisible(userIdLabel);
 }
 
 void MenuScreen::addTest(const juce::String& name, std::function<void()> onTestPressed) {
     tests.push_back({ name, onTestPressed });
     testListBox.updateContent();
+}
+
+void MenuScreen::setUserId(const juce::String& userId) {
+    if (userId == "") {
+        userIdLabel.setText("User ID not set", juce::dontSendNotification);
+    }
+    else {
+        userIdLabel.setText(juce::String("User ID: ") + userId, juce::dontSendNotification);
+    }
 }
 
 void MenuScreen::resized() {
@@ -35,6 +47,8 @@ void MenuScreen::resized() {
     area.removeFromTop(60);
 
     testListBox.setBounds(area);
+
+    userIdLabel.setBounds(0, getHeight() - 40, getWidth(), 40);
 }
 
 void MenuScreen::paint(juce::Graphics& g) {

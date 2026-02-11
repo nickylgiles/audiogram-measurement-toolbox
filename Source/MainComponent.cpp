@@ -115,6 +115,8 @@ void MainComponent::paint (juce::Graphics& g)
 void MainComponent::showMenuScreen() {
     auto screen = std::make_unique<MenuScreen>();
 
+    screen->setUserId(userSettings->getValue("userId"));
+
     screen->onSettingsClicked = [this] {showSettingsScreen();};
 
     addTestToMenu<PureToneTest>(screen.get());

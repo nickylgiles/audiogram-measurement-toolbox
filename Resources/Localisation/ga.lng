@@ -16,6 +16,7 @@ Menu:
 Tests:
 "Digits-in-noise Test" = "Tástáil Digití i Dtorainn"
 "Dual-task Test" = "Tástáil Dé-thasc"
+"Dual-Task Test" = "Tástáil Dé-thasc"
 "Pure Tone Test" = "Tástáil Íon-ton"
 "Spatial Test" = "Tástáil Spásúlachta"
 
@@ -36,3 +37,30 @@ Results:
 "Spatial" = "Spásúil"
 "Speech" = "Caint"
 
+Test Instructions
+"Press 'Start' to begin the test." = "Brúigh 'Tosaigh' chun an tástáil a thosú."
+
+Spatial:
+"Two sounds will play from different directions. " = "Seinnfear dhá fhuaim ó threoracha éagsúla. "
+"Press 'Left' if the second sound comes to the left of the first; " = "Brúigh 'Clé' má thagann an dara fuaim ar chlé den chéad cheann; "
+"press 'Right' if the second sound comes to the right of the first. " = "Brúigh 'Deas' má thagann an dara fuaim ar dheis den chéad cheann. "
+"If you are unsure, guess." = "Mura bhfuil tú cinnte, déan buille faoi thuairim."
+
+
+Pure Tone:
+"You will hear a series of tones. Press the button when you hear a tone. " = "Cloisfidh tú sraith toin. Brúigh an cnaipe nuair a chloiseann tú ton."
+"Otherwise, do not press anything. " = "Murab é sin, ná brúigh aon rud. "
+
+
+Digits-in-noise:
+"You will hear three digits read aloud. " = "Cloisfidh tú trí dhigit a labhraíodh. "
+"Afterwards, you must input the digits you hear in the correct order to the keypad. " = "Ina dhiaidh sin, caithfidh tú na digití a cloiseann tú a chur isteach ar an eochaircheap san ord ceart. "
+"If you are unsure, guess." = "Mura bhfuil tú cinnte, déan buille faoi thuairim."
+
+
+Dual-Task:
+"You will hear two words spoken from different directions. " = "Cloisfidh tú dhá focal a labhraíodh ó threoracha éagsúla. "
+"Afterwards, you must choose the second word that was spoken from the options presented. " = "Ina dhiaidh sin, caithfidh tú an dara focal a roghnú ó na roghanna a thaispeántar. "
+"Press 'Left' if the second sound comes to the left of the first; " = "Brúigh 'Clé' má thagann an dara fuaim ar chlé den chéad cheann; "
+"press 'Right' if the second sound comes to the right of the first. " = "Brúigh 'Deas' má thagann an dara fuaim ar dheis den chéad cheann. "
+"If you are unsure, guess." = "Mura bhfuil tú cinnte, déan buille faoi thuairim."
