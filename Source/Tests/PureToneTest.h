@@ -14,12 +14,12 @@
 #include "../Control/PureToneTestController.h"
 #include "../GUI/PureTone/PureToneTestScreen.h"
 #include "../GUI/PureTone/PureToneResultsScreen.h"
-#include "../GUI/TestInfoScreen.h""
+#include "../GUI/TestInfoScreen.h"
 #include "../MainComponent.h"
 
 class PureToneTest : public Test {
 public:
-    PureToneTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+    PureToneTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& testConfigFile);
     void displayInfo() override;
     void startTest() override;
     void exitTest() override;

@@ -19,7 +19,7 @@
 
 class SpatialTest : public Test {
 public:
-    SpatialTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+    SpatialTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& testConfigFile);
     void displayInfo() override;
     void startTest() override;
     void exitTest() override;

@@ -19,7 +19,7 @@
 
 class DigitsInNoiseTest : public Test {
 public:
-    DigitsInNoiseTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+    DigitsInNoiseTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& testConfigFile);
     void displayInfo() override;
     void startTest() override;
     void exitTest() override;

@@ -74,11 +74,52 @@ private:
 
     template<typename TestType>
     void addTestToMenu(MenuScreen* screen) {
+
+        // Load config file from path stored in userSettings (if present)
+        juce::File configFile;
+        
+        if (userSettings) {
+            juce::String path = userSettings->getValue("config_" + TestType::getName().replaceCharacters(" ", "_"), "");
+
+            if (path.isNotEmpty()) {
+                juce::File f(path);
+                if (f.existsAsFile())
+                    configFile = f;
+            }
+        } 
+
         screen->addTest(TestType::getName(),
-            [this] {
-                currentTest = std::make_unique<TestType>(*this, *soundEngine);
+            [this, configFile] {
+                currentTest = std::make_unique<TestType>(*this, *soundEngine, configFile);
                 currentTest->displayInfo();
             });
+    }
+
+    template<typename TestType>
+    void addTestConfigSetting(SettingsScreen* settings) {
+        settings->addButtonSetting(
+            TestType::getName(),
+            [this, testName = TestType::getName()] {
+                fileChooser = std::make_unique<juce::FileChooser>(
+                    juce::translate(juce::String("Select ") + juce::String(testName) + juce::String(" config JSON file")),
+                    juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
+                    "*.json");
+
+                auto fileChooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+
+                fileChooser->launchAsync(fileChooserFlags, [this, testName](const juce::FileChooser& fc) {
+                    auto result = fc.getResult();
+                    if (result != juce::File{}) {
+                        // Store the file path in user settings
+                        userSettings->setValue("config_" + TestType::getName().replaceCharacters(" ", "_"), result.getFullPathName());
+                        DBG("Loaded config file for" << testName);
+                    }
+                    fileChooser.reset();
+                    });
+
+                resized();
+            });
+
     }
 
     std::unique_ptr<Test> currentTest;

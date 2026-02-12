@@ -10,7 +10,7 @@
 
 #include "SpatialTest.h"
 
-SpatialTest::SpatialTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef)
+SpatialTest::SpatialTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& testConfigFile)
     : Test(mainComponentRef, soundEngineRef), controller(mainComponentRef, soundEngineRef) 
 {
     controller.onTestFinished = [this] {onTestFinish();};

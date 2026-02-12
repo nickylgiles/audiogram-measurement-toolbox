@@ -10,7 +10,7 @@
 
 #include "DualTaskTest.h"
 
-DualTaskTest::DualTaskTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef) 
+DualTaskTest::DualTaskTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& testConfigFile)
     : Test(mainComponentRef, soundEngineRef), controller(mainComponentRef, soundEngineRef) 
 {
     controller.onTestFinished = [this] {onTestFinish();};

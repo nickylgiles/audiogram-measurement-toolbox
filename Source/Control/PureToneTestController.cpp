@@ -11,24 +11,29 @@
 #include "PureToneTestController.h"
 #include "../MainComponent.h"
 
-PureToneTestController::PureToneTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef)
-    : TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();}) {
+PureToneTestController::PureToneTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& configFile)
+    : TestController(mainComponentRef, soundEngineRef),
+      timer([this] {timerCallback();})
+{
+    // Load config from file provided
+    config = Config::loadFromFile(configFile);
+
     currentState = TestState::END;
-    for (auto tone : testTones) {
-        toneThresholds[0][tone] = dbLevelMax;
-        toneThresholds[1][tone] = dbLevelMax;
+    for (auto tone : config.testTones) {
+        toneThresholds[0][tone] = config.dbLevelMax;
+        toneThresholds[1][tone] = config.dbLevelMax;
     }
 }
 
 void PureToneTestController::startTest() {
     currentTone = 0;
     currentEar = 0;
-    currentThreshold = dbLevelMin;
+    currentThreshold = config.dbLevelMin;
 
     currentToneDetected = false;
     currentState = TestState::START;
 
-    scheduleNextTone(2000);
+    scheduleNextTone(config.toneDelayMs);
 }
 
 void PureToneTestController::buttonClicked(const juce::String& id) {
@@ -63,15 +68,15 @@ void PureToneTestController::timerCallback() {
 
         case TestState::DB_ASCENDING:
             if (currentToneDetected) {
-                if (currentThreshold > dbLevelMin && !floatsEqual(currentThreshold, dbLevelMin))
+                if (currentThreshold > config.dbLevelMin && !floatsEqual(currentThreshold, config.dbLevelMin))
                     currentState = TestState::DB_DESCENDING;
                 else
                     currentState = TestState::NEXT_TONE;
-                toneThresholds[currentEar][testTones[currentTone]] = currentThreshold;
+                toneThresholds[currentEar][config.testTones[currentTone]] = currentThreshold;
             }
             else {
-                currentThreshold += dbIncrementAscending;
-                if (currentThreshold > dbLevelMax && !floatsEqual(currentThreshold, dbLevelMax)) {
+                currentThreshold += config.dbIncrementAscending;
+                if (currentThreshold > config.dbLevelMax && !floatsEqual(currentThreshold, config.dbLevelMax)) {
                     currentState = TestState::NEXT_TONE;
                 }
             }
@@ -79,9 +84,9 @@ void PureToneTestController::timerCallback() {
 
         case TestState::DB_DESCENDING:
             if (currentToneDetected) {
-                toneThresholds[currentEar][testTones[currentTone]] = currentThreshold;
-                if (currentThreshold > dbLevelMin && !floatsEqual(currentThreshold, dbLevelMin)) {
-                    currentThreshold -= dbIncrementDescending;
+                toneThresholds[currentEar][config.testTones[currentTone]] = currentThreshold;
+                if (currentThreshold > config.dbLevelMin && !floatsEqual(currentThreshold, config.dbLevelMin)) {
+                    currentThreshold -= config.dbIncrementDescending;
                 }
                 else {
                     currentState = TestState::NEXT_TONE;
@@ -93,16 +98,16 @@ void PureToneTestController::timerCallback() {
             break;
 
         case TestState::NEXT_TONE:
-            if (currentTone < (testTones.size() - 1)) {
+            if (currentTone < (config.testTones.size() - 1)) {
                 currentTone++;
                 currentState = TestState::DB_ASCENDING;
-                currentThreshold = dbLevelMin;
+                currentThreshold = config.dbLevelMin;
             }
             else {
                 if (currentEar < 1) {
                     currentEar = 1;
                     currentState = TestState::DB_ASCENDING;
-                    currentThreshold = dbLevelMin;
+                    currentThreshold = config.dbLevelMin;
                     currentTone = 0;
                 }
                 else {
@@ -120,7 +125,7 @@ void PureToneTestController::timerCallback() {
 
     if (currentState == TestState::DB_ASCENDING || currentState == TestState::DB_DESCENDING) {
         playCurrentTone();
-        scheduleNextTone(2000);
+        scheduleNextTone(config.toneDelayMs);
     }
     if (currentState == TestState::NEXT_TONE) {
         scheduleNextTone(0);
@@ -134,7 +139,7 @@ void PureToneTestController::timerCallback() {
 
 void PureToneTestController::playCurrentTone() {
 
-    soundEngine.playToneMasked(testTones[currentTone], dbToAmplitude(currentThreshold), 1.0f, currentEar);
+    soundEngine.playToneMasked(config.testTones[currentTone], dbToAmplitude(currentThreshold), 1.0f, currentEar);
     currentToneDetected = false;
 }
 
@@ -149,4 +154,68 @@ PureToneTestResults const PureToneTestController::getResults() {
 void PureToneTestController::scheduleNextTone(int delayMs) {
     timer.stopTimer();
     timer.startTimer(delayMs);
+}
+
+PureToneTestController::Config
+PureToneTestController::Config::loadFromFile(const juce::File& file) {
+    Config config;
+
+    if (!file.existsAsFile()) {
+        DBG("Config file not found.  Using defaults.");
+        return config;
+    }
+
+    juce::var json = juce::JSON::parse(file);
+
+    if (!json.isObject()) {
+        DBG("Invalid JSON format in config. Using defaults.");
+        return config;
+    }
+
+    auto* root = json.getDynamicObject();
+    if (!root) {
+        DBG("Invalid JSON format in config. Using defaults.");
+        return config;
+    }
+
+    if (root->hasProperty("configName")) {
+        config.name = root->getProperty("configName").toString();
+    }
+    
+    if (root->hasProperty("testTones")) {
+        auto tonesVar = root->getProperty("testTones");
+        if (tonesVar.isArray()) {
+            config.testTones.clear();
+            for (auto& t : *tonesVar.getArray())
+                config.testTones.push_back((float)t);
+        }
+    }
+
+    if (root->hasProperty("dbLevelMin")) {
+        config.dbLevelMin = static_cast<float>(
+            root->getProperty("dbLevelMin"));
+    }
+
+    if (root->hasProperty("dbLevelMax")) {
+        config.dbLevelMax = static_cast<float>(
+            root->getProperty("dbLevelMax"));
+    }
+
+    if (root->hasProperty("dbIncrementAscending")) {
+        config.dbIncrementAscending = static_cast<float>(
+            root->getProperty("dbIncrementAscending"));
+    }
+
+    if (root->hasProperty("dbIncrementDescending")) {
+        config.dbIncrementDescending = static_cast<float>(
+            root->getProperty("dbIncrementDescending"));
+    }
+
+    if (root->hasProperty("toneDelayMs")) {
+        config.toneDelayMs = static_cast<int>(
+            root->getProperty("toneDelayMs"));
+    }
+
+    return config;
+
 }

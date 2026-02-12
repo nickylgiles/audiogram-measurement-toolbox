@@ -14,7 +14,32 @@
 
 class PureToneTestController : public TestController {
 public:
-    PureToneTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+    // Configuration parameters
+    struct Config {
+        juce::String name = "";
+        std::vector<float> testTones = { 
+            125.0f, 
+            250.0f, 
+            500.0f, 
+            1000.0f, 
+            2000.0f, 
+            4000.0f, 
+            8000.0f, 
+            16000.0f 
+        };
+
+        float dbLevelMin = -50.0f;
+        float dbLevelMax = 0.0f;
+        float dbIncrementAscending = 10.0f;
+        float dbIncrementDescending = 5.0f;
+
+        int toneDelayMs = 2000;
+
+        static Config loadFromFile(const juce::File& file);
+    };
+
+    PureToneTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& configFile);
+
     void startTest() override;
     void stopTest() override;
 
@@ -23,20 +48,14 @@ public:
     const PureToneTestResults getResults();
 
 private:
+    Config config;
+
     TestControllerTimer timer;
     void timerCallback();
     void toneHeard();
     
     void playCurrentTone();
     void scheduleNextTone(int delayMs);
-
-    std::vector<float> testTones = { 125.0f, 250.0f, 500.0f, 1000.0f, 2000.0f, 4000.0f, 8000.0f, 16000.0f };
-    // std::vector<float> testTones = { 1000.0f };
-
-    float dbLevelMin = -50.0f;
-    float dbLevelMax = 0.0f;
-    float dbIncrementAscending = 10.0f;
-    float dbIncrementDescending = 5.0f;
 
     static constexpr bool floatsEqual(float a, float b);
 

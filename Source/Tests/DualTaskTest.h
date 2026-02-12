@@ -19,7 +19,7 @@
 
 class DualTaskTest : public Test {
 public:
-    DualTaskTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+    DualTaskTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& testConfigFile);
     void displayInfo() override;
     void startTest() override;
     void exitTest() override;
