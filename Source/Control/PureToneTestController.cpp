@@ -217,5 +217,4 @@ PureToneTestController::Config::loadFromFile(const juce::File& file) {
     }
 
     return config;
-
 }

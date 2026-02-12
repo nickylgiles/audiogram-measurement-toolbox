@@ -30,6 +30,17 @@ MainComponent::MainComponent()
     auto* app = static_cast<AudiogramAppApplication*>(juce::JUCEApplication::getInstance());
     userSettings = app->applicationProperties.getUserSettings();
 
+    // Set language if set in user settings
+    juce::String currentLanguage = userSettings->getValue("language", "en");
+
+    if (currentLanguage == "en") {
+        setLanguageFromData(BinaryData::en_lng, BinaryData::en_lngSize);
+    }
+
+    if (currentLanguage == "ga") {
+        setLanguageFromData(BinaryData::ga_lng, BinaryData::ga_lngSize);
+    }
+
     showMenuScreen();
 
     // Make sure you set the size of the component after

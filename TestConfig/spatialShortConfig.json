@@ -1,0 +1,13 @@
+{
+    "configName" : "short",
+    "testAzimuths": [-90.0, -75.0, -60.0, -45.0, -30.0, -15.0, 0.0, 15.0, 30.0, 45.0, 60.0, 75.0, 90.0],
+    "maskingAzimuths": [-90.0, -30.0, 30.0, 90.0],
+    "numTrials": 5,
+    "signalAmplitudeDb": -20.0,
+    "maskingAmplitudeDb": -25.0,
+    "signalDurationMs": 1000,
+    "interSignalDelayMs": 500,
+    "preSignalDelayMs": 1000,
+    "postSignalMaskingMs": 500,
+    "interTrialDelayMs": 1000
+}

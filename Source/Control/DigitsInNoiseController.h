@@ -17,7 +17,7 @@
 
 class DigitsInNoiseController : public TestController {
 public:
-    DigitsInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+    DigitsInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& configFile);
     void startTest() override;
     void stopTest() override;
 

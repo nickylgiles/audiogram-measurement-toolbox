@@ -18,7 +18,7 @@
 
 class DualTaskTestController : public TestController {
 public:
-	DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef);
+	DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& configFile);
 	void startTest() override;
 	void stopTest() override;
 

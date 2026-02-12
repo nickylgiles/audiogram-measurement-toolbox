@@ -11,7 +11,7 @@
 #include "DualTaskTestController.h"
 #include "../MainComponent.h"
 
-DualTaskTestController::DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef) 
+DualTaskTestController::DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& configFile)
     : TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();})
 {
     fm = std::make_unique<SpeechFileManager>();

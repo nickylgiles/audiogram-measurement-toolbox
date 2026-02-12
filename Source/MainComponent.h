@@ -104,10 +104,10 @@ private:
     template<typename TestType>
     void addTestConfigSetting(SettingsScreen* settings) {
         settings->addButtonSetting(
-            TestType::getName(),
+            TestType::getName() + juce::String(" (") + userSettings->getValue("config_" + TestType::getName().replaceCharacters(" ", "_"), "Default") + juce::String(")"),
             [this, testName = TestType::getName()] {
                 fileChooser = std::make_unique<juce::FileChooser>(
-                    juce::translate(juce::String("Select ") + juce::String(testName) + juce::String(" config JSON file")),
+                    juce::translate("Select") + juce::String(" ") + juce::translate(testName) + juce::String(" ") + juce::translate("config JSON file"),
                     juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
                     "*.json");
 

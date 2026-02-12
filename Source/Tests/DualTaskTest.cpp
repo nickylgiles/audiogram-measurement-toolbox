@@ -11,7 +11,8 @@
 #include "DualTaskTest.h"
 
 DualTaskTest::DualTaskTest(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& testConfigFile)
-    : Test(mainComponentRef, soundEngineRef), controller(mainComponentRef, soundEngineRef) 
+    : Test(mainComponentRef, soundEngineRef),
+      controller(mainComponentRef, soundEngineRef, testConfigFile)
 {
     controller.onTestFinished = [this] {onTestFinish();};
 }

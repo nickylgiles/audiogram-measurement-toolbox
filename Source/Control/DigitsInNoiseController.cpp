@@ -13,7 +13,7 @@
 
 class MainComponent;
 
-DigitsInNoiseController::DigitsInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef)
+DigitsInNoiseController::DigitsInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& configFile)
     : TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();})
 {
     fm = std::make_unique<SpeechFileManager>();
