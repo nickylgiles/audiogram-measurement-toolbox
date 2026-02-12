@@ -40,7 +40,11 @@ public:
     void showMenuScreen(); 
     void showSettingsScreen();
 
+    void refreshSettingsScreen();
+
     void showScreen(std::unique_ptr<juce::Component>&& screen);
+
+    const juce::String& getUserId();
 
     template <typename ScreenT, typename ControllerT>
     void showResultsScreen(ControllerT& tc) {
@@ -71,6 +75,8 @@ public:
 private:
     //==============================================================================
     // Your private member variables go here...
+
+    void setLanguageFromData(const void* data, int size);
 
     template<typename TestType>
     void addTestToMenu(MenuScreen* screen) {
@@ -112,7 +118,8 @@ private:
                     if (result != juce::File{}) {
                         // Store the file path in user settings
                         userSettings->setValue("config_" + TestType::getName().replaceCharacters(" ", "_"), result.getFullPathName());
-                        DBG("Loaded config file for" << testName);
+                        userSettings->saveIfNeeded();
+                        DBG("Loaded config file for " << testName);
                     }
                     fileChooser.reset();
                     });

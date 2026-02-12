@@ -1,4 +1,4 @@
-language: Irish
+language: irish
 countries: ie
 
 Settings:
@@ -7,6 +7,8 @@ Settings:
 "Export result DB" = "Easpórtáil bunachar sonraí torthaí"
 "Select word groups JSON file" = "Roghnaigh comhad JSON le grúpaí focail"
 "Select headphone calibration" = "Roghnaigh calabrúchán cluasáin"
+"Load Test Configurations" = "Lódáil Cumraíochtaí Tástála"
+"Change Language" = "Roghnaigh Teanga"
 
 Menu:
 "Select Test" = "Roghnaigh an Tástáil"

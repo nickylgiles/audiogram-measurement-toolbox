@@ -134,7 +134,7 @@ void MainComponent::showSettingsScreen() {
             });
         });
 
-    screen->addButtonSetting(juce::translate("Select word groups JSON file"), [this] {
+    screen->addButtonSetting(juce::translate("Select word groups JSON file") + " (" + userSettings->getValue("wordGroupsJsonPath", "Not Set") + ")", [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
             juce::translate("Select word groups JSON file"),
             juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
@@ -149,41 +149,84 @@ void MainComponent::showSettingsScreen() {
                 userSettings->setValue("wordGroupsJsonPath", result.getFullPathName());
                 userSettings->saveIfNeeded();
                 DBG("Word groups JSON path set to " << userSettings->getValue("wordGroupsJsonPath"));
+                refreshSettingsScreen();
             }
             fileChooser.reset();
             });
-
-        resized();
         });
 
     screen->addButtonSetting(juce::translate("Select headphone calibration"), [] {});
     
     screen->addButtonSetting(juce::translate("Change language"), [this] {
-        auto* localisedStrings = new juce::LocalisedStrings(
-            juce::String::createStringFromData(BinaryData::ga_lng, BinaryData::ga_lngSize),
-            false);
+        juce::String currentLanguage = userSettings->getValue("language", "en");
+        DBG("Current language: " << currentLanguage);
 
-        juce::LocalisedStrings::setCurrentMappings(localisedStrings);
+        if (currentLanguage == "en") {
+            setLanguageFromData(BinaryData::ga_lng, BinaryData::ga_lngSize);
+
+            userSettings->setValue("language", "ga");
+            userSettings->saveIfNeeded();
+
+            DBG("Language changed to Irish");
+        }
+
+        if (currentLanguage == "ga") {
+            setLanguageFromData(BinaryData::en_lng, BinaryData::en_lngSize);
+
+            userSettings->setValue("language", "en");
+            userSettings->saveIfNeeded();
+
+            DBG("Language changed to English");
+        }
+
+        refreshSettingsScreen();
     });
 
-    screen->addTitleSetting(juce::translate("Load Test Configurations JSON"));
+    screen->addTitleSetting(juce::translate("Load Test Configurations"));
 
     addTestConfigSetting<PureToneTest>(screen.get());
+    addTestConfigSetting<SpatialTest>(screen.get());
+    addTestConfigSetting<DigitsInNoiseTest>(screen.get());
+    addTestConfigSetting<DualTaskTest>(screen.get());
 
-
-   
     showScreen(std::move(screen));
 }
 
+void MainComponent::refreshSettingsScreen() {
+    juce::MessageManager::callAsync([this] { 
+        showSettingsScreen();
+    });
+}
+
 void MainComponent::showScreen(std::unique_ptr<juce::Component>&& screen) {
+
+    if (currentScreen) {
+        removeChildComponent(currentScreen.get());
+    }
+
     currentScreen = std::move(screen);
     addAndMakeVisible(currentScreen.get());
     resized();
 }
 
-void MainComponent::resized()
-{
+const juce::String& MainComponent::getUserId() {
+    if (!userSettings) {
+        return "";
+    }
 
+    return userSettings->getValue("userId", "");
+}
+
+void MainComponent::setLanguageFromData(const void* data, int size) {
+    auto* localisedStrings = new juce::LocalisedStrings(
+        juce::String::createStringFromData(data, size),
+        false);
+
+    juce::LocalisedStrings::setCurrentMappings(localisedStrings);
+    DBG("Localisation mappings set");
+}
+
+void MainComponent::resized() {
     if (currentScreen)
         currentScreen->setBounds(getLocalBounds());
 }
