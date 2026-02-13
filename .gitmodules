@@ -1,9 +1,3 @@
-[submodule "ThirdParty/libmysofa"]
-	path = ThirdParty/libmysofa
-	url = https://github.com/hoene/libmysofa.git
 [submodule "ThirdParty/sqlite"]
 	path = ThirdParty/sqlite
 	url = https://github.com/sqlite/sqlite.git
-[submodule "ThirdParty/libBasicSOFA"]
-	path = ThirdParty/libBasicSOFA
-	url = https://github.com/superkittens/libBasicSOFA.git
