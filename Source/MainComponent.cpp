@@ -72,6 +72,7 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
+    soundEngine->setSamplesPerBlockExpected(samplesPerBlockExpected);
     soundEngine->setSampleRate(sampleRate);
 }
 

@@ -41,15 +41,15 @@ private:
         void paintListBoxItem(int row, juce::Graphics& g, int width, int height, bool selected) override {
             if (row < 0 || row >= static_cast<int>(owner->tests.size())) return;
             
-            auto& lookAndFeel = listBox.getLookAndFeel();
+            auto& lbLookAndFeel = listBox.getLookAndFeel();
 
             juce::Colour bg = selected
-                ? lookAndFeel.findColour(juce::TextButton::buttonOnColourId)
-                : lookAndFeel.findColour(juce::TextButton::buttonColourId);
+                ? lbLookAndFeel.findColour(juce::TextButton::buttonOnColourId)
+                : lbLookAndFeel.findColour(juce::TextButton::buttonColourId);
 
             juce::Colour text = selected
-                ? lookAndFeel.findColour(juce::TextButton::textColourOnId)
-                : lookAndFeel.findColour(juce::TextButton::textColourOffId);
+                ? lbLookAndFeel.findColour(juce::TextButton::textColourOnId)
+                : lbLookAndFeel.findColour(juce::TextButton::textColourOffId);
 
             g.setColour(juce::Colours::black);
             g.fillRect(0, 0, width, height - 1);

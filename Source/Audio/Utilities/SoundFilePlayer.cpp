@@ -175,15 +175,15 @@ int SoundFilePlayer::samplesRemaining() {
     return totalSamples - static_cast<int>(currentSample);
 }
 
-void SoundFilePlayer::normaliseBuffer(juce::AudioBuffer<float>& buffer) {
+void SoundFilePlayer::normaliseBuffer(juce::AudioBuffer<float>& buf) {
     float maxMag = 0.0f;
 
-    for (int ch = 0; ch < buffer.getNumChannels(); ++ch) {
-        maxMag = std::max(maxMag, buffer.getMagnitude(ch, 0, buffer.getNumSamples()));
+    for (int ch = 0; ch < buf.getNumChannels(); ++ch) {
+        maxMag = std::max(maxMag, buf.getMagnitude(ch, 0, buf.getNumSamples()));
     }
 
     if (maxMag > 0.0f) {
-        buffer.applyGain(1.0f / maxMag);
+        buf.applyGain(1.0f / maxMag);
     }
 
     DBG("Normalised buffer by " << (1.0f / maxMag));

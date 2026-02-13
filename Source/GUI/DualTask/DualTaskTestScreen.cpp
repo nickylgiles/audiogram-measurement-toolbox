@@ -75,7 +75,7 @@ void DualTaskTestScreen::resized() {
     stopButton.setBounds(10, 10, 100, 40);
 }
 
-void DualTaskTestScreen::paint(juce::Graphics& g) {
+void DualTaskTestScreen::paint(juce::Graphics&) {
     if (!hasKeyboardFocus(false)) {
         grabKeyboardFocus();
     }

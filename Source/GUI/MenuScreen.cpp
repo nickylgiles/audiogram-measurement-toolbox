@@ -55,7 +55,13 @@ void MenuScreen::paint(juce::Graphics& g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 
     g.setColour(getLookAndFeel().findColour(juce::Label::textColourId));
-    g.setFont(juce::Font(40.0f, juce::Font::bold));
+
+    g.setFont(juce::Font(
+        juce::FontOptions()
+            .withHeight(40.0f)
+            .withStyle("Bold")
+    ));
+
     g.drawText(juce::translate("Select Test") + juce::String(":"), getLocalBounds().removeFromTop(120),
         juce::Justification::centred, true);
 }

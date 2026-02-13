@@ -36,7 +36,9 @@ void SettingsScreen::resized() {
     for (auto& s : settings) {
         if (s.type == Setting::Type::TextInput && s.editorComponent != nullptr) {
             s.editorComponent->setBounds(160, 5, settingsListBox.getWidth() - 170, 40);
-            s.editorComponent->setFont(18.0f);
+            s.editorComponent->setFont(juce::Font(
+                juce::FontOptions().withHeight(18.0f)
+            ));
             s.editorComponent->setJustification(juce::Justification::centredLeft);
         }
     }
@@ -46,7 +48,11 @@ void SettingsScreen::paint(juce::Graphics& g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 
     g.setColour(getLookAndFeel().findColour(juce::Label::textColourId));
-    g.setFont(juce::Font(40.0f, juce::Font::bold));
+    g.setFont(juce::Font(
+        juce::FontOptions()
+            .withHeight(40.0f)
+            .withStyle("Bold")
+    ));
     g.drawText(juce::translate("Settings"), getLocalBounds().removeFromTop(120),
         juce::Justification::centred, true);
 }

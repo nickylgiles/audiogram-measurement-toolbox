@@ -76,6 +76,10 @@ void SoundEngine::setSampleRate(double newSampleRate) {
     stop();
 }
 
+void SoundEngine::setSamplesPerBlockExpected(int) {
+    // Nothing to do currently
+}
+
 
 void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
 

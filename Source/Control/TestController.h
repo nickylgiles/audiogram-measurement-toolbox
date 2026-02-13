@@ -26,7 +26,7 @@ public:
     virtual void startTest() = 0;
     virtual void stopTest() = 0;
 
-    virtual void buttonClicked(const juce::String& id) { return; }
+    virtual void buttonClicked(const juce::String& /*id*/) { return; }
 
     static float dbToAmplitude(float db) {
         return static_cast<float>(

@@ -69,46 +69,92 @@ void PureToneResultsScreen::drawAudiogram(juce::Graphics& g, juce::Rectangle<int
     float maxF = results.left.rbegin()->first;
     float minF = results.left.begin()->first * 0.5f;
 
+    float minFdB = std::log10(minF);
+    float maxFdB = std::log10(maxF);
+
     // X labels
-    g.drawText(juce::translate("Frequency") + juce::String(" (Hz)"), x, y + h + 10, w, 20, juce::Justification::centred);
+    g.drawText(juce::translate("Frequency") + juce::String(" (Hz)"),
+        x,
+        y + h + 10,
+        w,
+        20,
+        juce::Justification::centred
+    );
+
     for (auto r : results.left) {
         float f = r.first;
-        g.drawText(juce::translate(juce::String(f)), x + (std::log10(f) - std::log10(minF)) / (std::log10(maxF) - std::log10(minF)) * (w - 40), y + h + 5, 40, 10, juce::Justification::centred, true);
+        float fDb = std::log10(f);
+
+        g.drawText(juce::translate(juce::String(f)),
+            x + static_cast<int>( (fDb - minFdB) / (maxFdB - minFdB) * (w - 40) ),
+            y + h + 5,
+            40,
+            10,
+            juce::Justification::centred,
+            true
+        );
     }
 
     // Y labels
-    g.drawText(juce::translate("Level") + juce::String(" (dB)"), 5, y + (h / 2), 80, 20, juce::Justification::centred);
+    g.drawText(juce::translate("Level") + juce::String(" (dB)"),
+        5,
+        y + static_cast<int>(h / 2),
+        80,
+        20,
+        juce::Justification::centred
+    );
+
     for (int i = 0; i <= 5; ++i) {
-        g.drawText(juce::String(-i * 10), x - 40, y + i * (h / 5), 40, 10, juce::Justification::centred, true);
+        g.drawText(juce::String(-i * 10),
+            x - 40,
+            y + i * static_cast<int>(h / 5),
+            40, 
+            10,
+            juce::Justification::centred,
+            true
+        );
     }
 
     g.setColour(juce::Colours::lightgrey);
 
     for (int i = 0; i <= 5; ++i) {
-        float yy = y + i * (h / 5.0f);
-        g.drawLine(x, yy, x + w, yy, 1.0f);
+        float yy = static_cast<float>(y + i * (h / 5.0f));
+        g.drawLine(static_cast<float>(x), yy, static_cast<float>(x + w), yy, 1.0f);
     }
 
     for (auto r : results.left) {
         float f = r.first;
-        float xx = x + (std::log10(f) - std::log10(minF))
-            / (std::log10(maxF) - std::log10(minF)) * w;
+        float xx = static_cast<float>( x + (std::log10(f) - minFdB)
+            / (maxFdB - minFdB) * w);
 
-        g.drawLine(xx, y, xx, y + h, 1.0f);
+        g.drawLine(xx, static_cast<float>(y), xx, static_cast<float>(y + h), 1.0f);
     }
 
     g.setColour(juce::Colours::black);
-    g.drawLine(x, y + h, x + w, y + h); // x-axis
-    g.drawLine(x, y, x, y + h); // y-axis
+    g.drawLine(
+        static_cast<float>(x), 
+        static_cast<float>(y + h), 
+        static_cast<float>(x + w), 
+        static_cast<float>(y + h)
+    ); // x-axis
+
+    g.drawLine(
+        static_cast<float>(x),
+        static_cast<float>(y), 
+        static_cast<float>(x), 
+        static_cast<float>(y + h)
+    ); // y-axis
 
     // Data points 
-    float prevX, prevY;
+    float prevX = 0.0f;
+    float prevY = 0.0f;
+
     bool connectPrev = false;
     // Left: Blue X
     for (auto r : results.left) {
         float f = r.first;
         float t = r.second;
-        float pX = x + (std::log10(f) - std::log10(minF)) / (std::log10(maxF) - std::log10(minF)) * (w);
+        float pX = x + (std::log10(f) - minFdB) / (maxFdB - minFdB) * w;
         float pY = y + h * (1.0f + t / 50.0f);
         g.setColour(juce::Colours::blue);
         drawX(g, juce::Point<float>(pX, pY), 15.0f);

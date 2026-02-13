@@ -38,14 +38,16 @@ void SpeechInNoiseResultsScreen::paint(juce::Graphics& g) {
     auto bounds = getLocalBounds().reduced(20);
     bounds.removeFromBottom(bounds.getHeight() / 2 + 30);
 
-    int total = results.responses.size();
+    size_t total = results.responses.size();
     int correct = 0;
+
     for (auto& r : results.responses) {
         if (r.wordCorrect)
             ++correct;
     }
 
-    float percentCorrect = (total > 0 ? (100.0f * correct / total) : 0.0f);
+    // float percentCorrect = (total > 0 ? (100.0f * correct / total) : 0.0f);
+
     juce::String scoreText;
     scoreText << juce::translate("Correct") << ": " << correct << " / " << total << "\n"
         << juce::translate("SRT") << ": " << juce::String(results.srt, 2) <<" dB";

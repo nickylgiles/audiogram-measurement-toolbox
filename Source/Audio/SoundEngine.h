@@ -37,7 +37,9 @@ public:
 
     void stop();
     bool isPlaying() const;
+
     void setSampleRate(double newSampleRate);
+    void setSamplesPerBlockExpected(int newSamplesPerBlock);
 
     void processBlock(float* outputL, float* outputR, int numSamples);
 

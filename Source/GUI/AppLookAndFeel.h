@@ -41,14 +41,20 @@ public:
     }
 
     juce::Font getTextButtonFont(juce::TextButton&, int buttonHeight) override {
-        return juce::Font(buttonHeight * 0.4f);
+        return juce::Font(
+            juce::FontOptions().withHeight(buttonHeight * 0.4f)
+        );
     }
     
     juce::Font getLabelFont(juce::Label&) override {
-        return juce::Font(18.0f);
+        return juce::Font(
+            juce::FontOptions().withHeight(18.0f)
+        );
     }
 
     juce::Font getComboBoxFont(juce::ComboBox&) override {
-        return juce::Font(18.0f);
+        return juce::Font(
+            juce::FontOptions().withHeight(18.0f)
+        );
     }
 };

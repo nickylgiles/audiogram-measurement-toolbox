@@ -40,17 +40,17 @@ private:
             return static_cast<int>(owner->settings.size());
         }
 
-        void paintListBoxItem(int row, juce::Graphics& g, int width, int height, bool selected) override {
+        void paintListBoxItem(int row, juce::Graphics& g, int width, int height, bool) override {
             if (row < 0 || row >= static_cast<int>(owner->settings.size())) return;
 
             auto& setting = owner->settings[row];
 
-            auto& lookAndFeel = listBox.getLookAndFeel();
+            auto& lbLookAndFeel = listBox.getLookAndFeel();
 
-            juce::Colour textColour = lookAndFeel.findColour(juce::TextButton::textColourOffId);
+            juce::Colour textColour = lbLookAndFeel.findColour(juce::TextButton::textColourOffId);
 
-            if (owner->settings[row].type != Setting::Type::Title) {
-                juce::Colour bg = lookAndFeel.findColour(juce::TextButton::buttonColourId);
+            if (setting.type != Setting::Type::Title) {
+                juce::Colour bg = lbLookAndFeel.findColour(juce::TextButton::buttonColourId);
 
                 g.setColour(juce::Colours::black);
                 g.fillRect(0, 0, width, height - 1);
@@ -63,7 +63,7 @@ private:
                 f.setBold(true);
                 g.setFont(f);
 
-                textColour = lookAndFeel.findColour(juce::Label::textColourId);
+                textColour = lbLookAndFeel.findColour(juce::Label::textColourId);
             }
 
             g.setColour(textColour);
@@ -71,7 +71,7 @@ private:
 
 
 
-            g.drawText(owner->settings[row].name,
+            g.drawText(setting.name,
                 10,
                 0,
                 (owner->settings[row].type == Setting::Type::TextInput) ? 150 : width,
@@ -92,7 +92,9 @@ private:
             for (auto& s : owner->settings) {
                 if (s.type == Setting::Type::TextInput && s.editorComponent != nullptr) {
                     s.editorComponent->setBounds(160, 5, owner->settingsListBox.getWidth() - 170, 40);
-                    s.editorComponent->setFont(18.0f);
+                    s.editorComponent->setFont(juce::Font(
+                        juce::FontOptions().withHeight(18.0f))
+                    );
                     s.editorComponent->setJustification(juce::Justification::centredLeft);
                 }
             }
@@ -114,7 +116,9 @@ private:
                 else {
                     editor = new juce::TextEditor();
                     setting.editorComponent = editor;
-                    editor->setFont(18.0f);
+                    editor->setFont(juce::Font(
+                        juce::FontOptions().withHeight(18.0f))
+                    );
                     editor->setJustification(juce::Justification::centredLeft);
                 }
 

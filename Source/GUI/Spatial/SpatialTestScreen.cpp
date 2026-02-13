@@ -36,7 +36,7 @@ void SpatialTestScreen::resized() {
     
 }
 
-void SpatialTestScreen::paint(juce::Graphics& g) {
+void SpatialTestScreen::paint(juce::Graphics& ) {
 
     if (!hasKeyboardFocus(false)) {
         grabKeyboardFocus();
