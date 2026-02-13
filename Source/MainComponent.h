@@ -44,7 +44,7 @@ public:
 
     void showScreen(std::unique_ptr<juce::Component>&& screen);
 
-    const juce::String& getUserId();
+    juce::String getUserId();
 
     template <typename ScreenT, typename ControllerT>
     void showResultsScreen(ControllerT& tc) {

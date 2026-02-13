@@ -17,7 +17,7 @@ DigitsInNoiseController::DigitsInNoiseController(MainComponent& mainComponentRef
     : TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();})
 {
     fm = std::make_unique<SpeechFileManager>();
-    currentSequence.resize(numDigits);
+    currentSequence.resize(config.numDigits);
 }
 
 void DigitsInNoiseController::startTest() {
@@ -80,7 +80,7 @@ void DigitsInNoiseController::setLevels(float snr) {
 }
 
 void DigitsInNoiseController::makeRandomSequence() {
-    for (int i = 0; i < numDigits; ++i) {
+    for (int i = 0; i < config.numDigits; ++i) {
         currentSequence[i] = abs(random.nextInt() % 10);
     }
 }
@@ -95,22 +95,28 @@ void DigitsInNoiseController::playDigit(int digit) {
 }
 
 void DigitsInNoiseController::playMaskingNoise() {
-   soundEngine.playNoise(maskingAmplitude, maskingDuration, 0);
-   soundEngine.playNoise(maskingAmplitude, maskingDuration, 1);
+    int maskingDurationMs = config.preDigitDelayMs
+                        + (config.numDigits - 1) * (config.interDigitDelayMs + config.interDigitJitterMs)
+                        + config.postDigitMaskingMs;
+
+    float maskingDuration = static_cast<float>(maskingDurationMs) * 0.001f;
+
+    soundEngine.playNoise(maskingAmplitude, maskingDuration, 0);
+    soundEngine.playNoise(maskingAmplitude, maskingDuration, 1);
 }
 
 void DigitsInNoiseController::digitInput(int digit) {
     userInput.push_back(digit);
 
-    if (userInput.size() >= numDigits) {
+    if (userInput.size() >= config.numDigits) {
         inputCorrect = true;
-        for (int i = 0; i < numDigits; ++i) {
+        for (int i = 0; i < config.numDigits; ++i) {
             if (userInput[i] != currentSequence[i])
                 inputCorrect = false;
         }
 
         juce::String userStr, correctStr;
-        for (int i = 0; i < numDigits; ++i) {
+        for (int i = 0; i < config.numDigits; ++i) {
             userStr += juce::String(userInput[i]) + " ";
             correctStr += juce::String(currentSequence[i]) + " ";
         }
@@ -136,7 +142,7 @@ void DigitsInNoiseController::timerCallback() {
     timer.stopTimer();
     switch (currentState) {
     case DigitsInNoiseController::TestState::START:
-        currentSNR = dbInitial;
+        currentSNR = config.dbInitial;
         setLevels(currentSNR);
         trialSNRs.push_back(currentSNR);
         currentTrial = 1;
@@ -149,15 +155,15 @@ void DigitsInNoiseController::timerCallback() {
         currentDigit = 0;
         makeRandomSequence();
         currentState = TestState::READ_DIGITS;
-        scheduleNextState(static_cast<int>(1000 * preDigitDelay));
+        scheduleNextState(config.preDigitDelayMs);
         break;
 
     case DigitsInNoiseController::TestState::READ_DIGITS:
-        if (currentDigit < numDigits) {
+        if (currentDigit < config.numDigits) {
             playDigit(currentSequence[currentDigit]);
             currentDigit++;
-            float jitter = random.nextFloat() * interDigitJitter;
-            scheduleNextState(static_cast<int>(1000 * (interDigitDelay + jitter)));
+            int jitter = static_cast<int>(random.nextFloat() * config.interDigitJitterMs);
+            scheduleNextState(config.interDigitDelayMs + jitter);
         }
         else {
             currentState = TestState::AWAIT_RESPONSE;
@@ -176,18 +182,18 @@ void DigitsInNoiseController::timerCallback() {
         setInputsEnabled(false);
         trialSNRs.push_back(currentSNR);
         if (inputCorrect) {
-            currentSNR -= dbIncrementDescending;
+            currentSNR -= config.dbIncrementDescending;
         }
         else {
-            currentSNR += dbIncrementAscending;
+            currentSNR += config.dbIncrementAscending;
         }
         
-        setLevels(std::clamp(currentSNR, dbMin, dbMax));
+        setLevels(std::clamp(currentSNR, config.dbMin, config.dbMax));
 
-        if (currentTrial < numTrials) {
+        if (currentTrial < config.numTrials) {
             ++currentTrial;
             currentState = TestState::TRIAL_START;
-            scheduleNextState(static_cast<int>(1000 * interTrialDelay));
+            scheduleNextState(config.interTrialDelayMs);
         }
         else {
             currentState = TestState::END;

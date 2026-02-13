@@ -220,12 +220,12 @@ void MainComponent::showScreen(std::unique_ptr<juce::Component>&& screen) {
     resized();
 }
 
-const juce::String& MainComponent::getUserId() {
+juce::String MainComponent::getUserId() {
     if (!userSettings) {
-        return "";
+        return juce::String{ };
     }
 
-    return userSettings->getValue("userId", "");
+    return userSettings->getValue("userId", juce::String{ });
 }
 
 void MainComponent::setLanguageFromData(const void* data, int size) {

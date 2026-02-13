@@ -15,7 +15,7 @@ class SoundEngine;
 
 class Test {
 public:
-    Test(MainComponent& mainComponentRef, SoundEngine& soundEngineRef)
+    Test(MainComponent& mainComponentRef, SoundEngine&)
         : mainComponent(mainComponentRef) {
     }
 
