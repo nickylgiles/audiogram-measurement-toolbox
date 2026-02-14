@@ -1,76 +1,42 @@
 /*
   ==============================================================================
 
-    PureToneResultsScreen.cpp
-    Created: 4 Nov 2025 7:24:41pm
+    AudiogramViewer.cpp
+    Created: 14 Feb 2026 11:30:49am
     Author:  nicky_hgjk9m6
 
   ==============================================================================
 */
 
-#include "PureToneResultsScreen.h"
+#include "AudiogramViewer.h"
 
-PureToneResultsScreen::PureToneResultsScreen() {
-    addAndMakeVisible(exportButton);
-    exportButton.onClick = [this] {if (onExportClicked) onExportClicked(); };
-
-    addAndMakeVisible(menuButton);
-    menuButton.onClick = [this] {if (onMenuClicked) onMenuClicked(); };
-
-    addAndMakeVisible(audiogram);
-}
-
-void PureToneResultsScreen::setResults(const PureToneTestResults& newResults) {
+void AudiogramViewer::setResults(const PureToneTestResults& newResults) {
     results = newResults;
-    audiogram.setResults(newResults);
 }
 
-void PureToneResultsScreen::resized() {
-    auto area = getLocalBounds().reduced(20);
-    auto buttonHeight = area.getHeight() / 6;
-
-    auto audiogramArea = area.removeFromTop(buttonHeight * 4);
-    audiogram.setBounds(audiogramArea);
-
-    exportButton.setBounds(area.removeFromTop(buttonHeight).reduced(10));
-    menuButton.setBounds(area.reduced(10));
-}
-
-void PureToneResultsScreen::paint(juce::Graphics& g) {
-    /*
+void AudiogramViewer::paint(juce::Graphics& g) {
     g.fillAll(juce::Colours::white);
     g.setColour(juce::Colours::black);
 
-    auto bounds = getLocalBounds().reduced(20);
-    bounds.removeFromBottom(bounds.getHeight() / 3  + 30);
+    auto bounds = getLocalBounds().reduced(15);
 
     drawAudiogram(g, bounds);
-
 }
 
-void PureToneResultsScreen::drawO(juce::Graphics& g, juce::Point<float> p, float diameter) {
-    float r = diameter * 0.5f;
-
-    g.drawEllipse(p.x - r, p.y - r, diameter, diameter, 2.0f);
-}
-
-void PureToneResultsScreen::drawX(juce::Graphics& g, juce::Point<float> p, float length) {
-    float r = length * 0.5f;
-
-    g.drawLine(p.x - r, p.y - r, p.x + r, p.y + r, 2.0f);
-    g.drawLine(p.x - r, p.y + r, p.x + r, p.y - r, 2.0f);
-}
-
-void PureToneResultsScreen::drawAudiogram(juce::Graphics& g, juce::Rectangle<int> bounds) {
+void AudiogramViewer::drawAudiogram(juce::Graphics& g, juce::Rectangle<int> bounds) {
 
     bounds.removeFromLeft(80); // for axis labels
-
+    bounds.removeFromRight(80); // for legend
+    bounds.removeFromBottom(30);
 
     auto h = bounds.getHeight();
     auto w = bounds.getWidth();
     auto x = bounds.getX();
     auto y = bounds.getY();
 
+    drawLegend(g, juce::Rectangle<int>(
+        x + w + 5, y + 40, 80, 60
+    ));
 
     float maxF = results.left.rbegin()->first;
     float minF = results.left.begin()->first * 0.5f;
@@ -92,7 +58,7 @@ void PureToneResultsScreen::drawAudiogram(juce::Graphics& g, juce::Rectangle<int
         float fDb = std::log10(f);
 
         g.drawText(juce::translate(juce::String(f)),
-            x + static_cast<int>( (fDb - minFdB) / (maxFdB - minFdB) * (w - 40) ),
+            x + static_cast<int>((fDb - minFdB) / (maxFdB - minFdB) * (w - 40)),
             y + h + 5,
             40,
             10,
@@ -114,7 +80,7 @@ void PureToneResultsScreen::drawAudiogram(juce::Graphics& g, juce::Rectangle<int
         g.drawText(juce::String(-i * 10),
             x - 40,
             y + i * static_cast<int>(h / 5),
-            40, 
+            40,
             10,
             juce::Justification::centred,
             true
@@ -130,7 +96,7 @@ void PureToneResultsScreen::drawAudiogram(juce::Graphics& g, juce::Rectangle<int
 
     for (auto r : results.left) {
         float f = r.first;
-        float xx = static_cast<float>( x + (std::log10(f) - minFdB)
+        float xx = static_cast<float>(x + (std::log10(f) - minFdB)
             / (maxFdB - minFdB) * w);
 
         g.drawLine(xx, static_cast<float>(y), xx, static_cast<float>(y + h), 1.0f);
@@ -138,16 +104,16 @@ void PureToneResultsScreen::drawAudiogram(juce::Graphics& g, juce::Rectangle<int
 
     g.setColour(juce::Colours::black);
     g.drawLine(
-        static_cast<float>(x), 
-        static_cast<float>(y + h), 
-        static_cast<float>(x + w), 
+        static_cast<float>(x),
+        static_cast<float>(y + h),
+        static_cast<float>(x + w),
         static_cast<float>(y + h)
     ); // x-axis
 
     g.drawLine(
         static_cast<float>(x),
-        static_cast<float>(y), 
-        static_cast<float>(x), 
+        static_cast<float>(y),
+        static_cast<float>(x),
         static_cast<float>(y + h)
     ); // y-axis
 
@@ -194,5 +160,60 @@ void PureToneResultsScreen::drawAudiogram(juce::Graphics& g, juce::Rectangle<int
         prevY = pY;
         connectPrev = true;
     }
-    */
+}
+
+void AudiogramViewer::drawO(juce::Graphics& g, juce::Point<float> p, float diameter) {
+    float r = diameter * 0.5f;
+
+    g.drawEllipse(p.x - r, p.y - r, diameter, diameter, 2.0f);
+}
+
+void AudiogramViewer::drawX(juce::Graphics& g, juce::Point<float> p, float length) {
+    float r = length * 0.5f;
+
+    g.drawLine(p.x - r, p.y - r, p.x + r, p.y + r, 2.0f);
+    g.drawLine(p.x - r, p.y + r, p.x + r, p.y - r, 2.0f);
+}
+
+void AudiogramViewer::drawLegend(juce::Graphics& g, juce::Rectangle<int> bounds) {
+    float sz = 15.0f;
+
+    g.drawRect(bounds.toFloat(), 1.0f);
+
+    juce::Point<float> xPos;
+    juce::Point<float> oPos;
+
+    xPos.setX(static_cast<float>(bounds.getX()) + sz + 5);
+    xPos.setY(static_cast<float>(bounds.getY()) + bounds.getHeight() * 0.25f);
+
+    oPos.setX(static_cast<float>(bounds.getX()) + sz + 5);
+    oPos.setY(static_cast<float>(bounds.getY()) + bounds.getHeight() * 0.75f);
+    
+    g.setColour(juce::Colours::blue);
+    drawX(g, xPos, sz);
+
+    g.setColour(juce::Colours::red);
+    drawO(g, oPos, sz);
+
+    juce::Rectangle<float> leftTextBounds;
+    juce::Rectangle<float> rightTextBounds;
+    float textX = static_cast<float>(bounds.getX()) + 2.0f * sz + 10;
+
+    leftTextBounds.setBounds(
+        textX,
+        bounds.getY(),
+        bounds.getRight() - textX,
+        bounds.getHeight() * 0.5f
+    );
+
+    rightTextBounds.setBounds(
+        textX,
+        bounds.getY() + bounds.getHeight() * 0.5f,
+        bounds.getRight() - textX,
+        bounds.getHeight() * 0.5f
+    );
+    
+    g.setColour(juce::Colours::black);
+    g.drawText(juce::translate("Left"), leftTextBounds, juce::Justification::centredLeft);
+    g.drawText(juce::translate("Right"), rightTextBounds, juce::Justification::centredLeft);
 }

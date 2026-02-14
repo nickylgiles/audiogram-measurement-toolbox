@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 
 #include "../../Results/PureToneTestResults.h" 
+#include "AudiogramViewer.h"
 
 class PureToneResultsScreen : public juce::Component {
 public:
@@ -29,6 +30,8 @@ public:
     void paint(juce::Graphics& g) override;
 
 private:
+    AudiogramViewer audiogram;
+
     void drawO(juce::Graphics& g, juce::Point<float> p, float diameter);
     void drawX(juce::Graphics& g, juce::Point<float> p, float length);
 

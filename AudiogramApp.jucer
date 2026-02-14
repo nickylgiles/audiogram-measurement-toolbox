@@ -470,6 +470,10 @@
                 file="Source/GUI/Spatial/SpatialTestScreen.h"/>
         </GROUP>
         <GROUP id="{98B309EA-E71D-4EC8-9703-2919D5DEA9BF}" name="PureTone">
+          <FILE id="DqRdfr" name="AudiogramViewer.cpp" compile="1" resource="0"
+                file="Source/GUI/PureTone/AudiogramViewer.cpp"/>
+          <FILE id="QnGIy7" name="AudiogramViewer.h" compile="0" resource="0"
+                file="Source/GUI/PureTone/AudiogramViewer.h"/>
           <FILE id="USnJp8" name="PureToneResultsScreen.cpp" compile="1" resource="0"
                 file="Source/GUI/PureTone/PureToneResultsScreen.cpp"/>
           <FILE id="LHb4vu" name="PureToneResultsScreen.h" compile="0" resource="0"
