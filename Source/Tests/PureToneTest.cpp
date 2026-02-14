@@ -52,7 +52,17 @@ void PureToneTest::exitTest() {
 }
 
 void PureToneTest::onTestFinish() {
-    mainComponent.showResultsScreen<PureToneResultsScreen, PureToneTestController>(controller);
+    auto results = controller.getResults();
+    auto screen = std::make_unique<PureToneResultsScreen>();
+
+    screen->setResults(results);
+    
+    screen->onMenuClicked = [this] {
+        mainComponent.showMenuScreen();
+        };
+
+    mainComponent.showScreen(std::move(screen));
+
 }
 
 juce::String PureToneTest::getName() {

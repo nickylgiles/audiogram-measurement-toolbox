@@ -22,6 +22,8 @@ public:
 
     void paint(juce::Graphics& g) override;
 
+    juce::Image createImage(int width, int height);
+
 private:
     void drawAudiogram(juce::Graphics& g, juce::Rectangle<int> bounds);
 

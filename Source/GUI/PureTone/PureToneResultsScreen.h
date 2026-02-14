@@ -27,15 +27,9 @@ public:
     std::function<void()> onMenuClicked;
 
     void resized() override;
-    void paint(juce::Graphics& g) override;
 
 private:
     AudiogramViewer audiogram;
-
-    void drawO(juce::Graphics& g, juce::Point<float> p, float diameter);
-    void drawX(juce::Graphics& g, juce::Point<float> p, float length);
-
-    void drawAudiogram(juce::Graphics& g, juce::Rectangle<int> bounds);
 
     juce::TextButton exportButton{ juce::translate("Export Results") };
     juce::TextButton menuButton{ juce::translate("Back to menu") };
@@ -43,6 +37,8 @@ private:
     PureToneTestResults results;
     std::vector<float> frequencies;
     std::vector<float> dbLevels;
+
+    std::unique_ptr<juce::FileChooser> fileChooser;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PureToneResultsScreen)
 };

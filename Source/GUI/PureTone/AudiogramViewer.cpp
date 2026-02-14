@@ -18,16 +18,29 @@ void AudiogramViewer::paint(juce::Graphics& g) {
     g.fillAll(juce::Colours::white);
     g.setColour(juce::Colours::black);
 
-    auto bounds = getLocalBounds().reduced(15);
+    auto bounds = getLocalBounds();
 
     drawAudiogram(g, bounds);
 }
 
+juce::Image AudiogramViewer::createImage(int width, int height) {
+    juce::Image image(juce::Image::RGB, width, height, true);
+
+    juce::Graphics g(image);
+    g.setColour(juce::Colours::white);
+    g.fillAll();
+
+    drawAudiogram(g, juce::Rectangle<int>(0, 0, width, height));
+
+    return image;
+}
+
 void AudiogramViewer::drawAudiogram(juce::Graphics& g, juce::Rectangle<int> bounds) {
 
-    bounds.removeFromLeft(80); // for axis labels
-    bounds.removeFromRight(80); // for legend
-    bounds.removeFromBottom(30);
+    bounds.removeFromLeft(85); // for axis labels
+    bounds.removeFromRight(100); // for legend
+    bounds.removeFromBottom(30); // x-axis
+    bounds.removeFromTop(15);
 
     auto h = bounds.getHeight();
     auto w = bounds.getWidth();
@@ -36,7 +49,7 @@ void AudiogramViewer::drawAudiogram(juce::Graphics& g, juce::Rectangle<int> boun
 
     drawLegend(g, 
         juce::Rectangle<int>(
-            x + w + 5,
+            x + w + 10,
             y + 40,
             80,
             60
@@ -177,7 +190,7 @@ void AudiogramViewer::drawAxes(juce::Graphics& g,juce::Rectangle<int> bounds, fl
 
     // Y labels
     g.drawText(juce::translate("Level") + juce::String(" (dB)"),
-        5,
+        x - 85,
         y + static_cast<int>(h / 2),
         80,
         20,
@@ -211,7 +224,7 @@ void AudiogramViewer::drawX(juce::Graphics& g, juce::Point<float> p, float lengt
 
 void AudiogramViewer::drawLegend(juce::Graphics& g, juce::Rectangle<int> bounds) {
     float sz = 15.0f;
-
+    g.setColour(juce::Colours::black);
     g.drawRect(bounds.toFloat(), 1.0f);
 
     juce::Point<float> xPos;
