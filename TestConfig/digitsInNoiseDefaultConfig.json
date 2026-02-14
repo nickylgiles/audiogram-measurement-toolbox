@@ -1,0 +1,15 @@
+{
+    "configName": "",
+    "numTrials": 10,
+    "numDigits": 3,
+    "dbIncrementAscending": 2.0,
+    "dbIncrementDescending": 2.0,
+    "dbInitial": 0.0,
+    "dbMax": 20.0,
+    "dbMin": -20.0,
+    "preDigitDelayMs": 500,
+    "interDigitDelayMs": 1000,
+    "interDigitJitterMs": 100,
+    "interTrialDelayMs": 1000,
+    "postDigitMaskingMs": 1000
+}

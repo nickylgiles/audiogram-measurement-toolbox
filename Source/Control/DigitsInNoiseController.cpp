@@ -16,6 +16,8 @@ class MainComponent;
 DigitsInNoiseController::DigitsInNoiseController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& configFile)
     : TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();})
 {
+    config = Config::loadFromFile(configFile);
+
     fm = std::make_unique<SpeechFileManager>();
     currentSequence.resize(config.numDigits);
 }
@@ -212,4 +214,94 @@ void DigitsInNoiseController::timerCallback() {
     default:
         break;
     }
+}
+
+DigitsInNoiseController::Config
+DigitsInNoiseController::Config::loadFromFile(const juce::File& file) {
+    Config config;
+
+    if (!file.existsAsFile()) {
+        DBG("Config file not found.  Using defaults.");
+        return config;
+    }
+
+    juce::var json = juce::JSON::parse(file);
+
+    if (!json.isObject()) {
+        DBG("Invalid JSON format in config. Using defaults.");
+        return config;
+    }
+
+    auto* root = json.getDynamicObject();
+    if (!root) {
+        DBG("Invalid JSON format in config. Using defaults.");
+        return config;
+    }
+
+    if (root->hasProperty("configName")) {
+        config.name = root->getProperty("configName").toString();
+    }
+
+    if (root->hasProperty("numTrials")) {
+        config.numTrials = static_cast<int>(
+            root->getProperty("numTrials"));
+    }
+
+    if (root->hasProperty("numDigits")) {
+        config.numDigits = static_cast<int>(
+            root->getProperty("numDigits"));
+    }
+
+    if (root->hasProperty("dbIncrementAscending")) {
+        config.dbIncrementAscending = static_cast<float>(
+            root->getProperty("dbIncrementAscending"));
+    }
+
+    if (root->hasProperty("dbIncrementDescending")) {
+        config.dbIncrementDescending = static_cast<float>(
+            root->getProperty("dbIncrementDescending"));
+    }
+
+    if (root->hasProperty("dbInitial")) {
+        config.dbInitial = static_cast<float>(
+            root->getProperty("dbInitial"));
+    }
+
+    if (root->hasProperty("dbMax")) {
+        config.dbMax = static_cast<float>(
+            root->getProperty("dbMax"));
+    }
+
+    if (root->hasProperty("dbMin")) {
+        config.dbMin = static_cast<float>(
+            root->getProperty("dbMin"));
+    }
+    
+
+    if (root->hasProperty("preDigitDelayMs")) {
+        config.preDigitDelayMs = static_cast<int>(
+            root->getProperty("preDigitDelayMs"));
+    }
+
+    if (root->hasProperty("interDigitDelayMs")) {
+        config.interDigitDelayMs = static_cast<int>(
+            root->getProperty("interDigitDelayMs"));
+    }
+
+    if (root->hasProperty("interDigitJitterMs")) {
+        config.interDigitJitterMs = static_cast<int>(
+            root->getProperty("interDigitJitterMs"));
+    }
+
+    if (root->hasProperty("interTrialDelayMs")) {
+        config.interTrialDelayMs = static_cast<int>(
+            root->getProperty("interTrialDelayMs"));
+    }
+
+    if (root->hasProperty("postDigitMaskingMs")) {
+        config.postDigitMaskingMs = static_cast<int>(
+            root->getProperty("postDigitMaskingMs"));
+    }
+
+    return config;
 }

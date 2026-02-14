@@ -19,6 +19,8 @@ class DigitsInNoiseController : public TestController {
 public:
     // Configuration parameters
     struct Config {
+        juce::String name = "";
+
         int numTrials = 10;
         int numDigits = 3;
 
