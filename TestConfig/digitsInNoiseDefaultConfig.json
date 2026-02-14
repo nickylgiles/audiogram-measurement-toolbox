@@ -1,5 +1,5 @@
 {
-    "configName": "",
+    "configName": "default",
     "numTrials": 10,
     "numDigits": 3,
     "dbIncrementAscending": 2.0,

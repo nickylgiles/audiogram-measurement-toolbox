@@ -18,7 +18,50 @@
 
 class DualTaskTestController : public TestController {
 public:
+	// Configuration parameters
+	struct Config {
+		juce::String name = "";
+
+		std::vector<float> testAzimuths = { 
+			-90.0f,
+			-75.0f,
+			-60.0f,
+			-45.0f,
+			-30.0f,
+			-15.0f,
+			 0.0f, 
+			 15.0f,
+			 30.0f, 
+			 45.0f, 
+			 60.0f, 
+			 75.0f, 
+			 90.0f 
+		};
+
+		std::vector<float> maskingAzimuths = { 
+			-90.0f,
+			-30.0f,
+			 30.0f,
+			 90.0f 
+		};
+
+		int numTrials = 10;
+
+		float signalAmplitudeDb = -10.0f;
+		float maskingAmplitudeDb = -25.0f;
+
+		// Timing Parameters
+		int signalDurationMs = 1000;
+		int interSignalDelayMs = 500;
+		int preSignalDelayMs = 1000;
+		int postSignalMaskingMs = 500;
+		int interTrialDelayMs = 1000;
+
+		static Config loadFromFile(const juce::File& file);
+	};
+
 	DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& configFile);
+
 	void startTest() override;
 	void stopTest() override;
 
@@ -30,6 +73,8 @@ public:
 	std::function<void(const std::vector<juce::String>&)> setWords;
 
 private:
+	Config config;
+
 	TestControllerTimer timer;
 
 	enum class TestState {
@@ -65,29 +110,13 @@ private:
 	std::vector<juce::String> currentWordGroup;
 	juce::String targetWord;
 	juce::String referenceWord;
-	
-	std::vector<float> testAzimuths = { -90.0f, -75.0f, -60.0f, -45.0f, -30.0f, -15.0f, 0.0f, 15.0f, 30.0f, 45.0f, 60.0f, 75.0f, 90.0f };
-
-	std::vector<float> maskingAzimuths = { -90.0f, -30.0f, 30.0f, 90.0f };
 
 	int currentTrial = 0;
-	int numTrials = 10;
-
 	float firstAzimuth, secondAzimuth;
 	bool moveLeft;
 
-	float signalAmplitudeDb = -10.0f;
-	float maskingAmplitudeDb = -25.0f;
-
 	float signalAmplitude = 0.25f;
 	float maskingAmplitude = 0.1f;
-
-	float signalDuration = 1.0f;
-	float interSignalDelay = 0.5f;
-	float preSignalDelay = 1.0f;
-	float postSignalMasking = 0.5f;
-
-	float interTrialDelay = 1.0f;
 
 	bool userRespondedSpatial = false;
 	bool spatialResponseLeft;

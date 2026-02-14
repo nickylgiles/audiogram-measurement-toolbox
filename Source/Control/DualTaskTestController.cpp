@@ -14,6 +14,8 @@
 DualTaskTestController::DualTaskTestController(MainComponent& mainComponentRef, SoundEngine& soundEngineRef, const juce::File& configFile)
     : TestController(mainComponentRef, soundEngineRef), timer([this] {timerCallback();})
 {
+    config = Config::loadFromFile(configFile);
+
     fm = std::make_unique<SpeechFileManager>();
 
     currentState = TestState::END;
@@ -28,8 +30,8 @@ DualTaskTestController::DualTaskTestController(MainComponent& mainComponentRef, 
     chosenWord = "";
 
     // Using a fixed SNR for the test
-    signalAmplitude = dbToAmplitude(signalAmplitudeDb);
-    maskingAmplitude = dbToAmplitude(maskingAmplitudeDb);
+    signalAmplitude = dbToAmplitude(config.signalAmplitudeDb);
+    maskingAmplitude = dbToAmplitude(config.maskingAmplitudeDb);
 }
 
 void DualTaskTestController::startTest() {
@@ -74,7 +76,7 @@ void DualTaskTestController::buttonClicked(const juce::String& id) {
         if (userRespondedSpatial && userRespondedSpeech) {
             checkUserResponse();
             currentState = TestState::NEXT_TRIAL;
-            scheduleNextState(static_cast<int>(interTrialDelay * 1000));
+            scheduleNextState(config.interTrialDelayMs);
         }
     }
 }
@@ -85,13 +87,13 @@ void DualTaskTestController::checkUserResponse() {
     response.spatialTestResponse.referenceAzimuth = firstAzimuth;
     response.spatialTestResponse.targetAzimuth = secondAzimuth;
     response.spatialTestResponse.spatialCorrect = (spatialResponseLeft == moveLeft);
-    response.spatialTestResponse.snr = signalAmplitudeDb - maskingAmplitudeDb;
+    response.spatialTestResponse.snr = config.signalAmplitudeDb - config.maskingAmplitudeDb;
 
     // Check if word correct
     response.wordTestResponse.targetWord = targetWord;
     response.wordTestResponse.reportedWord = chosenWord;
     response.wordTestResponse.wordCorrect = (targetWord == chosenWord);
-    response.wordTestResponse.snr = signalAmplitudeDb - maskingAmplitudeDb;
+    response.wordTestResponse.snr = config.signalAmplitudeDb - config.maskingAmplitudeDb;
     
     DBG("Spatial response " << (response.spatialTestResponse.spatialCorrect ? "correct" : "incorrect"));
     DBG("Word response " << (response.wordTestResponse.wordCorrect ? "correct" : "incorrect"));
@@ -111,24 +113,25 @@ void DualTaskTestController::timerCallback() {
             currentTrial = 1;
             currentState = TestState::TRIAL_START;
             playMaskingNoise();
-            scheduleNextState(static_cast<int>(preSignalDelay * 1000));
+            scheduleNextState(config.preSignalDelayMs);
             break;
+
         case TestState::TRIAL_START:
             chooseRandomWordGroup();
             playReferenceWord();
-            scheduleNextState(static_cast<int>(signalDuration * 1000));
+            scheduleNextState(config.signalDurationMs);
             currentState = TestState::FIRST_SOUND;
             break;
 
         case TestState::FIRST_SOUND:
             currentState = TestState::WAIT_BETWEEN_SOUNDS;
-            scheduleNextState(static_cast<int>(interSignalDelay * 1000));
+            scheduleNextState(config.interSignalDelayMs);
             break;
 
         case TestState::WAIT_BETWEEN_SOUNDS:
             currentState = TestState::SECOND_SOUND;
             playTargetWord();
-            scheduleNextState(static_cast<int>(signalDuration * 1000));
+            scheduleNextState(config.signalDurationMs);
             break;
 
         case TestState::SECOND_SOUND:
@@ -145,17 +148,18 @@ void DualTaskTestController::timerCallback() {
 
         case TestState::NEXT_TRIAL:
             setInputsEnabled(false);
-            if (currentTrial < numTrials) {
+            if (currentTrial < config.numTrials) {
                 currentTrial++;
                 currentState = TestState::TRIAL_START;
                 playMaskingNoise();
-                scheduleNextState(static_cast<int>(preSignalDelay * 1000));
+                scheduleNextState(config.preSignalDelayMs);
             }
             else {
                 currentState = TestState::END;
                 scheduleNextState(1);
             }
             break;
+
         case TestState::END:
             if (onTestFinished)
                 onTestFinished();
@@ -170,8 +174,11 @@ void DualTaskTestController::scheduleNextState(int delayMs) {
 }
 
 void DualTaskTestController::playReferenceWord() {
-    auto azIdx = static_cast<size_t>(random.nextInt((int)testAzimuths.size()));
-    firstAzimuth = testAzimuths[azIdx];
+    auto azIdx = static_cast<size_t>(
+        random.nextInt(static_cast<int>( config.testAzimuths.size() ))
+    );
+
+    firstAzimuth = config.testAzimuths[azIdx];
     if (currentWordGroup.size() > 0) {
         size_t wordIdx = abs(random.nextInt()) % currentWordGroup.size();
         referenceWord = currentWordGroup[wordIdx];
@@ -203,9 +210,15 @@ void DualTaskTestController::playTargetWord() {
 }
 
 void DualTaskTestController::playMaskingNoise() {
-    float maskingDuration = preSignalDelay + 2.0f * signalDuration + interSignalDelay + postSignalMasking;
-    for (float az : maskingAzimuths)
-        soundEngine.playNoiseSpatial(maskingAmplitude / maskingAzimuths.size(), maskingDuration, 0.0f, az);
+    int maskingDurationMs = config.preSignalDelayMs
+                           + (2 * config.signalDurationMs)
+                           + config.interSignalDelayMs
+                           + config.postSignalMaskingMs;
+
+    float maskingDuration = static_cast<float>(maskingDurationMs) * 0.001f;
+
+    for (float az : config.maskingAzimuths)
+        soundEngine.playNoiseSpatial(maskingAmplitude / config.maskingAzimuths.size(), maskingDuration, 0.0f, az);
 }
 
 void DualTaskTestController::playWordSpatial(juce::String word, float azimuth) {
@@ -221,4 +234,92 @@ void DualTaskTestController::chooseRandomWordGroup() {
         currentWordGroup = fm->getWordsInGroup(currentGroupId);
         setWords(currentWordGroup);
     }
+}
+
+DualTaskTestController::Config
+DualTaskTestController::Config::loadFromFile(const juce::File& file) {
+    Config config;
+
+    if (!file.existsAsFile()) {
+        DBG("Config file not found.  Using defaults.");
+        return config;
+    }
+
+    juce::var json = juce::JSON::parse(file);
+
+    if (!json.isObject()) {
+        DBG("Invalid JSON format in config. Using defaults.");
+        return config;
+    }
+
+    auto* root = json.getDynamicObject();
+    if (!root) {
+        DBG("Invalid JSON format in config. Using defaults.");
+        return config;
+    }
+
+    if (root->hasProperty("configName")) {
+        config.name = root->getProperty("configName").toString();
+    }
+
+    if (root->hasProperty("numTrials")) {
+        config.numTrials = static_cast<int>(
+            root->getProperty("numTrials"));
+    }
+
+    if (root->hasProperty("testAzimuths")) {
+        auto tonesVar = root->getProperty("testAzimuths");
+        if (tonesVar.isArray()) {
+            config.testAzimuths.clear();
+            for (auto& t : *tonesVar.getArray())
+                config.testAzimuths.push_back((float)t);
+        }
+    }
+
+    if (root->hasProperty("maskingAzimuths")) {
+        auto tonesVar = root->getProperty("maskingAzimuths");
+        if (tonesVar.isArray()) {
+            config.maskingAzimuths.clear();
+            for (auto& t : *tonesVar.getArray())
+                config.maskingAzimuths.push_back((float)t);
+        }
+    }
+
+
+    if (root->hasProperty("signalAmplitudeDb")) {
+        config.signalAmplitudeDb = static_cast<float>(
+            root->getProperty("signalAmplitudeDb"));
+    }
+
+    if (root->hasProperty("maskingAmplitudeDb")) {
+        config.maskingAmplitudeDb = static_cast<float>(
+            root->getProperty("maskingAmplitudeDb"));
+    }
+
+    if (root->hasProperty("signalDurationMs")) {
+        config.signalDurationMs = static_cast<int>(
+            root->getProperty("signalDurationMs"));
+    }
+
+    if (root->hasProperty("interSignalDelayMs")) {
+        config.interSignalDelayMs = static_cast<int>(
+            root->getProperty("interSignalDelayMs"));
+    }
+
+    if (root->hasProperty("preSignalDelayMs")) {
+        config.preSignalDelayMs = static_cast<int>(
+            root->getProperty("preSignalDelayMs"));
+    }
+
+    if (root->hasProperty("postSignalMaskingMs")) {
+        config.postSignalMaskingMs = static_cast<int>(
+            root->getProperty("postSignalMaskingMs"));
+    }
+
+    if (root->hasProperty("interTrialDelayMs")) {
+        config.interTrialDelayMs = static_cast<int>(
+            root->getProperty("interTrialDelayMs"));
+    }
+
+    return config;
 }
