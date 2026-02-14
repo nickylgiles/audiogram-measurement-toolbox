@@ -34,8 +34,12 @@ void AudiogramViewer::drawAudiogram(juce::Graphics& g, juce::Rectangle<int> boun
     auto x = bounds.getX();
     auto y = bounds.getY();
 
-    drawLegend(g, juce::Rectangle<int>(
-        x + w + 5, y + 40, 80, 60
+    drawLegend(g, 
+        juce::Rectangle<int>(
+            x + w + 5,
+            y + 40,
+            80,
+            60
     ));
 
     float maxF = results.left.rbegin()->first;
@@ -43,6 +47,110 @@ void AudiogramViewer::drawAudiogram(juce::Graphics& g, juce::Rectangle<int> boun
 
     float minFdB = std::log10(minF);
     float maxFdB = std::log10(maxF);
+
+    drawAxes(g, bounds, minFdB, maxFdB);
+    drawGrid(g, bounds, minFdB, maxFdB);
+
+    drawDataPoints(g, bounds, minF, maxF);
+}
+
+void AudiogramViewer::drawDataPoints(juce::Graphics& g, juce::Rectangle<int> bounds, float minF, float maxF) {
+
+    auto h = bounds.getHeight();
+    auto w = bounds.getWidth();
+    auto x = bounds.getX();
+    auto y = bounds.getY();
+
+    float minFdB = std::log10(minF);
+    float maxFdB = std::log10(maxF);
+
+    float prevX = 0.0f;
+    float prevY = 0.0f;
+
+    bool connectPrev = false;
+    // Left: Blue X
+    for (auto r : results.left) {
+        float f = r.first;
+        float t = r.second;
+        float pX = x + (std::log10(f) - minFdB) / (maxFdB - minFdB) * w;
+        float pY = y + h * (1.0f + t / 50.0f);
+        g.setColour(juce::Colours::blue);
+        drawX(g, juce::Point<float>(pX, pY), 15.0f);
+
+        if (connectPrev) {
+            juce::Point<float> p1(pX, pY);
+            juce::Point<float> p2(prevX, prevY);
+            g.drawLine(juce::Line<float>(p1, p2), 1.0f);
+        }
+        prevX = pX;
+        prevY = pY;
+        connectPrev = true;
+    }
+
+    connectPrev = false;
+    // Right: Red O
+    for (auto r : results.right) {
+        float f = r.first;
+        float t = r.second;
+        float pX = x + (std::log10(f) - std::log10(minF)) / (std::log10(maxF) - std::log10(minF)) * (w);
+        float pY = y + h * (1.0f + t / 50.0f);
+        g.setColour(juce::Colours::red);
+        drawO(g, juce::Point<float>(pX, pY), 15.0f);
+
+        if (connectPrev) {
+            juce::Point<float> p1(pX, pY);
+            juce::Point<float> p2(prevX, prevY);
+            g.drawLine(juce::Line<float>(p1, p2), 1.0f);
+        }
+        prevX = pX;
+        prevY = pY;
+        connectPrev = true;
+    }
+}
+
+void AudiogramViewer::drawGrid(juce::Graphics& g, juce::Rectangle<int> bounds, float minFdB, float maxFdB) {
+    g.setColour(juce::Colours::lightgrey);
+
+    auto h = bounds.getHeight();
+    auto w = bounds.getWidth();
+    auto x = bounds.getX();
+    auto y = bounds.getY();
+
+    for (int i = 0; i <= 5; ++i) {
+        float yy = static_cast<float>(y + i * (h / 5.0f));
+        g.drawLine(static_cast<float>(x), yy, static_cast<float>(x + w), yy, 1.0f);
+    }
+
+    for (auto r : results.left) {
+        float f = r.first;
+        float xx = static_cast<float>(x + (std::log10(f) - minFdB)
+            / (maxFdB - minFdB) * w);
+
+        g.drawLine(xx, static_cast<float>(y), xx, static_cast<float>(y + h), 1.0f);
+    }
+}
+
+void AudiogramViewer::drawAxes(juce::Graphics& g,juce::Rectangle<int> bounds, float minFdB, float maxFdB) {
+
+    auto h = bounds.getHeight();
+    auto w = bounds.getWidth();
+    auto x = bounds.getX();
+    auto y = bounds.getY();
+
+    g.setColour(juce::Colours::black);
+    g.drawLine(
+        static_cast<float>(x),
+        static_cast<float>(y + h),
+        static_cast<float>(x + w),
+        static_cast<float>(y + h)
+    ); // x-axis
+
+    g.drawLine(
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(x),
+        static_cast<float>(y + h)
+    ); // y-axis
 
     // X labels
     g.drawText(juce::translate("Frequency") + juce::String(" (Hz)"),
@@ -85,80 +193,6 @@ void AudiogramViewer::drawAudiogram(juce::Graphics& g, juce::Rectangle<int> boun
             juce::Justification::centred,
             true
         );
-    }
-
-    g.setColour(juce::Colours::lightgrey);
-
-    for (int i = 0; i <= 5; ++i) {
-        float yy = static_cast<float>(y + i * (h / 5.0f));
-        g.drawLine(static_cast<float>(x), yy, static_cast<float>(x + w), yy, 1.0f);
-    }
-
-    for (auto r : results.left) {
-        float f = r.first;
-        float xx = static_cast<float>(x + (std::log10(f) - minFdB)
-            / (maxFdB - minFdB) * w);
-
-        g.drawLine(xx, static_cast<float>(y), xx, static_cast<float>(y + h), 1.0f);
-    }
-
-    g.setColour(juce::Colours::black);
-    g.drawLine(
-        static_cast<float>(x),
-        static_cast<float>(y + h),
-        static_cast<float>(x + w),
-        static_cast<float>(y + h)
-    ); // x-axis
-
-    g.drawLine(
-        static_cast<float>(x),
-        static_cast<float>(y),
-        static_cast<float>(x),
-        static_cast<float>(y + h)
-    ); // y-axis
-
-    // Data points 
-    float prevX = 0.0f;
-    float prevY = 0.0f;
-
-    bool connectPrev = false;
-    // Left: Blue X
-    for (auto r : results.left) {
-        float f = r.first;
-        float t = r.second;
-        float pX = x + (std::log10(f) - minFdB) / (maxFdB - minFdB) * w;
-        float pY = y + h * (1.0f + t / 50.0f);
-        g.setColour(juce::Colours::blue);
-        drawX(g, juce::Point<float>(pX, pY), 15.0f);
-
-        if (connectPrev) {
-            juce::Point<float> p1(pX, pY);
-            juce::Point<float> p2(prevX, prevY);
-            g.drawLine(juce::Line<float>(p1, p2), 2.0f);
-        }
-        prevX = pX;
-        prevY = pY;
-        connectPrev = true;
-    }
-
-    connectPrev = false;
-    // Right: Red O
-    for (auto r : results.right) {
-        float f = r.first;
-        float t = r.second;
-        float pX = x + (std::log10(f) - std::log10(minF)) / (std::log10(maxF) - std::log10(minF)) * (w);
-        float pY = y + h * (1.0f + t / 50.0f);
-        g.setColour(juce::Colours::red);
-        drawO(g, juce::Point<float>(pX, pY), 15.0f);
-
-        if (connectPrev) {
-            juce::Point<float> p1(pX, pY);
-            juce::Point<float> p2(prevX, prevY);
-            g.drawLine(juce::Line<float>(p1, p2), 2.0f);
-        }
-        prevX = pX;
-        prevY = pY;
-        connectPrev = true;
     }
 }
 

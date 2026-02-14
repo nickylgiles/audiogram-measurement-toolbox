@@ -25,6 +25,12 @@ public:
 private:
     void drawAudiogram(juce::Graphics& g, juce::Rectangle<int> bounds);
 
+    void drawDataPoints(juce::Graphics& g, juce::Rectangle<int> bounds, float minF, float maxF);
+
+    void drawGrid(juce::Graphics& g, juce::Rectangle<int> bounds, float minFdB, float maxFdB);
+
+    void drawAxes(juce::Graphics& g, juce::Rectangle<int> bounds, float minFdB, float maxFdB);
+
     void drawO(juce::Graphics& g, juce::Point<float> p, float diameter);
     void drawX(juce::Graphics& g, juce::Point<float> p, float length);
 
