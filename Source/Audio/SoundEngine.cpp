@@ -11,7 +11,11 @@
 #include "SoundEngine.h"
 
 SoundEngine::SoundEngine() {
+    sampleRate = 44100.0;
+}
 
+void SoundEngine::playSource(std::unique_ptr<SoundSource>&& source) {
+    addSource(std::move(source));
 }
 
 void SoundEngine::playTone(float frequency, float amplitude, float duration, int channel) {

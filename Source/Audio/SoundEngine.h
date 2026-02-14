@@ -23,6 +23,9 @@
 class SoundEngine {
 public:
     SoundEngine();
+
+    void playSource(std::unique_ptr<SoundSource>&& source);
+
     void playTone(float frequency, float amplitude, float duration, int channel);
     void playToneMasked(float frequency, float amplitude, float duration, int channel);
 
