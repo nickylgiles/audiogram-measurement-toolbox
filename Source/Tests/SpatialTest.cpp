@@ -59,7 +59,7 @@ void SpatialTest::exitTest() {
 }
 
 void SpatialTest::onTestFinish() {
-    mainComponent.logTestResults(results);
+    mainComponent.logTestResults(controller.getResults());
 
     mainComponent.showResultsScreen<SpatialResultsScreen, SpatialTestController>(controller);
 }

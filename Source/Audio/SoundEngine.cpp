@@ -80,30 +80,27 @@ void SoundEngine::setSampleRate(double newSampleRate) {
     stop();
 }
 
-void SoundEngine::setSamplesPerBlockExpected(int) {
-    // Nothing to do currently
+void SoundEngine::setSamplesPerBlockExpected(int samplesPerBlock) {
+    tempBuffer.setSize(2, samplesPerBlock);
+    sourceBuffer.setSize(2, samplesPerBlock);
 }
 
 
 void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
 
-    juce::AudioBuffer<float> sourcesL(1, numSamples);
-    juce::AudioBuffer<float> sourcesR(1, numSamples);
+    sourceBuffer.setSize(2, numSamples, true, false, true);
+    tempBuffer.setSize(2, numSamples, true, false, true);
 
-    float* sourcesLPtr = sourcesL.getWritePointer(0);
-    float* sourcesRPtr = sourcesR.getWritePointer(0);
+    float* sourcesLPtr = sourceBuffer.getWritePointer(0);
+    float* sourcesRPtr = sourceBuffer.getWritePointer(1);
 
     for (int i = 0; i < numSamples; ++i) {
         sourcesLPtr[i] = 0.0f;
         sourcesRPtr[i] = 0.0f;
     }
 
-    
-    juce::AudioBuffer<float> leftBuf(1, numSamples);
-    juce::AudioBuffer<float> rightBuf(1, numSamples);
-
-    float* tempL = leftBuf.getWritePointer(0);
-    float* tempR = rightBuf.getWritePointer(0);
+    float* tempL = tempBuffer.getWritePointer(0);
+    float* tempR = tempBuffer.getWritePointer(1);
 
     const juce::SpinLock::ScopedLockType lock(sourceLock);
 

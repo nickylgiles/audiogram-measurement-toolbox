@@ -38,7 +38,8 @@ bool ResultsLogger::logResults(const juce::String& userId, const SpatialTestResu
         return false;
     }
 
-    juce::String timestamp = juce::Time::getCurrentTime().toString(true, true, true, true);
+    juce::String timestamp = juce::Time::getCurrentTime()
+        .toString(true, true, true, true);
 
     int testId = getNextTestId("SpatialResults");
 
@@ -78,7 +79,8 @@ bool ResultsLogger::logResults(const juce::String& userId, const PureToneTestRes
         return false;
     }
 
-    juce::String timestamp = juce::Time::getCurrentTime().toString(true, true, true, true);
+    juce::String timestamp = juce::Time::getCurrentTime()
+        .toString(true, true, true, true);
 
     int testId = getNextTestId("PureToneResults");
 
@@ -120,7 +122,8 @@ bool ResultsLogger::logResults(const juce::String& userId, const SpeechInNoiseTe
         return false;
     }
 
-    juce::String timestamp = juce::Time::getCurrentTime().toString(true, true, true, true);
+    juce::String timestamp = juce::Time::getCurrentTime()
+        .toString(true, true, true, true);
 
     int testId = getNextTestId("DigitsInNoiseResults");
 

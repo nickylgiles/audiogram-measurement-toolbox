@@ -49,6 +49,9 @@ public:
 private:
     void addSource(std::unique_ptr<SoundSource> source);
 
+    juce::AudioBuffer<float> sourceBuffer;
+    juce::AudioBuffer<float> tempBuffer;
+
     double sampleRate;
 
     std::vector<std::unique_ptr<SoundSource>> sources;

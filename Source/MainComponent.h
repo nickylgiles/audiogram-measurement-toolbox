@@ -56,8 +56,6 @@ public:
 
         screen->setResults(results);
         screen->onExportClicked = [this, results, userId] {
-            
-
             if (resultsLogger.logResults(userId, results)) {
                 DBG("Test results logged successfully.");
             }
