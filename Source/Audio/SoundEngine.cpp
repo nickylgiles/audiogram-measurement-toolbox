@@ -91,13 +91,10 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
     sourceBuffer.setSize(2, numSamples, true, false, true);
     tempBuffer.setSize(2, numSamples, true, false, true);
 
+    sourceBuffer.clear();
+
     float* sourcesLPtr = sourceBuffer.getWritePointer(0);
     float* sourcesRPtr = sourceBuffer.getWritePointer(1);
-
-    for (int i = 0; i < numSamples; ++i) {
-        sourcesLPtr[i] = 0.0f;
-        sourcesRPtr[i] = 0.0f;
-    }
 
     float* tempL = tempBuffer.getWritePointer(0);
     float* tempR = tempBuffer.getWritePointer(1);
