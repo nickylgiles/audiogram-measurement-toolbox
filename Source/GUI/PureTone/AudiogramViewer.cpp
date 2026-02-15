@@ -42,7 +42,6 @@ void AudiogramViewer::drawAudiogram(juce::Graphics& g, juce::Rectangle<int> boun
     bounds.removeFromBottom(30); // x-axis
     bounds.removeFromTop(15);
 
-    auto h = bounds.getHeight();
     auto w = bounds.getWidth();
     auto x = bounds.getX();
     auto y = bounds.getY();
@@ -248,8 +247,8 @@ void AudiogramViewer::drawLegend(juce::Graphics& g, juce::Rectangle<int> bounds)
 
     leftTextBounds.setBounds(
         textX,
-        bounds.getY(),
-        bounds.getRight() - textX,
+        static_cast<float>(bounds.getY()),
+        static_cast<float>(bounds.getRight() - textX),
         bounds.getHeight() * 0.5f
     );
 

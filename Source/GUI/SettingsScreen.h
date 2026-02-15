@@ -142,7 +142,7 @@ private:
     };
 
     struct Setting {
-        enum class Type { Button, TextInput, Title } type;
+        enum class Type { Button, TextInput, Title } type = Type::Button;
         juce::String name = "";
         std::function<void()> onClick = nullptr;
         juce::String textValue = "";

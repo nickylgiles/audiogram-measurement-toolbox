@@ -14,8 +14,8 @@
 #include "SpeechInNoiseTestResults.h"
 
 struct DualTaskTestResponse {
-    SpeechInNoiseTestResponse wordTestResponse;
-    SpatialTestResponse spatialTestResponse;
+    SpeechInNoiseTestResponse wordTestResponse{};
+    SpatialTestResponse spatialTestResponse {};
 };
 
 struct DualTaskTestResults {

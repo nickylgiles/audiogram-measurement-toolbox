@@ -16,7 +16,7 @@
 struct SpeechInNoiseTestResponse {
     juce::String targetWord;
     juce::String reportedWord;
-    float snr;
+    float snr = 0.0f;
     bool wordCorrect;
 };
 

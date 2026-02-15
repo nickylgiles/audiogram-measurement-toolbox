@@ -40,7 +40,7 @@ void PureToneTestScreen::resized() {
     
 }
 
-void PureToneTestScreen::paint(juce::Graphics& g) {
+void PureToneTestScreen::paint(juce::Graphics&) {
     if (!hasKeyboardFocus(false)) {
         grabKeyboardFocus();
     }

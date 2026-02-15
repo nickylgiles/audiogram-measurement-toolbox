@@ -12,6 +12,7 @@
 
 HRTFManager::HRTFManager() {
     audioFormatManager.registerBasicFormats();
+    sampleRate = 44100.0;
 }
 
 /*

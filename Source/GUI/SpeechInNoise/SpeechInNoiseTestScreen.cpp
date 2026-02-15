@@ -58,7 +58,7 @@ void SpeechInNoiseTestScreen::resized() {
     stopButton.setBounds(10, 10, 100, 40);
 }
 
-void SpeechInNoiseTestScreen::paint(juce::Graphics& g) {
+void SpeechInNoiseTestScreen::paint(juce::Graphics&) {
     
     if (!hasKeyboardFocus(false)) {
         grabKeyboardFocus();
