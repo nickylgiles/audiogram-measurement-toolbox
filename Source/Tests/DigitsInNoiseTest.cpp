@@ -66,6 +66,8 @@ void DigitsInNoiseTest::exitTest() {
 }
 
 void DigitsInNoiseTest::onTestFinish() {
+    mainComponent.logTestResults(controller.getResults());
+
     mainComponent.showResultsScreen<SpeechInNoiseResultsScreen, DigitsInNoiseController>(controller);
 }
 

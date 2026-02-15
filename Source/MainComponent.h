@@ -72,6 +72,11 @@ public:
         showScreen(std::move(screen));
     }
 
+    template <typename ResultsT>
+    void logTestResults(const ResultsT& results) {
+        resultsLogger.logResults(getUserId(), results);
+    }
+
 private:
     //==============================================================================
     // Your private member variables go here...

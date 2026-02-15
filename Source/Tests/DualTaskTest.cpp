@@ -83,6 +83,8 @@ void DualTaskTest::exitTest() {
 }
 
 void DualTaskTest::onTestFinish() {
+    mainComponent.logTestResults(controller.getResults());
+
     mainComponent.showResultsScreen<DualTaskResultsScreen, DualTaskTestController>(controller);
 }
 

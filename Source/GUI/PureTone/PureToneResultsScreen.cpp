@@ -20,7 +20,6 @@ PureToneResultsScreen::PureToneResultsScreen() {
     addAndMakeVisible(audiogram);
 
     onExportClicked = [this] {
-        // juce::Image image = audiogram.createImage(1000, 1000);
         fileChooser = std::make_unique<juce::FileChooser>("Save Audiogram as PNG",
             juce::File::getSpecialLocation(
                 juce::File::userDocumentsDirectory),

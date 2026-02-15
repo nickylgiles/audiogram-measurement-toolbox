@@ -55,6 +55,8 @@ void PureToneTest::onTestFinish() {
     auto results = controller.getResults();
     auto screen = std::make_unique<PureToneResultsScreen>();
 
+    mainComponent.logTestResults(results);
+
     screen->setResults(results);
     
     screen->onMenuClicked = [this] {
