@@ -347,6 +347,16 @@
       <FILE id="TqqMSB" name="AudiogramAppApplication.h" compile="0" resource="0"
             file="Source/AudiogramAppApplication.h"/>
       <GROUP id="{ABE302EF-2999-A2B1-B4F2-0A68B6276078}" name="Audio">
+        <GROUP id="{6A0429B1-A10C-9C32-15FC-EBCCEB46ADB4}" name="Calibration">
+          <FILE id="uwfgOR" name="CalibrationFilter.cpp" compile="1" resource="0"
+                file="Source/Audio/Calibration/CalibrationFilter.cpp"/>
+          <FILE id="Jlz5Rd" name="CalibrationFilter.h" compile="0" resource="0"
+                file="Source/Audio/Calibration/CalibrationFilter.h"/>
+          <FILE id="sgEYcq" name="CalibrationFilterParams.cpp" compile="1" resource="0"
+                file="Source/Audio/Calibration/CalibrationFilterParams.cpp"/>
+          <FILE id="uJfC4l" name="CalibrationFilterParams.h" compile="0" resource="0"
+                file="Source/Audio/Calibration/CalibrationFilterParams.h"/>
+        </GROUP>
         <GROUP id="{8C2632EB-A318-E1FE-07D4-30C71CC7F6E0}" name="Speech">
           <FILE id="YqRL2f" name="SpeechFileManager.cpp" compile="1" resource="0"
                 file="Source/Audio/Speech/SpeechFileManager.cpp"/>
