@@ -16,5 +16,13 @@ CalibrationFilterParams::BiquadParams::BiquadParams(BiquadParams::Type type, flo
 
 std::pair<CalibrationFilterParams, CalibrationFilterParams> 
 CalibrationFilterParams::loadFromFile(const juce::File& file) {
-    return std::pair<CalibrationFilterParams, CalibrationFilterParams>();
+    std::pair<CalibrationFilterParams, CalibrationFilterParams> leftRightParams;
+
+    return leftRightParams;
 }
+
+const std::vector<CalibrationFilterParams::BiquadParams>&
+CalibrationFilterParams::getBiquadParams() {
+    return biquads;
+}
+

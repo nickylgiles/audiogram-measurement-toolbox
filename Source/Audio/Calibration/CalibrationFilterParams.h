@@ -32,7 +32,9 @@ struct CalibrationFilterParams {
     enum class Channel { LEFT, RIGHT };
 
     static std::pair<CalibrationFilterParams, CalibrationFilterParams>
-        loadFromFile(const juce::File& file);
+    loadFromFile(const juce::File& file);
+
+    const std::vector<BiquadParams>& getBiquadParams();
 
 private:
     std::vector<BiquadParams> biquads;
