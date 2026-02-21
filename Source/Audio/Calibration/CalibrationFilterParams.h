@@ -18,7 +18,9 @@ struct CalibrationFilterParams {
             None,
             PK,
             LP,
-            HP
+            HP,
+            HS,
+            LS
         };
 
         BiquadParams(BiquadParams::Type type, float fc, float gain, float q);

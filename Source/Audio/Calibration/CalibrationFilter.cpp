@@ -68,22 +68,24 @@ void CalibrationFilter::processBlock(juce::AudioBuffer<float>& buffer) {
 
 juce::dsp::IIR::Coefficients<float>::Ptr
 CalibrationFilter::makeFilter(const CalibrationFilterParams::BiquadParams& biquadParams) {
+    using FilterType = CalibrationFilterParams::BiquadParams::Type;
+
     switch (biquadParams.type) {
-        case CalibrationFilterParams::BiquadParams::Type::HP:
+        case FilterType::HP:
             return juce::dsp::IIR::Coefficients<float>::makeHighPass(
                 sampleRate, biquadParams.fc, biquadParams.q);
 
-        case CalibrationFilterParams::BiquadParams::Type::LP:
+        case FilterType::LP:
             return juce::dsp::IIR::Coefficients<float>::makeLowPass(
                 sampleRate, biquadParams.fc, biquadParams.q);
 
-        case CalibrationFilterParams::BiquadParams::Type::PK:
+        case FilterType::PK:
             return juce::dsp::IIR::Coefficients<float>::makePeakFilter(
                 sampleRate, biquadParams.fc, biquadParams.q, 
                 juce::Decibels::decibelsToGain(biquadParams.gain)
             );
 
-        case CalibrationFilterParams::BiquadParams::Type::None:
+        case FilterType::None:
         default:
             return new juce::dsp::IIR::Coefficients<float>(
                 1.0f, 0.0f, 0.0f,
