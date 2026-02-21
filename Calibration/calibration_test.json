@@ -1,0 +1,277 @@
+{
+    "calibration_id": "seinnheiser",
+    "device_name": "Seinnheiser HD 280 PRO",
+    "target_spl": "90.0",
+    "software": "Room EQ V5.31.3",
+    "date": "19-Feb-2026 21:11:06",
+    "left_filters": [
+        {
+            "number": 1,
+            "type": "PK",
+            "fc": 125.0,
+            "gain": -18.9,
+            "q": 1.0
+        },
+        {
+            "number": 2,
+            "type": "PK",
+            "fc": 147.0,
+            "gain": 6.0,
+            "q": 2.736
+        },
+        {
+            "number": 3,
+            "type": "PK",
+            "fc": 262.0,
+            "gain": -3.7,
+            "q": 1.909
+        },
+        {
+            "number": 4,
+            "type": "PK",
+            "fc": 419.0,
+            "gain": -7.3,
+            "q": 1.104
+        },
+        {
+            "number": 5,
+            "type": "PK",
+            "fc": 751.0,
+            "gain": -7.0,
+            "q": 1.0
+        },
+        {
+            "number": 6,
+            "type": "PK",
+            "fc": 1264.0,
+            "gain": -8.5,
+            "q": 1.007
+        },
+        {
+            "number": 7,
+            "type": "PK",
+            "fc": 1855.0,
+            "gain": -5.9,
+            "q": 2.062
+        },
+        {
+            "number": 8,
+            "type": "PK",
+            "fc": 2436.0,
+            "gain": -15.5,
+            "q": 1.362
+        },
+        {
+            "number": 9,
+            "type": "PK",
+            "fc": 3475.0,
+            "gain": -3.7,
+            "q": 4.614
+        },
+        {
+            "number": 10,
+            "type": "PK",
+            "fc": 4208.0,
+            "gain": 2.8,
+            "q": 5.878
+        },
+        {
+            "number": 11,
+            "type": "PK",
+            "fc": 4580.0,
+            "gain": -10.1,
+            "q": 1.625
+        },
+        {
+            "number": 12,
+            "type": "PK",
+            "fc": 6550.0,
+            "gain": -8.7,
+            "q": 2.17
+        },
+        {
+            "number": 13,
+            "type": "PK",
+            "fc": 7572.0,
+            "gain": -5.8,
+            "q": 4.847
+        },
+        {
+            "number": 14,
+            "type": "PK",
+            "fc": 8537.0,
+            "gain": -9.4,
+            "q": 3.846
+        },
+        {
+            "number": 15,
+            "type": "PK",
+            "fc": 9615.0,
+            "gain": -8.1,
+            "q": 4.889
+        },
+        {
+            "number": 16,
+            "type": "PK",
+            "fc": 11069.0,
+            "gain": -5.2,
+            "q": 4.888
+        },
+        {
+            "number": 17,
+            "type": "PK",
+            "fc": 11989.0,
+            "gain": -8.9,
+            "q": 4.887
+        },
+        {
+            "number": 18,
+            "type": "PK",
+            "fc": 12620.0,
+            "gain": -8.6,
+            "q": 4.918
+        },
+        {
+            "number": 19,
+            "type": "PK",
+            "fc": 14050.0,
+            "gain": 6.0,
+            "q": 1.0
+        }
+    ],
+    "right_filters": [
+        {
+            "number": 1,
+            "type": "PK",
+            "fc": 125.0,
+            "gain": -18.9,
+            "q": 1.0
+        },
+        {
+            "number": 2,
+            "type": "PK",
+            "fc": 147.0,
+            "gain": 6.0,
+            "q": 2.736
+        },
+        {
+            "number": 3,
+            "type": "PK",
+            "fc": 262.0,
+            "gain": -3.7,
+            "q": 1.909
+        },
+        {
+            "number": 4,
+            "type": "PK",
+            "fc": 419.0,
+            "gain": -7.3,
+            "q": 1.104
+        },
+        {
+            "number": 5,
+            "type": "PK",
+            "fc": 751.0,
+            "gain": -7.0,
+            "q": 1.0
+        },
+        {
+            "number": 6,
+            "type": "PK",
+            "fc": 1264.0,
+            "gain": -8.5,
+            "q": 1.007
+        },
+        {
+            "number": 7,
+            "type": "PK",
+            "fc": 1855.0,
+            "gain": -5.9,
+            "q": 2.062
+        },
+        {
+            "number": 8,
+            "type": "PK",
+            "fc": 2436.0,
+            "gain": -15.5,
+            "q": 1.362
+        },
+        {
+            "number": 9,
+            "type": "PK",
+            "fc": 3475.0,
+            "gain": -3.7,
+            "q": 4.614
+        },
+        {
+            "number": 10,
+            "type": "PK",
+            "fc": 4208.0,
+            "gain": 2.8,
+            "q": 5.878
+        },
+        {
+            "number": 11,
+            "type": "PK",
+            "fc": 4580.0,
+            "gain": -10.1,
+            "q": 1.625
+        },
+        {
+            "number": 12,
+            "type": "PK",
+            "fc": 6550.0,
+            "gain": -8.7,
+            "q": 2.17
+        },
+        {
+            "number": 13,
+            "type": "PK",
+            "fc": 7572.0,
+            "gain": -5.8,
+            "q": 4.847
+        },
+        {
+            "number": 14,
+            "type": "PK",
+            "fc": 8537.0,
+            "gain": -9.4,
+            "q": 3.846
+        },
+        {
+            "number": 15,
+            "type": "PK",
+            "fc": 9615.0,
+            "gain": -8.1,
+            "q": 4.889
+        },
+        {
+            "number": 16,
+            "type": "PK",
+            "fc": 11069.0,
+            "gain": -5.2,
+            "q": 4.888
+        },
+        {
+            "number": 17,
+            "type": "PK",
+            "fc": 11989.0,
+            "gain": -8.9,
+            "q": 4.887
+        },
+        {
+            "number": 18,
+            "type": "PK",
+            "fc": 12620.0,
+            "gain": -8.6,
+            "q": 4.918
+        },
+        {
+            "number": 19,
+            "type": "PK",
+            "fc": 14050.0,
+            "gain": 6.0,
+            "q": 1.0
+        }
+    ]
+}
