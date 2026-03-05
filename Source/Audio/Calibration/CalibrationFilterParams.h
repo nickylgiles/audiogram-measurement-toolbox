@@ -23,6 +23,7 @@ struct CalibrationFilterParams {
             LS
         };
 
+        BiquadParams() = default;
         BiquadParams(BiquadParams::Type type, float fc, float gain, float q);
 
         float fc = 0.0f;
@@ -39,6 +40,7 @@ struct CalibrationFilterParams {
     const std::vector<BiquadParams>& getBiquadParams();
 
 private:
+    BiquadParams parseFilter(const juce::var& filter);
     std::vector<BiquadParams> biquads;
     Channel channel;
 };

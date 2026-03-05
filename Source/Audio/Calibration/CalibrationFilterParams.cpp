@@ -16,13 +16,82 @@ CalibrationFilterParams::BiquadParams::BiquadParams(BiquadParams::Type type, flo
 
 std::pair<CalibrationFilterParams, CalibrationFilterParams> 
 CalibrationFilterParams::loadFromFile(const juce::File& file) {
-    std::pair<CalibrationFilterParams, CalibrationFilterParams> leftRightParams;
+    CalibrationFilterParams left;
+    CalibrationFilterParams right;
 
-    return leftRightParams;
+    left.channel = Channel::LEFT;
+    right.channel = Channel::RIGHT;
+
+    if (!file.existsAsFile()) {
+        DBG("Calibration file not found.  Using defaults.");
+        return { left, right };
+    }
+
+    juce::var json = juce::JSON::parse(file);
+
+    if (!json.isObject()) {
+        DBG("Invalid JSON format in calibration profile. Using defaults.");
+        return { left, right };
+    }
+
+    auto* root = json.getDynamicObject();
+    if (!root) {
+        DBG("Invalid JSON format in calibration profile. Using defaults.");
+        return { left, right };
+    }
+
+    if (root->hasProperty("left_filters")) {
+        if (auto* arr = root->getProperty("left_filters").getArray()) {
+            for (auto& filter : *arr) {
+                left.biquads.push_back(
+                    left.parseFilter(filter)
+                );
+            }
+        }
+    }
+
+    if (root->hasProperty("right_filters")) {
+        if (auto* arr = root->getProperty("right_filters").getArray()) {
+            for (auto& filter : *arr) {
+                right.biquads.push_back(
+                    right.parseFilter(filter)
+                );
+            }
+        }
+    }
+
+    return { left, right };
 }
 
 const std::vector<CalibrationFilterParams::BiquadParams>&
 CalibrationFilterParams::getBiquadParams() {
     return biquads;
 }
+
+CalibrationFilterParams::BiquadParams CalibrationFilterParams::parseFilter(const juce::var& filter) {
+    BiquadParams params;
+
+    if (auto* obj = filter.getDynamicObject()) {
+        params.fc = static_cast<float>(obj->getProperty("fc"));
+        params.gain = static_cast<float>(obj->getProperty("gain"));
+        params.q = static_cast<float>(obj->getProperty("q"));
+
+        juce::String typeStr = obj->getProperty("type").toString();
+
+        if (typeStr == "PK") 
+            params.type = BiquadParams::Type::PK;
+        else if (typeStr == "LP")
+            params.type = BiquadParams::Type::LP;
+        else if (typeStr == "HP")
+            params.type = BiquadParams::Type::HP;
+        else if (typeStr == "HS")
+            params.type = BiquadParams::Type::HS;
+        else if (typeStr == "LS")
+            params.type = BiquadParams::Type::LS;
+    }
+
+    return params;
+}
+
+
 

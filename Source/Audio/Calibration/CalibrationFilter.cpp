@@ -24,7 +24,18 @@ void CalibrationFilter::setSampleRate(double newSampleRate) {
 }
 
 void CalibrationFilter::loadCalibrationProfile(const juce::File& file) {
-    // TODO: Load metadata from file here
+    // Load metadata from file here
+    if (!file.existsAsFile())
+        return;
+
+    juce::var json = juce::JSON::parse(file);
+
+    if (auto* root = json.getDynamicObject()) {
+        metadata.calibrationId = root->getProperty("calibration_id").toString();
+        metadata.deviceModel = root->getProperty("device_name").toString();
+        metadata.calibrationDate = root->getProperty("date").toString();
+        metadata.targetSPL = root->getProperty("target_spl").toString().getFloatValue();
+    }
 
     leftRightParams = CalibrationFilterParams::loadFromFile(file);
 
@@ -63,7 +74,27 @@ void CalibrationFilter::makeFilters() {
 }
 
 void CalibrationFilter::processBlock(juce::AudioBuffer<float>& buffer) {
+    int numSamples = buffer.getNumSamples();
 
+    float* left = buffer.getWritePointer(0);
+    float* right = buffer.getWritePointer(1);
+
+    for (int i = 0; i < numSamples; ++i) {
+        float sampleL = left[i];
+
+        for (auto& filter : filtersLeft) {
+            sampleL = filter.processSample(sampleL);
+        }
+        left[i] = sampleL;
+
+
+        float sampleR = right[i];
+
+        for (auto& filter : filtersRight) {
+            sampleR = filter.processSample(sampleR);
+        }
+        right[i] = sampleR;
+    }
 }
 
 juce::dsp::IIR::Coefficients<float>::Ptr
