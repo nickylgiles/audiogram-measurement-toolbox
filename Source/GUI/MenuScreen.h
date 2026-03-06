@@ -20,6 +20,7 @@ public:
     void addTest(const juce::String& name, std::function<void()> onTestPressed);
 
     void setUserId(const juce::String& userId);
+    void setCalibrationId(const juce::String& calibrationId);
 
     std::function<void()> onSettingsClicked;
 
@@ -92,6 +93,8 @@ private:
     juce::TextButton settingsButton{ juce::translate("Settings") };
 
     juce::Label userIdLabel;
+
+    juce::Label calibrationLabel;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuScreen)
 };

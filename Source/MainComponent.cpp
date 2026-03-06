@@ -41,6 +41,16 @@ MainComponent::MainComponent()
         setLanguageFromData(BinaryData::ga_lng, BinaryData::ga_lngSize);
     }
 
+    // Load calibration profile if has been set
+    juce::String calibPath = userSettings->getValue("calibrationJsonPath", "");
+    if (!calibPath.isEmpty()) {
+        juce::File calibFile(calibPath);
+        if (calibFile.existsAsFile()) {
+            soundEngine->loadCalibration(calibFile);
+            DBG("Loaded headphone calibration");
+        }
+    }
+
     showMenuScreen();
 
     // Make sure you set the size of the component after
@@ -102,6 +112,9 @@ void MainComponent::showMenuScreen() {
 
     screen->setUserId(userSettings->getValue("userId"));
 
+    juce::String calibrationId = soundEngine->getCalibrationMetadata().calibrationId;
+    screen->setCalibrationId(calibrationId);
+
     screen->onSettingsClicked = [this] {showSettingsScreen();};
 
     addTestToMenu<PureToneTest>(screen.get());
@@ -146,7 +159,7 @@ void MainComponent::showSettingsScreen() {
             });
         });
 
-    screen->addButtonSetting(juce::translate("Select word groups JSON file") + " (" + userSettings->getValue("wordGroupsJsonPath", "Not Set") + ")", [this] {
+    screen->addButtonSetting(juce::translate("Select word groups JSON file") + " (" + userSettings->getValue("wordGroupsJsonPath", juce::translate("Not Set")) + ")", [this] {
         fileChooser = std::make_unique<juce::FileChooser>(
             juce::translate("Select word groups JSON file"),
             juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
@@ -167,7 +180,30 @@ void MainComponent::showSettingsScreen() {
             });
         });
 
-    screen->addButtonSetting(juce::translate("Select headphone calibration"), [] {});
+    screen->addButtonSetting(juce::translate("Select headphone calibration") + " (" + userSettings->getValue("calibrationJsonPath", juce::translate("Not Set")) + ")", [this] {
+        fileChooser = std::make_unique<juce::FileChooser>(
+            juce::translate("Select headphone calibration"),
+            juce::File::getSpecialLocation(juce::File::userDocumentsDirectory),
+            "*.json");
+
+    auto fileChooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+
+    fileChooser->launchAsync(fileChooserFlags, [this](const juce::FileChooser& fc) {
+        auto result = fc.getResult();
+        if (result != juce::File{}) {
+
+            userSettings->setValue("calibrationJsonPath", result.getFullPathName());
+            userSettings->saveIfNeeded();
+            DBG("Calibration JSON path set to " << userSettings->getValue("calibrationJsonPath"));
+            
+            if (soundEngine)
+                soundEngine->loadCalibration(result);
+
+            refreshSettingsScreen();
+        }
+        fileChooser.reset();
+        });
+    });
     
     screen->addButtonSetting(juce::translate("Change language"), [this] {
         juce::String currentLanguage = userSettings->getValue("language", "en");

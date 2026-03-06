@@ -24,6 +24,9 @@ MenuScreen::MenuScreen() {
 
     userIdLabel.setJustificationType(juce::Justification::centredRight);
     addAndMakeVisible(userIdLabel);
+
+    calibrationLabel.setJustificationType(juce::Justification::centredRight);
+    addAndMakeVisible(calibrationLabel);
 }
 
 void MenuScreen::addTest(const juce::String& name, std::function<void()> onTestPressed) {
@@ -40,6 +43,15 @@ void MenuScreen::setUserId(const juce::String& userId) {
     }
 }
 
+void MenuScreen::setCalibrationId(const juce::String& calibrationId) {
+    if (calibrationId == "") {
+        calibrationLabel.setText(juce::translate("No calibration set."), juce::dontSendNotification);
+    }
+    else {
+        calibrationLabel.setText(juce::translate("Calibration Profile: ") + calibrationId, juce::dontSendNotification);
+    }
+}
+
 void MenuScreen::resized() {
     settingsButton.setBounds(getWidth() - 110, 10, 100, 40);
 
@@ -49,6 +61,7 @@ void MenuScreen::resized() {
     testListBox.setBounds(area);
 
     userIdLabel.setBounds(0, getHeight() - 40, getWidth(), 40);
+    calibrationLabel.setBounds(0, getHeight() - 80, getWidth(), 40);
 }
 
 void MenuScreen::paint(juce::Graphics& g) {

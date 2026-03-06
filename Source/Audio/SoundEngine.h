@@ -18,6 +18,7 @@
 #include "SoundSources/SoundFileSource.h"
 #include "SoundSources/SpatialisedSoundFileSource.h"
 #include "SoundSources/SpatialisedNoiseSource.h"
+#include "Calibration/CalibrationFilter.h"
 
 
 class SoundEngine {
@@ -46,8 +47,13 @@ public:
 
     void processBlock(float* outputL, float* outputR, int numSamples);
 
+    void loadCalibration(const juce::File& calibrationFile);
+    const CalibrationFilter::Metadata& getCalibrationMetadata();
+
 private:
     void addSource(std::unique_ptr<SoundSource> source);
+
+    CalibrationFilter calibrationFilter;
 
     juce::AudioBuffer<float> sourceBuffer;
     juce::AudioBuffer<float> tempBuffer;

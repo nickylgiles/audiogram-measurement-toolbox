@@ -30,6 +30,8 @@ public:
 
     void processBlock(juce::AudioBuffer<float>& buffer);
 
+    const Metadata& getMetadata();
+
 private:
     juce::dsp::IIR::Coefficients<float>::Ptr 
     makeFilter(const CalibrationFilterParams::BiquadParams& biquadParams);

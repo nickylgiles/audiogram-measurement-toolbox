@@ -97,6 +97,10 @@ void CalibrationFilter::processBlock(juce::AudioBuffer<float>& buffer) {
     }
 }
 
+const CalibrationFilter::Metadata& CalibrationFilter::getMetadata() {
+    return metadata;
+}
+
 juce::dsp::IIR::Coefficients<float>::Ptr
 CalibrationFilter::makeFilter(const CalibrationFilterParams::BiquadParams& biquadParams) {
     using FilterType = CalibrationFilterParams::BiquadParams::Type;

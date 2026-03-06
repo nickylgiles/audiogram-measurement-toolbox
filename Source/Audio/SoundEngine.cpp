@@ -10,7 +10,9 @@
 
 #include "SoundEngine.h"
 
-SoundEngine::SoundEngine() {
+SoundEngine::SoundEngine() 
+    : calibrationFilter(44100, 1)
+{
     sampleRate = 44100.0;
 }
 
@@ -75,6 +77,7 @@ bool SoundEngine::isPlaying() const {
 
 void SoundEngine::setSampleRate(double newSampleRate) {
     sampleRate = newSampleRate;
+    calibrationFilter.setSampleRate(newSampleRate);
     hrtfManager.setSampleRate(newSampleRate);
     hrtfManager.loadBinaryData();
     stop();
@@ -118,14 +121,29 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
     }
 
     // Apply headphone calibration
-    // juce::dsp::IIR
+    calibrationFilter.processBlock(sourceBuffer);
 
+    // Copy calibrated block to output
     for (int i = 0; i < numSamples; ++i) {
         outputL[i] = sourcesLPtr[i];
         outputR[i] = sourcesRPtr[i];
     }
     
     
+}
+
+void SoundEngine::loadCalibration(const juce::File& calibrationFile) {
+    if (!calibrationFile.existsAsFile()) {
+        DBG("Calibration file not found");
+        return;
+    }
+
+    calibrationFilter.loadCalibrationProfile(calibrationFile);
+    DBG("Calibration loaded");
+}
+
+const CalibrationFilter::Metadata& SoundEngine::getCalibrationMetadata() {
+    return calibrationFilter.getMetadata();
 }
 
 void SoundEngine::addSource(std::unique_ptr<SoundSource> source) {
