@@ -61,6 +61,7 @@ void CalibrationFilter::makeFilters() {
         filter.prepare(spec);
         filter.reset();
         filter.coefficients = makeFilter(params);
+        DBG("Filter added: fc=" << params.fc << ", q=" << params.q << ", gain=" << params.gain);
     }
 
     for (const CalibrationFilterParams::BiquadParams& params : rightParams) {
@@ -70,6 +71,7 @@ void CalibrationFilter::makeFilters() {
         filter.prepare(spec);
         filter.reset();
         filter.coefficients = makeFilter(params);
+        DBG("Filter added: fc=" << params.fc << ", q=" << params.q << ", gain=" << params.gain);
     }
 }
 
