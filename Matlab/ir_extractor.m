@@ -1,14 +1,14 @@
 clear; clc;
 
 sofaFile = 'dtf_nh2.sofa';
-outputFolder = 'HRIRs_test_elevation';
+outputFolder = 'HRIRs_dtf_nh2';
 mkdir(outputFolder)
 
 s = sofaread(sofaFile);
 fs = s.SamplingRate;
 
-% sel = find(s.SourcePosition(:,2) == 0);
-sel = 1:size(s.SourcePosition, 1);
+% Select 0-elevation indices
+sel = find(s.SourcePosition(:,2) == 0);
 fprintf('Number of indices is %d', length(sel))
 
 for i = 1:length(sel)

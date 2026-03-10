@@ -58,7 +58,7 @@ void PartitionedConvolver::loadIR(const juce::AudioBuffer<float>& irBuffer) {
         fft->perform(tempFFTBuffer.data(), tempFFTBuffer.data(), false);
 
         // Normalise here for output
-        float invNFFT = 1.0f / (NFFT * numIRParts);
+        float invNFFT = 1.0f / NFFT;
         for (int i = 0; i < tempFFTBuffer.size(); ++i) {
             tempFFTBuffer[i] *= invNFFT;
         }
