@@ -10,6 +10,7 @@
 #include "TestController.h"
 #include "../Results/PureToneTestResults.h"
 #include "TestControllerTimer.h"
+#include "../Audio/Calibration/HTL.h"
 #pragma once
 
 class PureToneTestController : public TestController {

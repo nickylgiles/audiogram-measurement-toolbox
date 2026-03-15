@@ -148,7 +148,17 @@ void PureToneTestController::playCurrentTone() {
 }
 
 PureToneTestResults const PureToneTestController::getResults() {
-    return toneThresholds;
+    // Convert tone thresholds to HTLs
+    PureToneTestResults converted = toneThresholds;
+    float refSPL = soundEngine.getCalibrationMetadata()
+        .targetSPL;
+
+    for (int ear = 0; ear < 2; ++ear) {
+        for (auto& [freq, thresh] : converted[ear])
+            thresh = HTL::fromSPL(thresh + refSPL, freq);
+    }
+
+    return converted;
 }
 
 void PureToneTestController::scheduleNextTone(int delayMs) {

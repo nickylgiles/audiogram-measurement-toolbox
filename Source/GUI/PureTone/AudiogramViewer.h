@@ -39,4 +39,9 @@ private:
     void drawLegend(juce::Graphics& g, juce::Rectangle<int> bounds);
 
     PureToneTestResults results;
+
+    const float HLdbMin = -20.0f;
+    const float HLdbMax = 120.0f;
+    const float HLdbStep = 10.0f;
+
 };

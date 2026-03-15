@@ -167,7 +167,7 @@ namespace HTL {
 
     constexpr SplineCoeffs Spline = computeSpline();
 
-    float fromSPL(float spl, float frequency) {
+    inline float fromSPL(float spl, float frequency) {
         // Return table value if present.
         const float epsilon = 0.5f;
         for (int i = 0; i < thresholds.size(); ++i) {
@@ -186,11 +186,13 @@ namespace HTL {
 
         // Find spline segment containing frequency
         int i = 0;
-        while (i < nThresholds - 2 && std::log10(thresholds[i + 1].first) < logFreq)
+        while (i < nThresholds - 2 && logFreqs[i + 1] < logFreq)
             ++i;
+        
+        i = std::min(i, nThresholds - 2);
 
         // Distance from left knot
-        float t = logFreq - std::log10(thresholds[i].first);
+        float t = logFreq - logFreqs[i];
 
         // Compute spline polynomial at t : a + b*t + c*t^2 + d*t^3 
         float tF = Spline.a[i] 

@@ -80,12 +80,14 @@ void AudiogramViewer::drawDataPoints(juce::Graphics& g, juce::Rectangle<int> bou
     float prevY = 0.0f;
 
     bool connectPrev = false;
+
     // Left: Blue X
     for (auto r : results.left) {
         float f = r.first;
         float t = r.second;
         float pX = x + (std::log10(f) - minFdB) / (maxFdB - minFdB) * w;
-        float pY = y + h * (1.0f + t / 50.0f);
+        float pY = y + h * (t - HLdbMin) / (HLdbMax - HLdbMin);
+
         g.setColour(juce::Colours::blue);
         drawX(g, juce::Point<float>(pX, pY), 15.0f);
 
@@ -105,7 +107,8 @@ void AudiogramViewer::drawDataPoints(juce::Graphics& g, juce::Rectangle<int> bou
         float f = r.first;
         float t = r.second;
         float pX = x + (std::log10(f) - std::log10(minF)) / (std::log10(maxF) - std::log10(minF)) * (w);
-        float pY = y + h * (1.0f + t / 50.0f);
+        float pY = y + h * (t - HLdbMin) / (HLdbMax - HLdbMin);
+
         g.setColour(juce::Colours::red);
         drawO(g, juce::Point<float>(pX, pY), 15.0f);
 
@@ -128,8 +131,10 @@ void AudiogramViewer::drawGrid(juce::Graphics& g, juce::Rectangle<int> bounds, f
     auto x = bounds.getX();
     auto y = bounds.getY();
 
-    for (int i = 0; i <= 5; ++i) {
-        float yy = static_cast<float>(y + i * (h / 5.0f));
+    int nSteps = static_cast<int>((HLdbMax - HLdbMin) / HLdbStep);
+    for (int i = 0; i <= nSteps; ++i) {
+        float dbLevel = HLdbMin + i * HLdbStep;
+        float yy = static_cast<float>(y + h * (dbLevel - HLdbMin) / (HLdbMax - HLdbMin));
         g.drawLine(static_cast<float>(x), yy, static_cast<float>(x + w), yy, 1.0f);
     }
 
@@ -188,7 +193,7 @@ void AudiogramViewer::drawAxes(juce::Graphics& g,juce::Rectangle<int> bounds, fl
     }
 
     // Y labels
-    g.drawText(juce::translate("Level") + juce::String(" (dB)"),
+    g.drawText(juce::translate("Level") + juce::String(" (dB HL)"),
         x - 85,
         y + static_cast<int>(h / 2),
         80,
@@ -196,10 +201,13 @@ void AudiogramViewer::drawAxes(juce::Graphics& g,juce::Rectangle<int> bounds, fl
         juce::Justification::centred
     );
 
-    for (int i = 0; i <= 5; ++i) {
-        g.drawText(juce::String(-i * 10),
+    int nSteps = static_cast<int>((HLdbMax - HLdbMin) / HLdbStep);
+    for (int i = 0; i <= nSteps; ++i) {
+        float dbLevel = HLdbMin + i * HLdbStep;
+        float yy = static_cast<float>(y + h * (dbLevel - HLdbMin) / (HLdbMax - HLdbMin));
+        g.drawText(juce::String(static_cast<int>(dbLevel)),
             x - 40,
-            y + i * static_cast<int>(h / 5),
+            static_cast<int>(yy) - 5,
             40,
             10,
             juce::Justification::centred,
