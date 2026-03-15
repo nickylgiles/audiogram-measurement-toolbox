@@ -356,6 +356,7 @@
                 file="Source/Audio/Calibration/CalibrationFilterParams.cpp"/>
           <FILE id="uJfC4l" name="CalibrationFilterParams.h" compile="0" resource="0"
                 file="Source/Audio/Calibration/CalibrationFilterParams.h"/>
+          <FILE id="UwU7yF" name="HTL.h" compile="0" resource="0" file="Source/Audio/Calibration/HTL.h"/>
         </GROUP>
         <GROUP id="{8C2632EB-A318-E1FE-07D4-30C71CC7F6E0}" name="Speech">
           <FILE id="YqRL2f" name="SpeechFileManager.cpp" compile="1" resource="0"
