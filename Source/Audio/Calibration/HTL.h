@@ -15,14 +15,17 @@
 /*
 * Converts from an absolute Sound Pressure Level (dBSPL) to a Hearing Threshold Level
 * as defined in ISO-226:2003 (Acoustics — Normal equal-loudness-level contours)
-* This is only defined up to 12.5kHz.  Beyond this point 
+* This is only defined up to 12.5kHz.  Beyond this point data from 
+*       Kurakata, K., & Mizunami, T. (2008). Statistical distribution of normal hearing thresholds 
+*       for high-frequency tones. Acoustical Science and Technology, 29, 378-380.
+* Table 2 (P50) is used.
 */
 namespace HTL {
     /*
     * Thresholds of hearing from ISO 226:2003 Table 1 (Tf).
     * { frequency (Hz), threshold (dBSPL) }
     */
-    constexpr int nThresholds = 29;
+    constexpr int nThresholds = 31;
 
     constexpr std::array<std::pair<float, float>, nThresholds> thresholds = { {
         { 20.0f, 78.5f },
@@ -53,6 +56,8 @@ namespace HTL {
         { 8000.0f, 12.6f },
         { 10000.0f, 13.9f },
         { 12500.0f, 12.3f },
+        { 14000.0f, 18.4f },
+        { 16000.0f, 40.2f }
     }};
 
     constexpr std::array<float, nThresholds> logFreqs = { {
@@ -85,6 +90,8 @@ namespace HTL {
         3.9030899869919438f, // log10(8000)
         4.0f, // log10(10000)
         4.096910013008056f, // log10(12500)
+        4.146128035678238f, // log10(14000)
+        4.204119982655925f // log10(16000)
     } };
 
     struct SplineCoeffs {

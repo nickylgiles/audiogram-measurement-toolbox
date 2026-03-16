@@ -32,7 +32,9 @@ freqs = [
     6300,
     8000,
     10000,
-    12500
+    12500,
+    14000,
+    16000
 ]
 
 print("constexpr std::array<float, nThresholds> logFreqs = {{")
