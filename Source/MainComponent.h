@@ -147,5 +147,9 @@ private:
 
     juce::PropertiesFile* userSettings = nullptr;
 
+    #if JUCE_DEBUG
+    void dumpSplineDebug();
+    #endif
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

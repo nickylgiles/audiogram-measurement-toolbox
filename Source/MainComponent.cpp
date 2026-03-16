@@ -69,6 +69,11 @@ MainComponent::MainComponent()
         // Specify the number of input and output channels that we want to open
         setAudioChannels (0, 2);
     }
+    
+    // Dump HTL spline to debug
+    #if JUCE_DEBUG 
+    dumpSplineDebug();
+    #endif
 
 }
 
@@ -273,6 +278,29 @@ void MainComponent::setLanguageFromData(const void* data, int size) {
     juce::LocalisedStrings::setCurrentMappings(localisedStrings);
     DBG("Localisation mappings set");
 }
+
+#if JUCE_DEBUG
+void MainComponent::dumpSplineDebug() {
+    juce::File file = juce::File::getSpecialLocation(
+        juce::File::userDocumentsDirectory).getChildFile("HLT_spline.csv");
+
+    juce::FileOutputStream stream(file);
+    stream << "frequency,tf\n";
+
+    float logMin = std::log10(20.0f);
+    float logMax = std::log10(20000.0f);
+    int nPoints = 1000;
+
+    for (int i = 0; i < nPoints; ++i) {
+        float logF = logMin + i * (logMax - logMin) / nPoints;
+        float f = std::pow(10.0f, logF);
+        float tF = HTL::toSPL(0.0f, 0.0f, f);
+        stream << f << "," << tF << "\n";
+    }
+
+    DBG("Spline dumped to " + file.getFullPathName());
+}
+#endif
 
 void MainComponent::resized() {
     if (currentScreen)

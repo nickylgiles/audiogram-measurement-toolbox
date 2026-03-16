@@ -16,7 +16,7 @@
 * Converts from an absolute Sound Pressure Level (dBSPL) to a Hearing Threshold Level
 * as defined in ISO-226:2003 (Acoustics — Normal equal-loudness-level contours)
 * This is only defined up to 12.5kHz.  Beyond this point data from 
-*       Kurakata, K., & Mizunami, T. (2008). Statistical distribution of normal hearing thresholds 
+*       Kurakata, K. & Mizunami, T. (2008). Statistical distribution of normal hearing thresholds 
 *       for high-frequency tones. Acoustical Science and Technology, 29, 378-380.
 * Table 2 (P50) is used.
 */
@@ -42,6 +42,7 @@ namespace HTL {
         { 250.0f, 11.4f },
         { 315.0f, 8.6f },
         { 400.0f, 6.2f },
+        { 500.0f, 4.4f },
         { 630.0f, 3.0f },
         { 800.0f, 2.2f },
         { 1000.0f, 2.4f },
