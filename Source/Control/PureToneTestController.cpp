@@ -138,8 +138,12 @@ void PureToneTestController::timerCallback() {
 }
 
 void PureToneTestController::playCurrentTone() {
+    float refSPL = soundEngine.getCalibrationMetadata().targetSPL;
+    float thresholdSPL = HTL::toSPL(currentThreshold, refSPL, config.testTones[currentTone]);
 
-    soundEngine.playToneMasked(config.testTones[currentTone], dbToAmplitude(currentThreshold), 1.0f, currentEar);
+    soundEngine.playToneMasked(config.testTones[currentTone], 
+        dbToAmplitude(thresholdSPL), 
+        1.0f, currentEar);
     currentToneDetected = false;
 }
 
@@ -148,17 +152,7 @@ void PureToneTestController::playCurrentTone() {
 }
 
 PureToneTestResults const PureToneTestController::getResults() {
-    // Convert tone thresholds to HTLs
-    PureToneTestResults converted = toneThresholds;
-    float refSPL = soundEngine.getCalibrationMetadata()
-        .targetSPL;
-
-    for (int ear = 0; ear < 2; ++ear) {
-        for (auto& [freq, thresh] : converted[ear])
-            thresh = HTL::fromSPL(thresh + refSPL, freq);
-    }
-
-    return converted;
+    return toneThresholds;
 }
 
 void PureToneTestController::scheduleNextTone(int delayMs) {

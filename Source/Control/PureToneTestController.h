@@ -29,8 +29,9 @@ public:
             16000.0f 
         };
 
-        float dbLevelMin = -50.0f;
-        float dbLevelMax = 0.0f;
+        // db HL values
+        float dbLevelMin = -10.0f;
+        float dbLevelMax = 80.0f;
         float dbIncrementAscending = 10.0f;
         float dbIncrementDescending = 5.0f;
 

@@ -440,6 +440,12 @@
       <FILE id="Zx0RZL" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <GROUP id="{8F5E5A1D-8BFE-3270-DA73-9A53E2F30F6B}" name="GUI">
+        <GROUP id="{B96DA113-0529-AD22-F4B8-209B520BEC22}" name="Calibration">
+          <FILE id="xZkz9h" name="TestCalibrationScreen.cpp" compile="1" resource="0"
+                file="Source/GUI/Calibration/TestCalibrationScreen.cpp"/>
+          <FILE id="kVwzGN" name="TestCalibrationScreen.h" compile="0" resource="0"
+                file="Source/GUI/Calibration/TestCalibrationScreen.h"/>
+        </GROUP>
         <FILE id="pU6ynl" name="TestInfoScreen.cpp" compile="1" resource="0"
               file="Source/GUI/TestInfoScreen.cpp"/>
         <FILE id="ho7ZsE" name="TestInfoScreen.h" compile="0" resource="0"

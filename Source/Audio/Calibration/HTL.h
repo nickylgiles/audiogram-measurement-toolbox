@@ -14,7 +14,7 @@
 
 /*
 * Converts from an absolute Sound Pressure Level (dBSPL) to a Hearing Threshold Level
-* as defined in ISO-226:2003 (Acoustics — Normal equal-loudness-level contours)
+* as defined in ISO-226:2003 (Acoustics â€” Normal equal-loudness-level contours)
 * This is only defined up to 12.5kHz.  Beyond this point 
 */
 namespace HTL {
@@ -172,13 +172,13 @@ namespace HTL {
         const float epsilon = 0.5f;
         for (int i = 0; i < thresholds.size(); ++i) {
             if (std::abs(thresholds[i].first - frequency) < epsilon) {
-                return thresholds[i].second;
+                return spl - thresholds[i].second;
             }
         }
 
         // Clamp below range given
         if (frequency < thresholds[0].first) {
-            return thresholds[0].second;
+            return spl - thresholds[0].second;
         }
 
         // Interpolate frequencies using natural cubic spline on log of frequency
@@ -202,6 +202,42 @@ namespace HTL {
 
         // dB difference between SPL and threshold
         return spl - tF;
+    }
+
+    // dbSPL required to present a tone at the given HTL
+    inline float toSPL(float htl, float refSPL, float frequency) {
+        const float epsilon = 0.5f;
+        for (int i = 0; i < thresholds.size(); ++i) {
+            if (std::abs(thresholds[i].first - frequency) < epsilon) {
+                return htl + thresholds[i].second - refSPL;
+            }
+        }
+
+        // Clamp below range given
+        if (frequency < thresholds[0].first) {
+            return htl + thresholds[0].second -refSPL;
+        }
+
+        // Interpolate frequencies using natural cubic spline on log of frequency
+        float logFreq = std::log10(frequency);
+
+        // Find spline segment containing frequency
+        int i = 0;
+        while (i < nThresholds - 2 && logFreqs[i + 1] < logFreq)
+            ++i;
+
+        i = std::min(i, nThresholds - 2);
+
+        // Distance from left knot
+        float t = logFreq - logFreqs[i];
+
+        // Compute spline polynomial at t : a + b*t + c*t^2 + d*t^3 
+        float tF = Spline.a[i]
+            + Spline.b[i] * t
+            + Spline.c[i] * t * t
+            + Spline.d[i] * t * t * t;
+
+        return htl + tF - refSPL;
     }
 
 }
