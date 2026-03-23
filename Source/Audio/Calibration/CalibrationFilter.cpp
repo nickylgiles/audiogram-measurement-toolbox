@@ -122,6 +122,18 @@ CalibrationFilter::makeFilter(const CalibrationFilterParams::BiquadParams& biqua
                 juce::Decibels::decibelsToGain(biquadParams.gain)
             );
 
+        case FilterType::HS:
+            return juce::dsp::IIR::Coefficients<float>::makeHighShelf(
+                sampleRate, biquadParams.fc, biquadParams.q,
+                juce::Decibels::decibelsToGain(biquadParams.gain)
+            );
+
+        case FilterType::LS:
+            return juce::dsp::IIR::Coefficients<float>::makeLowShelf(
+                sampleRate, biquadParams.fc, biquadParams.q,
+                juce::Decibels::decibelsToGain(biquadParams.gain)
+            );
+
         case FilterType::None:
         default:
             return new juce::dsp::IIR::Coefficients<float>(
