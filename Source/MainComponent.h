@@ -53,10 +53,11 @@ public:
         auto screen = std::make_unique<ScreenT>();
 
         juce::String userId = userSettings->getValue("userId", "");
+        juce::String calibrationId = soundEngine->getCalibrationMetadata().calibrationId;
 
         screen->setResults(results);
-        screen->onExportClicked = [this, results, userId] {
-            if (resultsLogger.logResults(userId, results)) {
+        screen->onExportClicked = [this, results, userId, calibrationId] {
+            if (resultsLogger.logResults(userId, calibrationId, results)) {
                 DBG("Test results logged successfully.");
             }
             else {
@@ -72,7 +73,7 @@ public:
 
     template <typename ResultsT>
     void logTestResults(const ResultsT& results) {
-        resultsLogger.logResults(getUserId(), results);
+        resultsLogger.logResults(getUserId(), soundEngine->getCalibrationMetadata().calibrationId, results);
     }
 
 private:

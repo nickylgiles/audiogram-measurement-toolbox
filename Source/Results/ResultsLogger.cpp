@@ -23,12 +23,13 @@ bool ResultsLogger::openDatabase(const juce::File& file) {
     return true;
 }
 
-bool ResultsLogger::logResults(const juce::String& userId, const SpatialTestResults& results) {
+bool ResultsLogger::logResults(const juce::String& userId, const juce::String& calibrationId, const SpatialTestResults& results) {
     if (!db.execute(
         "CREATE TABLE IF NOT EXISTS SpatialResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "testId INTEGER NOT NULL,"
         "userId TEXT NOT NULL,"
+        "calibrationId TEXT NOT NULL,"
         "timestamp TEXT NOT NULL,"
         "referenceAzimuth REAL NOT NULL,"
         "targetAzimuth REAL NOT NULL,"
@@ -49,9 +50,10 @@ bool ResultsLogger::logResults(const juce::String& userId, const SpatialTestResu
         float snr = r.snr;
         int correct = r.spatialCorrect;
 
-        juce::String sql = "INSERT INTO SpatialResults (testId, userId, timestamp, referenceAzimuth, targetAzimuth, snr, correct) VALUES ('"
+        juce::String sql = "INSERT INTO SpatialResults (testId, userId, calibrationId, timestamp, referenceAzimuth, targetAzimuth, snr, correct) VALUES ('"
             + juce::String(testId) + "', '"
             + userId + "', '"
+            + calibrationId + "', '"
             + timestamp + "', '"
             + juce::String(refAz) + "', "
             + juce::String(targAz) + ", "
@@ -65,12 +67,13 @@ bool ResultsLogger::logResults(const juce::String& userId, const SpatialTestResu
     return true;
 }
 
-bool ResultsLogger::logResults(const juce::String& userId, const PureToneTestResults& results) {
+bool ResultsLogger::logResults(const juce::String& userId, const juce::String& calibrationId, const PureToneTestResults& results) {
     if (!db.execute(
         "CREATE TABLE IF NOT EXISTS PureToneResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "testId INTEGER NOT NULL,"
         "userId TEXT NOT NULL,"
+        "calibrationId TEXT NOT NULL,"
         "timestamp TEXT NOT NULL,"
         "ear TEXT NOT NULL,"
         "frequency REAL NOT NULL,"
@@ -91,9 +94,10 @@ bool ResultsLogger::logResults(const juce::String& userId, const PureToneTestRes
             float freq = entry.first;
             float threshold = entry.second;
 
-            juce::String sql = "INSERT INTO PureToneResults (testId, userId, timestamp, ear, frequency, threshold) VALUES ('"
+            juce::String sql = "INSERT INTO PureToneResults (testId, userId, calibrationId, timestamp, ear, frequency, threshold) VALUES ('"
                 + juce::String(testId) + "', '"
                 + userId + "', '"
+                + calibrationId + "', '"
                 + timestamp + "', '"
                 + earName + "', "
                 + juce::String(freq) + ", "
@@ -107,12 +111,13 @@ bool ResultsLogger::logResults(const juce::String& userId, const PureToneTestRes
     return true;
 }
 
-bool ResultsLogger::logResults(const juce::String& userId, const SpeechInNoiseTestResults& results) {
+bool ResultsLogger::logResults(const juce::String& userId, const juce::String& calibrationId, const SpeechInNoiseTestResults& results) {
     if (!db.execute(
         "CREATE TABLE IF NOT EXISTS DigitsInNoiseResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "testId INTEGER NOT NULL,"
         "userId TEXT NOT NULL,"
+        "calibrationId TEXT NOT NULL,"
         "timestamp TEXT NOT NULL,"
         "targetWord TEXT NOT NULL, "
         "reportedWord TEXT NOT NULL,"
@@ -133,9 +138,10 @@ bool ResultsLogger::logResults(const juce::String& userId, const SpeechInNoiseTe
         float snr = r.snr;
         int correct = r.wordCorrect;
 
-        juce::String sql = "INSERT INTO DigitsInNoiseResults (testId, userId, timestamp, targetWord, reportedWord, snr, correct) VALUES ('"
+        juce::String sql = "INSERT INTO DigitsInNoiseResults (testId, userId, calibrationId, timestamp, targetWord, reportedWord, snr, correct) VALUES ('"
             + juce::String(testId) + "', '"
             + userId + "', '"
+            + calibrationId + "', '"
             + timestamp + "', '"
             + targWord + "', '"
             + repWord + "', "
@@ -149,12 +155,13 @@ bool ResultsLogger::logResults(const juce::String& userId, const SpeechInNoiseTe
     return true;
 }
 
-bool ResultsLogger::logResults(const juce::String& userId, const DualTaskTestResults& results) {
+bool ResultsLogger::logResults(const juce::String& userId, const juce::String& calibrationId, const DualTaskTestResults& results) {
     if (!db.execute(
         "CREATE TABLE IF NOT EXISTS DualTaskResults ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "testId INTEGER NOT NULL,"
         "userId TEXT NOT NULL,"
+        "calibrationId TEXT NOT NULL,"
         "timestamp TEXT NOT NULL,"
         "targetWord TEXT NOT NULL, "
         "reportedWord TEXT NOT NULL,"
@@ -182,9 +189,10 @@ bool ResultsLogger::logResults(const juce::String& userId, const DualTaskTestRes
         float targAz = r.spatialTestResponse.targetAzimuth;
         int spatialCorrect = r.spatialTestResponse.spatialCorrect;
 
-        juce::String sql = "INSERT INTO DualTaskResults (testId, userId, timestamp, targetWord, reportedWord, snr, wordCorrect, referenceAzimuth, targetAzimuth, spatialCorrect) VALUES ('"
+        juce::String sql = "INSERT INTO DualTaskResults (testId, userId, calibrationId, timestamp, targetWord, reportedWord, snr, wordCorrect, referenceAzimuth, targetAzimuth, spatialCorrect) VALUES ('"
             + juce::String(testId) + "', '"
             + userId + "', '"
+            + calibrationId + "', '"
             + timestamp + "', '"
             + targWord + "', '"
             + repWord + "', "
