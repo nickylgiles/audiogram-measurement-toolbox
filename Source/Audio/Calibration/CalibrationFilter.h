@@ -19,7 +19,7 @@ public:
         juce::String calibrationDate = "";
         juce::String deviceModel = "";
 
-        float targetSPL = 0.0f;
+        float targetSPL = 90.0f;
     };
 
     CalibrationFilter(double sampleRate, int maximumBlockSize);

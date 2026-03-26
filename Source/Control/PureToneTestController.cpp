@@ -144,6 +144,9 @@ void PureToneTestController::playCurrentTone() {
     soundEngine.playToneMasked(config.testTones[currentTone], 
         dbToAmplitude(thresholdSPL), 
         1.0f, currentEar);
+
+    DBG("Playing tone at " << config.testTones[currentTone] << " Hz, SPL = " << refSPL + thresholdSPL << " dB.");
+    DBG("Playback gain " << dbToAmplitude(thresholdSPL) << "");
     currentToneDetected = false;
 }
 

@@ -12,6 +12,13 @@
 
 void AudiogramViewer::setResults(const PureToneTestResults& newResults) {
     results = newResults;
+    for (auto& r : results.left) {
+        DBG(r.first << " : " << r.second);
+    }
+
+    for (auto& r : results.right) {
+        DBG(r.first << " : " << r.second);
+    }
 }
 
 void AudiogramViewer::paint(juce::Graphics& g) {

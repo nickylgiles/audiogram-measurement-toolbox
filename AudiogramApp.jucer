@@ -343,6 +343,10 @@
         <FILE id="eU1LgH" name="SpatialTest.cpp" compile="1" resource="0" file="Source/Tests/SpatialTest.cpp"/>
         <FILE id="YPXOur" name="SpatialTest.h" compile="0" resource="0" file="Source/Tests/SpatialTest.h"/>
         <FILE id="yQQpvu" name="Test.h" compile="0" resource="0" file="Source/Tests/Test.h"/>
+        <FILE id="Y77EEq" name="TestCalibrationTest.cpp" compile="1" resource="0"
+              file="Source/Tests/TestCalibrationTest.cpp"/>
+        <FILE id="BCL4g9" name="TestCalibrationTest.h" compile="0" resource="0"
+              file="Source/Tests/TestCalibrationTest.h"/>
       </GROUP>
       <FILE id="TqqMSB" name="AudiogramAppApplication.h" compile="0" resource="0"
             file="Source/AudiogramAppApplication.h"/>
@@ -412,6 +416,10 @@
         <FILE id="p9ATjb" name="SoundEngine.h" compile="0" resource="0" file="Source/Audio/SoundEngine.h"/>
       </GROUP>
       <GROUP id="{943F7013-3B33-5071-AA95-51CCE457EC05}" name="Controller">
+        <FILE id="RMP9NI" name="TestCalibrationController.cpp" compile="1"
+              resource="0" file="Source/Control/TestCalibrationController.cpp"/>
+        <FILE id="S8Acq1" name="TestCalibrationController.h" compile="0" resource="0"
+              file="Source/Control/TestCalibrationController.h"/>
         <FILE id="iUHpY7" name="TestControllerTimer.cpp" compile="1" resource="0"
               file="Source/Control/TestControllerTimer.cpp"/>
         <FILE id="i8e4s1" name="TestControllerTimer.h" compile="0" resource="0"
