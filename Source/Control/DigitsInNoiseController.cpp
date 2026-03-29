@@ -69,11 +69,11 @@ void DigitsInNoiseController::setLevels(float snr) {
     const float noiseRefDb = -20.0f;
     const float speechRefDb = -20.0f;
     if (snr < 0.0f) {
-        digitAmplitude = dbToAmplitude(noiseRefDb + snr);
+        digitAmplitude = dbToAmplitude(noiseRefDb + snr + fm->getDigitNormalisationDb());
         maskingAmplitude = dbToAmplitude(noiseRefDb);
     }
     else {
-        digitAmplitude = dbToAmplitude(speechRefDb);
+        digitAmplitude = dbToAmplitude(speechRefDb + fm->getDigitNormalisationDb());
         maskingAmplitude = dbToAmplitude(speechRefDb - snr);
     }
     DBG("Levels set: SNR = " << snr);

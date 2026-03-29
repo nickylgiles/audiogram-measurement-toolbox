@@ -65,7 +65,7 @@ public:
 
 	void buttonClicked(const juce::String& id) override;
 
-	 const SpatialTestResults getResults();
+	const SpatialTestResults getResults();
 private:
 
 	Config config;

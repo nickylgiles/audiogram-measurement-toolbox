@@ -33,6 +33,8 @@ public:
 
     const std::vector<juce::String> getWordGroupIds();
 
+    const float getDigitNormalisationDb() { return 6.0f; };
+
 private:
     void loadWordFile(const juce::String& word, const juce::File& file);
     void addWordGroup(const juce::String& groupId, const std::vector<juce::String>& words);

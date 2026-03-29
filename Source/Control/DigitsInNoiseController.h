@@ -21,7 +21,7 @@ public:
     struct Config {
         juce::String name = "";
 
-        int numTrials = 10;
+        int numTrials = 20;
         int numDigits = 3;
 
         // SNR Parameters
