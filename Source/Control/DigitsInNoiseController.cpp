@@ -243,8 +243,8 @@ DigitsInNoiseController::Config::loadFromFile(const juce::File& file) {
     }
 
     if (root->hasProperty("numTrials")) {
-        config.numTrials = static_cast<int>(
-            root->getProperty("numTrials"));
+        config.numTrials = std::max(static_cast<int>(
+            root->getProperty("numTrials")), 4); // Must have at least 4 trials to find SRT
     }
 
     if (root->hasProperty("numDigits")) {
