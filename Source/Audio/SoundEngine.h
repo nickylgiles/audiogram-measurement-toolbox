@@ -50,6 +50,11 @@ public:
     void loadCalibration(const juce::File& calibrationFile);
     const CalibrationFilter::Metadata& getCalibrationMetadata();
 
+    const float getCalibrationSPLOffset();
+    void setCalibrationSPLOffset(float offset);
+
+    std::function<void(bool)> onClip;
+
 private:
     void addSource(std::unique_ptr<SoundSource> source);
 
@@ -64,6 +69,10 @@ private:
     juce::SpinLock sourceLock;
 
     HRTFManager hrtfManager;
+
+    float calibrationSPLOffset = 0.0f;
+
+    bool lastBlockClipped = false;
 
 };
 

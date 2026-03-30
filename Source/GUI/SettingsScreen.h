@@ -87,7 +87,7 @@ private:
                 auto& onSettingPressed = owner->settings[lastRowSelected].onClick;
                 if (onSettingPressed) onSettingPressed();
             }
-
+            
             // Resize all text editor bars to the correct size
             for (auto& s : owner->settings) {
                 if (s.type == Setting::Type::TextInput && s.editorComponent != nullptr) {
@@ -98,6 +98,7 @@ private:
                     s.editorComponent->setJustification(juce::Justification::centredLeft);
                 }
             }
+            
             
         }
 

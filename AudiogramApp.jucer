@@ -416,10 +416,6 @@
         <FILE id="p9ATjb" name="SoundEngine.h" compile="0" resource="0" file="Source/Audio/SoundEngine.h"/>
       </GROUP>
       <GROUP id="{943F7013-3B33-5071-AA95-51CCE457EC05}" name="Controller">
-        <FILE id="RMP9NI" name="TestCalibrationController.cpp" compile="1"
-              resource="0" file="Source/Control/TestCalibrationController.cpp"/>
-        <FILE id="S8Acq1" name="TestCalibrationController.h" compile="0" resource="0"
-              file="Source/Control/TestCalibrationController.h"/>
         <FILE id="iUHpY7" name="TestControllerTimer.cpp" compile="1" resource="0"
               file="Source/Control/TestControllerTimer.cpp"/>
         <FILE id="i8e4s1" name="TestControllerTimer.h" compile="0" resource="0"

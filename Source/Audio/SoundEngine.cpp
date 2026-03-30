@@ -123,10 +123,33 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
     // Apply headphone calibration
     calibrationFilter.processBlock(sourceBuffer);
 
-    // Copy calibrated block to output
+    // Copy calibrated block to output, adjusted for calibration SPL offset
+    float linearOffset = juce::Decibels::decibelsToGain(calibrationSPLOffset);
+
+    bool clipping = false;
     for (int i = 0; i < numSamples; ++i) {
-        outputL[i] = sourcesLPtr[i];
-        outputR[i] = sourcesRPtr[i];
+        outputL[i] = sourcesLPtr[i] * linearOffset;
+        outputR[i] = sourcesRPtr[i] * linearOffset;
+
+        clipping = (outputL[i] > 1.0f || outputR[i] > 1.0f || outputL[i] < -1.0f || outputR[i] < -1.0f) 
+            ? true : clipping;
+    }
+
+    if (clipping) {
+        // mute entire block to prevent unsafe levels
+        for (int i = 0; i < numSamples; ++i) {
+            outputL[i] = 0.0f;
+            outputR[i] = 0.0f;
+        }
+        DBG("Output audio clipped. Muting entire block.");
+        if (onClip)
+            onClip(true);
+
+        lastBlockClipped = true;
+    }
+    else if (lastBlockClipped) {
+        if (onClip)
+            onClip(false);
     }
     
     
@@ -144,6 +167,14 @@ void SoundEngine::loadCalibration(const juce::File& calibrationFile) {
 
 const CalibrationFilter::Metadata& SoundEngine::getCalibrationMetadata() {
     return calibrationFilter.getMetadata();
+}
+
+const float SoundEngine::getCalibrationSPLOffset() {
+    return calibrationSPLOffset;
+}
+
+void SoundEngine::setCalibrationSPLOffset(float offset) {
+    calibrationSPLOffset = offset;
 }
 
 void SoundEngine::addSource(std::unique_ptr<SoundSource> source) {

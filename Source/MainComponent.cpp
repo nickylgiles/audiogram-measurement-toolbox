@@ -6,11 +6,25 @@
 #include "Tests/SpatialTest.h"
 #include "Tests/DigitsInNoiseTest.h"
 #include "Tests/DualTaskTest.h"
+#include "Tests/TestCalibrationTest.h"
 
 //==============================================================================
 MainComponent::MainComponent()
 {
     soundEngine = std::make_unique<SoundEngine>();
+
+    // Warning label for if clipping occurs
+    addAndMakeVisible(clippingWarningLabel);
+    clippingWarningLabel.setColour(juce::Label::textColourId, juce::Colours::red);
+
+    soundEngine->onClip = [this](bool clipping) {
+        juce::MessageManager::callAsync([this, clipping] {
+            clippingWarningLabel.setText(juce::translate(
+                clipping ? "Warning: Output exceeded threshold.  Audio muted. " : ""),
+                juce::dontSendNotification
+            );}
+        );
+    };
 
     // Open logging database
     dbFile = juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory)
@@ -209,6 +223,14 @@ void MainComponent::showSettingsScreen() {
         fileChooser.reset();
         });
     });
+
+    screen->addButtonSetting(juce::translate("Check Levels"), [this] {
+        // Call async to allow settings screen to handle the button press before it is destroyed
+        juce::MessageManager::callAsync([this]() {
+            currentTest = std::make_unique<TestCalibrationTest>(*this, *soundEngine);
+            currentTest->startTest();
+            });
+        });
     
     screen->addButtonSetting(juce::translate("Change language"), [this] {
         juce::String currentLanguage = userSettings->getValue("language", "en");
@@ -305,4 +327,6 @@ void MainComponent::dumpSplineDebug() {
 void MainComponent::resized() {
     if (currentScreen)
         currentScreen->setBounds(getLocalBounds());
+
+    clippingWarningLabel.setBounds(0, getHeight() - 40, getWidth(), 40);
 }

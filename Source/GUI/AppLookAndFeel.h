@@ -37,6 +37,9 @@ public:
         setColour(juce::Label::textColourId,
             juce::Colour(0xff000000)); // black
 
+        setColour(juce::Slider::textBoxTextColourId,
+            juce::Colour(0xff000000));
+
         // setDefaultSansSerifTypefaceName("MingLiU-ExtB");
     }
 
