@@ -16,3 +16,6 @@ A [MATLAB script](./Matlab/ir_extractor.m) is included to create these from a SO
 The digit files are from [Audio MNIST](https://github.com/soerenab/AudioMNIST).
 The dual-task test uses speech samples from the [Modified Rhyme Test Audio Library](https://www.nist.gov/ctl/pscr/modified-rhyme-test-audio-library).  These are not included in binary data, and are instead configured via JSON loaded within the toolbox.
 [SQLite](https://github.com/clibs/sqlite/) is included as a submodule for logging test results.
+
+## Unit Tests
+[Unit tests](./Source/UnitTests) are included for the core audio processing functionality.  These can be run by using the UnitTests build configuration.
