@@ -135,6 +135,13 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
             ? true : clipping;
     }
 
+    if (recording && writer) {
+        juce::AudioBuffer<float> buffer(2, numSamples);
+        buffer.copyFrom(0, 0, outputL, numSamples);
+        buffer.copyFrom(1, 0, outputR, numSamples);
+        writer->writeFromAudioSampleBuffer(buffer, 0, numSamples);
+    }
+
     if (clipping) {
         // mute entire block to prevent unsafe levels
         for (int i = 0; i < numSamples; ++i) {
@@ -175,6 +182,49 @@ const float SoundEngine::getCalibrationSPLOffset() {
 
 void SoundEngine::setCalibrationSPLOffset(float offset) {
     calibrationSPLOffset = offset;
+}
+
+void SoundEngine::startRecording(juce::String name) {
+    if (recording)
+        stopRecording();
+
+    juce::String timestamp = juce::Time::getCurrentTime().toString(true, true)
+        .replaceCharacters(":", "_").replaceCharacters(" ", "_");
+
+    juce::String filename = name + timestamp + ".wav";
+    juce::File file = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory)
+        .getChildFile(filename);
+
+    fileStream = std::make_unique<juce::FileOutputStream>(file);
+    if (!fileStream->openedOk()) {
+        DBG("Failed to open file for recording.");
+        fileStream.reset();
+        return;
+    }
+
+    writer.reset(
+        wavFormat.createWriterFor(fileStream.get(), sampleRate, 2, 16, {}, 0));
+
+    if (writer == nullptr) {
+        DBG("Failed to create WAV writer");
+        fileStream.reset();
+    }
+    else {
+        fileStream.release();
+        DBG("Recording started: " << file.getFullPathName());
+
+        recording = true;
+    }
+
+}
+
+void SoundEngine::stopRecording() {
+    if (writer) {
+        writer.reset();
+        DBG("Recording stopped");
+    }
+
+    recording = false;
 }
 
 void SoundEngine::addSource(std::unique_ptr<SoundSource> source) {

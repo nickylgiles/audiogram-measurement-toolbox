@@ -55,6 +55,9 @@ public:
 
     std::function<void(bool)> onClip;
 
+    void startRecording(juce::String name);
+    void stopRecording();
+
 private:
     void addSource(std::unique_ptr<SoundSource> source);
 
@@ -73,6 +76,12 @@ private:
     float calibrationSPLOffset = 0.0f;
 
     bool lastBlockClipped = false;
+
+    std::unique_ptr<juce::FileOutputStream> fileStream;
+    std::unique_ptr<juce::AudioFormatWriter> writer;
+    juce::WavAudioFormat wavFormat;
+
+    bool recording = false;
 
 };
 

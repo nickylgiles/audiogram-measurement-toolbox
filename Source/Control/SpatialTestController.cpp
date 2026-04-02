@@ -34,11 +34,23 @@ void SpatialTestController::startTest() {
     currentState = TestState::START;
     currentTrial = 0;
     scheduleNextState(2000);
+
+#if JUCE_DEBUG
+
+    soundEngine.startRecording("spatial");
+
+#endif
 }
 
 void SpatialTestController::stopTest() {
     timer.stopTimer();
     soundEngine.stop();
+
+#if JUCE_DEBUG
+
+    soundEngine.stopRecording();
+
+#endif
 }
 
 void SpatialTestController::buttonClicked(const juce::String& id) {

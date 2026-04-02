@@ -1,7 +1,3 @@
 **/Builds
-# Keep solution files for github unittests
-!**/Builds/VisualStudio2022/AudiogramApp.sln
-!**/Builds/VisualStudio2022/AudiogramApp_App.vcxproj
-!**/Builds/VisualStudio2022/AudiogramApp_App.vcxproj.filters
 *.wav
 HRTF/HRIRs_pyfar

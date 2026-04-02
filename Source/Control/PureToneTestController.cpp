@@ -34,6 +34,12 @@ void PureToneTestController::startTest() {
     currentState = TestState::START;
 
     scheduleNextTone(config.toneDelayMs);
+
+#if JUCE_DEBUG
+
+    soundEngine.startRecording("puretone");
+
+#endif
 }
 
 void PureToneTestController::buttonClicked(const juce::String& id) {
@@ -54,6 +60,12 @@ void PureToneTestController::toneHeard() {
 void PureToneTestController::stopTest() {
     timer.stopTimer();
     soundEngine.stop();
+
+#if JUCE_DEBUG
+
+    soundEngine.stopRecording();
+
+#endif
 }
 
 

@@ -26,11 +26,23 @@ void DigitsInNoiseController::startTest() {
     currentState = TestState::START;
     currentTrial = 0;
     scheduleNextState(1000);
+
+#if JUCE_DEBUG
+
+    soundEngine.startRecording("din");
+
+#endif
 }
 
 void DigitsInNoiseController::stopTest() {
     soundEngine.stop();
     timer.stopTimer();
+
+#if JUCE_DEBUG
+
+    soundEngine.stopRecording();
+
+#endif
 }
 
 void DigitsInNoiseController::buttonClicked(const juce::String& id) {

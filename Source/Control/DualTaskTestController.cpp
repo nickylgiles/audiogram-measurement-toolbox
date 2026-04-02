@@ -44,11 +44,23 @@ void DualTaskTestController::startTest() {
     currentState = TestState::START;
     currentTrial = 0;
     scheduleNextState(2000);
+
+#if JUCE_DEBUG
+
+    soundEngine.startRecording("dualtask");
+
+#endif
 }
 
 void DualTaskTestController::stopTest() {
     soundEngine.stop();
     timer.stopTimer();
+
+#if JUCE_DEBUG
+
+    soundEngine.stopRecording();
+
+#endif
 }
 
 void DualTaskTestController::buttonClicked(const juce::String& id) {
