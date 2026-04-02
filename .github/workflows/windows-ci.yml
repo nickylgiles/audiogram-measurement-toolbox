@@ -18,7 +18,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1
 
       - name: Build Unit Tests
-        run: msbuild AudiogramApp.sln /p:Configuration=UnitTests /p:Platform=x64
+        run: msbuild Builds\VisualStudio2022\AudiogramApp.sln /p:Configuration=UnitTests /p:Platform=x64
 
       - name: Run Unit Tests
         run: Builds\VisualStudio2022\x64\UnitTests\AudiogramApp.exe
