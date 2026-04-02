@@ -47,13 +47,29 @@ TestCalibrationScreen::TestCalibrationScreen() {
         if (onLevelChanged) { onLevelChanged(static_cast<float>(outputLevelSlider.getValue())); };
     };
 
-    toggleButton.setButtonText("Start");
+    toggleButton.setButtonText("Start Tone");
     addAndMakeVisible(toggleButton);
     toggleButton.onClick = [this] {
         if (onToggle) { onToggle(toggleButton.getToggleState()); };
-        toggleButton.setButtonText(toggleButton.getToggleState() ? "Stop" : "Start");
+        toggleButton.setButtonText(juce::translate(
+            toggleButton.getToggleState() ? "Stop Tone" : "Start Tone"));
     };
     toggleButton.setClickingTogglesState(true);
+
+    channelLabel.setText(juce::translate("Channel"), juce::dontSendNotification);
+    addAndMakeVisible(channelLabel);
+
+    channelBox.addItem("Left", 1);
+    channelBox.addItem("Right", 2);
+    channelBox.addItem("Both", 3);
+
+    channelBox.setSelectedId(2, juce::dontSendNotification);
+    addAndMakeVisible(channelBox);
+
+    channelBox.onChange = [this] {
+        if (onChannelChanged) {
+            onChannelChanged(static_cast<float>(channelBox.getSelectedId() - 1)); }
+        };
 
     offsetLabel.setText("Set Calibration Offset (dB)", juce::dontSendNotification);
     addAndMakeVisible(offsetLabel);
@@ -67,6 +83,17 @@ TestCalibrationScreen::TestCalibrationScreen() {
     offsetSlider.onValueChange = [this] {
         if (onOffsetChanged) { onOffsetChanged(static_cast<float>(offsetSlider.getValue())); }
         };
+
+    hlBox.addItem("db SPL", 1);
+    hlBox.addItem("db HL", 2);
+    hlBox.setSelectedId(1, juce::dontSendNotification);
+    addAndMakeVisible(hlBox);
+
+    hlBox.onChange = [this] {
+        if (onHLChanged) {
+            onHLChanged(hlBox.getSelectedId() == 2);
+        }
+        };
 }
 
 void TestCalibrationScreen::setCurrentOffset(float offset) {
@@ -76,12 +103,14 @@ void TestCalibrationScreen::setCurrentOffset(float offset) {
 void TestCalibrationScreen::resized() {
     auto area = getLocalBounds().reduced(10);
     
-    int rowHeight = area.getHeight() / 5;
+    int rowHeight = area.getHeight() / 6;
 
     area.removeFromTop(rowHeight);
 
     auto row = area.removeFromTop(rowHeight);
     frequencyLabel.setBounds(row.removeFromLeft(150));
+    row.removeFromBottom(rowHeight / 3);
+    row.removeFromTop(rowHeight / 3);
     frequencyBox.setBounds(row);
 
     row = area.removeFromTop(rowHeight);
@@ -89,7 +118,14 @@ void TestCalibrationScreen::resized() {
     outputLevelSlider.setBounds(row);
 
     row = area.removeFromTop(rowHeight);
+    channelLabel.setBounds(row.removeFromLeft(150));
+    row.removeFromBottom(rowHeight / 3);
+    row.removeFromTop(rowHeight / 3);
+    channelBox.setBounds(row);
+
+    row = area.removeFromTop(rowHeight);
     toggleButton.setBounds(row.removeFromLeft(150));
+    hlBox.setBounds(row.removeFromLeft(150));
 
     row = area.removeFromTop(rowHeight);
     offsetLabel.setBounds(row.removeFromLeft(150));

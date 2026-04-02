@@ -132,7 +132,15 @@ void MainComponent::showMenuScreen() {
     screen->setUserId(userSettings->getValue("userId"));
 
     juce::String calibrationId = soundEngine->getCalibrationMetadata().calibrationId;
-    screen->setCalibrationId(calibrationId);
+    float splAdjust = soundEngine->getCalibrationSPLOffset();
+
+    juce::String adjustmentString =
+        juce::String(" (")
+        + juce::String(splAdjust < 0.0f ? "" : "+")
+        + juce::String(splAdjust, 1)
+        + juce::String(" dB)");
+
+    screen->setCalibrationId(calibrationId + adjustmentString);
 
     screen->onSettingsClicked = [this] {showSettingsScreen();};
 

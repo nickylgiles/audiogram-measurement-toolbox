@@ -9,6 +9,11 @@
 #include "AudiogramAppApplication.h"
 #include "MainComponent.h"
 
+#if RUN_UNIT_TESTS
+#include "UnitTests/AudioTests.h"
+#include "UnitTests/PartitionedConvolverTests.h"
+#endif
+
 // ===== MainWindow definition =====
 class AudiogramAppApplication::MainWindow : public juce::DocumentWindow {
 public:
@@ -49,6 +54,11 @@ bool AudiogramAppApplication::moreThanOneInstanceAllowed() {
 }
 
 void AudiogramAppApplication::initialise(const juce::String&) {
+#if RUN_UNIT_TESTS
+    juce::UnitTestRunner unitTestRunner;
+    unitTestRunner.runAllTests();
+    quit();
+#else
     juce::PropertiesFile::Options options;
     options.applicationName = getApplicationName();
     options.filenameSuffix = "settings";
@@ -57,6 +67,7 @@ void AudiogramAppApplication::initialise(const juce::String&) {
     applicationProperties.setStorageParameters(options);
 
     mainWindow.reset(new MainWindow(getApplicationName()));
+#endif
 }
 
 void AudiogramAppApplication::shutdown() {

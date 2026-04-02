@@ -32,7 +32,7 @@ SpatialisedNoiseSource::SpatialisedNoiseSource(double sampleRate, float gain, fl
 
 void SpatialisedNoiseSource::process(float* outputL, float* outputR, int numSamples) {
 
-    tempBuffer.setSize(1, numSamples);
+    tempBuffer.setSize(1, numSamples, false, false, true);
     float* tempWritePtr = tempBuffer.getWritePointer(0);
     for (int i = 0; i < numSamples; ++i) {
         if (samplesRemaining <= 0) {

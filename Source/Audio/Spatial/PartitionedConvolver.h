@@ -43,6 +43,7 @@ private:
 
     std::vector<juce::dsp::Complex<float>> outputFFT;
     std::vector<juce::dsp::Complex<float>> outputIFFT;
+    std::vector<juce::dsp::Complex<float>> accumulator;
 
     std::vector<float> inputBuffer;
     std::vector<float> leftoverOutput;

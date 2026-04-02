@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 
+
 class TestCalibrationScreen : public juce::Component {
 public:
     TestCalibrationScreen();
@@ -20,7 +21,9 @@ public:
     std::function<void(float)> onLevelChanged;
     std::function<void(bool)> onToggle;
     std::function<void(float)> onOffsetChanged;
+    std::function<void(int)> onChannelChanged;
     std::function<void()> onStopClicked;
+    std::function<void(bool)> onHLChanged;
 
     void setCurrentOffset(float offset);
 
@@ -33,10 +36,17 @@ private:
 
     juce::TextButton toggleButton;
 
+    juce::ComboBox channelBox;
+    juce::Label channelLabel;
+
     juce::Slider offsetSlider;
     juce::Label offsetLabel;
 
-    juce::TextButton stopButton{ juce::translate("Stop") };
+    juce::ComboBox hlBox;
+
+
+
+    juce::TextButton stopButton{ juce::translate("Back") };
 
     void resized() override;
 

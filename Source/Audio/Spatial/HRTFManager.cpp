@@ -128,7 +128,7 @@ bool HRTFManager::loadIR(const juce::String& name, juce::AudioBuffer<float>& des
     reader->read(&dest, 0, length, 0, true, false);
 
     DBG("HRIR loaded. Length = " << length << " samples");
-
+    
     irSampleRate = reader->sampleRate;
 
     DBG("HRIR sample rate: " << irSampleRate);

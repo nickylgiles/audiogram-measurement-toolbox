@@ -31,7 +31,7 @@ void Spatialiser::setDirection(float newElevation, float newAzimuth) {
     // Load IRs
     juce::AudioBuffer<float> hrirL = hrtfManager.getIR(elevation, azimuth, 0);
     juce::AudioBuffer<float> hrirR = hrtfManager.getIR(elevation, azimuth, 1);
-    
+
     convolverLeft.loadIR(hrirL);
     convolverRight.loadIR(hrirR);
 
