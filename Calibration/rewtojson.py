@@ -25,7 +25,10 @@ def get_filters_from_file(file_path) -> list:
                 gain = float(parts[parts.index("Gain") + 1])
                 q = float(parts[parts.index("Q") + 1])
 
-            # TODO: Parse other filter types
+            if filter_type == "HS" or filter_type == "LS" or filter_type == "HC" or filter_type == "LC":
+                fc = float(parts[parts.index("Fc") + 1])
+                gain = float(parts[parts.index("Gain") + 1])
+                q = 0.707 # Assume as REW doesn't export
 
             filter = {
                 "number": filter_num,
@@ -34,6 +37,9 @@ def get_filters_from_file(file_path) -> list:
                 "gain": gain,
                 "q": q
             }
+
+            if q != -1:
+                filter["q"] = q
 
             filters.append(filter)
 
@@ -53,9 +59,9 @@ def get_metadata_from_file(file_path) -> dict:
     return metadata
 
 # Set paths to filter settings files
-settings_file_left = "filter_settings.txt"
-settings_file_right = "filter_settings.txt"
-output_file = "calibration_test.json"
+settings_file_left = "filter_settings_left.txt"
+settings_file_right = "filter_settings_right.txt"
+output_file = "calibration_seinnheiser_hd280.json"
 
 left_filters = get_filters_from_file(settings_file_left)
 right_filters = get_filters_from_file(settings_file_right)
