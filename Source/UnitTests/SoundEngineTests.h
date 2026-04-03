@@ -53,6 +53,24 @@ public:
 
             expect(engine.isPlaying() == false, "SoundEngine should not be playing without active sources");
 
+            beginTest("Clipping");
+
+            bool clipCalled = false;
+            engine.onClip = [&](bool clipping) {
+                if (clipping)
+                    clipCalled = true;
+            };
+            engine.playTone(1000.0f, 2.0f, 2.0f, 0);
+            for (int i = 0; i < sampleRate * 2.0f; i += blockSize) {
+                engine.processBlock(outputL.data(), outputR.data(), blockSize);
+
+                if (clipCalled)
+                    break;
+            }
+
+            expect(clipCalled, "SoundEngine onClip not called");
+
+
         }
     }
 private:

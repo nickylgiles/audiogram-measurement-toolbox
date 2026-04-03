@@ -18,13 +18,6 @@ for i = 1:length(sel)
 
     hL = squeeze(s.Numerator(j, 1, :));
     hR = squeeze(s.Numerator(j, 2, :));
-
-    maxVal = max([abs(hL(:)); abs(hR(:))]);
-
-    if maxVal > 0
-        hL = hL / maxVal;
-        hR = hR / maxVal;
-    end
     
     if el < 0
         filenameL = fullfile(outputFolder, sprintf('HRIR_m%d_%d_L.wav', abs(el), az));

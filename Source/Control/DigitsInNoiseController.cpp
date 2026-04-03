@@ -94,8 +94,10 @@ void DigitsInNoiseController::setLevels(float snr) {
 }
 
 void DigitsInNoiseController::makeRandomSequence() {
+    DBG("Sequence: ");
     for (int i = 0; i < config.numDigits; ++i) {
         currentSequence[i] = abs(random.nextInt() % 10);
+        DBG(currentSequence[i]);
     }
 }
 

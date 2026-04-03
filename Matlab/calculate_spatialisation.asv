@@ -1,0 +1,78 @@
+close all; clc;
+
+sofaFile = 'dtf_nh2.sofa';
+
+s = sofaread(sofaFile);
+fs = s.SamplingRate;
+
+% Select 0-elevation indices
+sel = find(s.SourcePosition(:,2) == 0);
+fprintf('Number of indices is %d', length(sel))
+
+azimuth = zeros(length(sel),1);
+itd = zeros(length(sel),1);
+ild = zeros(length(sel),1);
+
+for i = 1:length(sel)
+    j = sel(i);
+    az = (s.SourcePosition(j, 1));
+    el = (s.SourcePosition(j, 2));
+
+    hL = squeeze(s.Numerator(j, 1, :));
+    hR = squeeze(s.Numerator(j, 2, :));
+
+    azimuth(i) = az;
+
+    [c, lags] = xcorr(hR, hL);
+
+    [~, idx_max] = max(c);
+    lag = lags(idx_max);
+
+    itd(i) = lag/fs;
+    
+    rmsL = sqrt(mean(hL.^2));
+    rmsR = sqrt(mean(hR.^2));
+
+    ild_db(i) = 20*log10(rmsL/rmsR);
+
+
+end
+
+[azimuth, idx] = sort(azimuth);
+itd = itd(idx);
+ild = ild_db(idx);
+
+% Approximation of ILD - van Opstal (2016) ILD = 0.18 sqrt(f) * sin(theta)
+theta = deg2rad(azimuth);
+f = 10000;
+ild_approx = 0.18 * sqrt(f) * sin(theta);
+
+% Approximation of ITD - Woodworth (1938)
+r = 0.1; % Assuming head radius = 10cm
+c = 343;
+itd_approx = zeros(size(theta));
+itd_approx(azimuth <= 90) = (r/c) * (theta(azimuth <= 90) + sin(theta(azimuth <= 90)));
+
+itd_approx(azimuth >= 270) = (r/c) * ((theta-360) + sin(theta));
+woodworth_idx = (azimuth >= 270 | azimuth <= 90); % only valid in front plane
+
+
+
+figure
+plot(azimuth, itd)
+hold on
+plot(azimuth(woodworth_idx), itd_approx(woodworth_idx))
+xlabel('Azimuth (deg)')
+ylabel('ITD (\mus)')
+title('ITD vs Azimuth (0° elevation)')
+grid on
+
+
+figure
+plot(azimuth, ild)
+hold on;
+plot(azimuth, ild_approx)
+xlabel('Azimuth (deg)')
+ylabel('ILD (dB)')
+title('ILD vs Azimuth (0° elevation)')
+grid on

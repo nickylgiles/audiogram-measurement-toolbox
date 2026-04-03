@@ -127,15 +127,15 @@ bool HRTFManager::loadIR(const juce::String& name, juce::AudioBuffer<float>& des
     dest.setSize(1, length);
     reader->read(&dest, 0, length, 0, true, false);
 
-    DBG("HRIR loaded. Length = " << length << " samples");
+   // DBG("HRIR loaded. Length = " << length << " samples");
     
     irSampleRate = reader->sampleRate;
 
-    DBG("HRIR sample rate: " << irSampleRate);
+   // DBG("HRIR sample rate: " << irSampleRate);
     if (sampleRate > 0 && irSampleRate != sampleRate) {
         resampleBuffer(dest, irSampleRate, sampleRate);
         irSampleRate = sampleRate;
-        DBG("HRIR resampled to device sample rate: " << irSampleRate);
+       // DBG("HRIR resampled to device sample rate: " << irSampleRate);
     }
 
     return true;
