@@ -24,6 +24,7 @@ public:
     std::function<void(int)> onChannelChanged;
     std::function<void()> onStopClicked;
     std::function<void(bool)> onHLChanged;
+    std::function<void(int)> onStimulusChanged; // 1: pure tone 2: white noise
 
     void setCurrentOffset(float offset);
 
@@ -44,7 +45,7 @@ private:
 
     juce::ComboBox hlBox;
 
-
+    juce::ComboBox stimulusBox;
 
     juce::TextButton stopButton{ juce::translate("Back") };
 

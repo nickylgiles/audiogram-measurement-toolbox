@@ -94,6 +94,17 @@ TestCalibrationScreen::TestCalibrationScreen() {
             onHLChanged(hlBox.getSelectedId() == 2);
         }
         };
+
+    stimulusBox.addItem("Pure Tone", 1);
+    stimulusBox.addItem("White Noise", 2);
+    stimulusBox.setSelectedId(1, juce::dontSendNotification);
+    addAndMakeVisible(stimulusBox);
+
+    stimulusBox.onChange = [this] {
+        if (onStimulusChanged) {
+            onStimulusChanged(stimulusBox.getSelectedId());
+        }
+    };
 }
 
 void TestCalibrationScreen::setCurrentOffset(float offset) {
@@ -125,7 +136,10 @@ void TestCalibrationScreen::resized() {
 
     row = area.removeFromTop(rowHeight);
     toggleButton.setBounds(row.removeFromLeft(150));
+    row.removeFromLeft(10);
     hlBox.setBounds(row.removeFromLeft(150));
+    row.removeFromLeft(10);
+    stimulusBox.setBounds(row.removeFromLeft(150));
 
     row = area.removeFromTop(rowHeight);
     offsetLabel.setBounds(row.removeFromLeft(150));

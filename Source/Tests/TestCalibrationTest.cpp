@@ -39,7 +39,22 @@ void TestCalibrationTest::startTest() {
     screen->onHLChanged = [this](bool h) {
         htl = h;
         updateTone();
-        };
+    };
+
+    screen->onStimulusChanged = [this](int s) {
+        switch (s) {
+        case 1:
+            stimulus = Stimulus::PURETONE;
+            break;
+        case 2:
+            stimulus = Stimulus::NOISE;
+            break;
+        default:
+            stimulus = Stimulus::PURETONE;
+            break;
+        }
+        updateTone();
+    };
 
     screen->onChannelChanged = [this](int c) {
 
@@ -57,7 +72,7 @@ void TestCalibrationTest::startTest() {
             break;
         }
         updateTone();
-        };
+    };
 
     screen->onOffsetChanged = [this](float newOffset) {
         soundEngine.setCalibrationSPLOffset(newOffset);
@@ -71,10 +86,13 @@ void TestCalibrationTest::startTest() {
 
     screen->setCurrentOffset(soundEngine.getCalibrationSPLOffset());
     mainComponent.showScreen(std::move(screen));
+
+    soundEngine.startRecording("calibration");
 }
 
 void TestCalibrationTest::exitTest() {
     stopTone();
+    soundEngine.stopRecording();
     mainComponent.showSettingsScreen();
 }
 
@@ -102,14 +120,27 @@ void TestCalibrationTest::updateTone() {
     DBG("Update tone");
     switch (channel) {
     case TestCalibrationTest::ToneChannel::LEFT:
-        soundEngine.playTone(frequency, amplitude, 600.0f, 0);
+        if (stimulus == Stimulus::PURETONE)
+            soundEngine.playTone(frequency, amplitude, 600.0f, 0);
+        if (stimulus == Stimulus::NOISE)
+            soundEngine.playNoise(amplitude, 600.0f, 0);
         break;
     case TestCalibrationTest::ToneChannel::RIGHT:
-        soundEngine.playTone(frequency, amplitude, 600.0f, 1);
+        if (stimulus == Stimulus::PURETONE)
+            soundEngine.playTone(frequency, amplitude, 600.0f, 1);
+        if (stimulus == Stimulus::NOISE)
+            soundEngine.playNoise(amplitude, 600.0f, 1);
         break;
     case TestCalibrationTest::ToneChannel::BOTH:
-        soundEngine.playTone(frequency, amplitude, 600.0f, 0);
-        soundEngine.playTone(frequency, amplitude, 600.0f, 1);
+        if (stimulus == Stimulus::PURETONE) {
+            soundEngine.playTone(frequency, amplitude, 600.0f, 0);
+            soundEngine.playTone(frequency, amplitude, 600.0f, 1);
+        }
+        if (stimulus == Stimulus::NOISE) {
+            soundEngine.playNoise(amplitude, 600.0f, 0);
+            soundEngine.playNoise(amplitude, 600.0f, 1);
+        }
+
         break;
     default:
         break;

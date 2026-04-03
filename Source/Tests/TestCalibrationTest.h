@@ -27,6 +27,9 @@ private:
     enum class ToneChannel { LEFT, RIGHT, BOTH };
     ToneChannel channel = ToneChannel::RIGHT;
 
+    enum class Stimulus { PURETONE, NOISE };
+    Stimulus stimulus = Stimulus::PURETONE;
+
     SoundEngine& soundEngine;
 
     bool playing = false;
