@@ -333,6 +333,8 @@
         <FILE id="NQMas3" name="AudioTests.h" compile="0" resource="0" file="Source/UnitTests/AudioTests.h"/>
         <FILE id="W1fRta" name="PartitionedConvolverTests.h" compile="0" resource="0"
               file="Source/UnitTests/PartitionedConvolverTests.h"/>
+        <FILE id="bnnsrt" name="SoundEngineTests.h" compile="0" resource="0"
+              file="Source/UnitTests/SoundEngineTests.h"/>
       </GROUP>
       <GROUP id="{50D75710-64D4-41BF-6589-CC83358675D3}" name="HearingTests">
         <FILE id="f2oCn5" name="DigitsInNoiseTest.cpp" compile="1" resource="0"

@@ -12,6 +12,7 @@
 #if RUN_UNIT_TESTS
 #include "UnitTests/AudioTests.h"
 #include "UnitTests/PartitionedConvolverTests.h"
+#include "UnitTests/SoundEngineTests.h"
 #endif
 
 // ===== MainWindow definition =====
