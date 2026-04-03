@@ -27,7 +27,7 @@ void DigitsInNoiseController::startTest() {
     currentTrial = 0;
     scheduleNextState(1000);
 
-#if JUCE_DEBUG
+#if JUCE_DEBUG && !BENCHMARKING
 
     soundEngine.startRecording("din");
 
@@ -38,7 +38,7 @@ void DigitsInNoiseController::stopTest() {
     soundEngine.stop();
     timer.stopTimer();
 
-#if JUCE_DEBUG
+#if JUCE_DEBUG && !BENCHMARKING
 
     soundEngine.stopRecording();
 

@@ -35,7 +35,7 @@ void PureToneTestController::startTest() {
 
     scheduleNextTone(config.toneDelayMs);
 
-#if JUCE_DEBUG
+#if JUCE_DEBUG && !BENCHMARKING
 
     soundEngine.startRecording("puretone");
 
@@ -61,7 +61,7 @@ void PureToneTestController::stopTest() {
     timer.stopTimer();
     soundEngine.stop();
 
-#if JUCE_DEBUG
+#if JUCE_DEBUG && !BENCHMARKING
 
     soundEngine.stopRecording();
 

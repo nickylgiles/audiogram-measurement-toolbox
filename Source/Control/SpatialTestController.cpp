@@ -35,7 +35,7 @@ void SpatialTestController::startTest() {
     currentTrial = 0;
     scheduleNextState(2000);
 
-#if JUCE_DEBUG
+#if JUCE_DEBUG && !BENCHMARKING
 
     soundEngine.startRecording("spatial");
 
@@ -46,7 +46,7 @@ void SpatialTestController::stopTest() {
     timer.stopTimer();
     soundEngine.stop();
 
-#if JUCE_DEBUG
+#if JUCE_DEBUG && !BENCHMARKING
 
     soundEngine.stopRecording();
 

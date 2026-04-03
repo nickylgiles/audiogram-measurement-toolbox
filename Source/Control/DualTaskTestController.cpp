@@ -45,7 +45,7 @@ void DualTaskTestController::startTest() {
     currentTrial = 0;
     scheduleNextState(2000);
 
-#if JUCE_DEBUG
+#if JUCE_DEBUG && !BENCHMARKING
 
     soundEngine.startRecording("dualtask");
 
@@ -56,7 +56,7 @@ void DualTaskTestController::stopTest() {
     soundEngine.stop();
     timer.stopTimer();
 
-#if JUCE_DEBUG
+#if JUCE_DEBUG && !BENCHMARKING
 
     soundEngine.stopRecording();
 

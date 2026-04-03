@@ -85,7 +85,7 @@ juce::AudioBuffer<float>& HRTFManager::getIR(float elevation, float azimuth, int
         if (std::abs(elevation - lower) < std::abs(elevation - upper))
             it = std::prev(it);
     }
-    DBG("Get IR: el = " << elevation << ". IR el = " << it->first);
+    // DBG("Get IR: el = " << elevation << ". IR el = " << it->first);
     int closestEl = it->first;
 
     // Get closest azimuth
@@ -98,7 +98,7 @@ juce::AudioBuffer<float>& HRTFManager::getIR(float elevation, float azimuth, int
         if (std::abs(azimuth - lower) < std::abs(azimuth - upper))
             itAz = std::prev(itAz);
     }
-    DBG("Get IR: az = " << azimuth << ". IR az = " << itAz->first);
+    // DBG("Get IR: az = " << azimuth << ". IR az = " << itAz->first);
     
     // Return correct channel
     if (channel == 0) return itAz->second.left;

@@ -14,6 +14,7 @@ SoundEngine::SoundEngine()
     : calibrationFilter(44100, 1)
 {
     sampleRate = 44100.0;
+    sources.reserve(16);
 }
 
 void SoundEngine::playSource(std::unique_ptr<SoundSource>&& source) {
@@ -69,6 +70,10 @@ void SoundEngine::stop() {
     juce::SpinLock::ScopedLockType lock(sourceLock);
     sources.clear();
     DBG("All sounds stopped");
+#if BENCHMARKING
+    printBenchmarkStats();
+    resetBenchmarks();
+#endif
 }
 
 bool SoundEngine::isPlaying() const {
@@ -91,6 +96,13 @@ void SoundEngine::setSamplesPerBlockExpected(int samplesPerBlock) {
 
 void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
 
+#if BENCHMARKING
+    juce::int64 startTime = juce::Time::getHighResolutionTicks();
+
+    // Only benchmark blocks where sources are processed
+    bool nothingToBenchmark = sources.size() == 0;
+#endif
+
     sourceBuffer.setSize(2, numSamples, true, false, true);
     tempBuffer.setSize(2, numSamples, true, false, true);
 
@@ -102,7 +114,15 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
     float* tempL = tempBuffer.getWritePointer(0);
     float* tempR = tempBuffer.getWritePointer(1);
 
+#if BENCHMARKING
+    juce::int64 tempFinish = juce::Time::getHighResolutionTicks();
+#endif
+
     const juce::SpinLock::ScopedLockType lock(sourceLock);
+
+#if BENCHMARKING
+    juce::int64 lockFinish = juce::Time::getHighResolutionTicks();
+#endif
 
     for (auto it = sources.begin(); it != sources.end(); ) {
         (*it)->process(tempL, tempR, numSamples);
@@ -120,8 +140,16 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
         ++it;
     }
 
+#if BENCHMARKING
+    juce::int64 sourceFinish = juce::Time::getHighResolutionTicks();
+#endif
+
     // Apply headphone calibration
     calibrationFilter.processBlock(sourceBuffer);
+
+#if BENCHMARKING
+    juce::int64 calibrationFinish = juce::Time::getHighResolutionTicks();
+#endif
 
     // Copy calibrated block to output, adjusted for calibration SPL offset
     float linearOffset = juce::Decibels::decibelsToGain(calibrationSPLOffset);
@@ -159,6 +187,24 @@ void SoundEngine::processBlock(float* outputL, float* outputR, int numSamples) {
             onClip(false);
     }
     
+#if BENCHMARKING
+    if (nothingToBenchmark)
+        return;
+
+    juce::int64  endTime = juce::Time::getHighResolutionTicks();
+    double processingTimeMs = juce::Time::highResolutionTicksToSeconds(endTime - startTime) * 1000.0;
+
+    blockProcessingTimes[blockIdx] = processingTimeMs;
+
+    tempBufferTimes[blockIdx] = juce::Time::highResolutionTicksToSeconds(tempFinish - startTime) * 1000.0;
+    lockTimes[blockIdx] = juce::Time::highResolutionTicksToSeconds(lockFinish - tempFinish) * 1000.0;
+    sourceProcessingTimes[blockIdx] = juce::Time::highResolutionTicksToSeconds(sourceFinish - lockFinish) * 1000.0;
+    calibrationTimes[blockIdx] = juce::Time::highResolutionTicksToSeconds(calibrationFinish - sourceFinish) * 1000.0;
+    outputCopyTimes[blockIdx] = juce::Time::highResolutionTicksToSeconds(endTime - calibrationFinish) * 1000.0;
+
+    blockIdx = (blockIdx + 1) % maxBenchmarkBlocks;
+
+#endif
     
 }
 

@@ -574,6 +574,7 @@
         <CONFIGURATION isDebug="1" name="Debug" targetName="AudiogramApp"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="AudiogramApp"/>
         <CONFIGURATION isDebug="1" name="UnitTests" targetName="AudiogramApp" defines="RUN_UNIT_TESTS=1"/>
+        <CONFIGURATION isDebug="0" name="Benchmarking" defines="BENCHMARKING=1" fastMath="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../../JUCE/modules"/>

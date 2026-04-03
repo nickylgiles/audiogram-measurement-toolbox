@@ -16,7 +16,7 @@ PartitionedConvolver::PartitionedConvolver(int partitionSize)
     NFFT = 2 * partSize;
     int fftOrder = computeFFTOrder(NFFT);
     fft = std::make_unique<juce::dsp::FFT>(fftOrder);
-    DBG("FFT size: " << fft->getSize());
+    // DBG("FFT size: " << fft->getSize());
 
     inputTDL.resize(NFFT, { 0.0f, 0.0f });
     outputFFT.resize(NFFT, {0.0f, 0.0f});
@@ -64,7 +64,7 @@ void PartitionedConvolver::loadIR(const juce::AudioBuffer<float>& irBuffer) {
         irPartsFFT[p] = irFFTOut;
     }
 
-    DBG("Loaded IR as " << numIRParts << " blocks.");
+    // DBG("Loaded IR as " << numIRParts << " blocks.");
 
     // Initialize input block FFT delay line
     inputFDL.clear();
