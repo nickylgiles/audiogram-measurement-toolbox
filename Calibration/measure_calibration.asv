@@ -1,0 +1,107 @@
+close all; clc;
+
+[noise_left, Fs] = audioread("noise_left.wav");
+[noise_right, Fs] = audioread("noise_right.wav");
+
+segment_length = Fs * 0.04; % 40 ms segments
+overlap = segment_length / 2;
+window = hann(segment_length);
+
+% Compute PSD of signals
+[psd_left, freq] = pwelch(noise_left, window, overlap, segment_length, Fs);
+[psd_right, freq] = pwelch(noise_right, window, overlap, segment_length, Fs);
+
+
+% Convert magnitude to dB, normalised to max of both channels
+max_psd = max([psd_left; psd_right]);
+mag_response_left = 10*log10(psd_left);
+mag_response_right = 10*log10(psd_right);
+
+
+
+% Load headphone freq responses
+hp_left = readmatrix("average_l.csv");
+hp_right = readmatrix("average_r.csv");
+
+freq_hp_left = hp_left(:,1);
+spl_hp_left = hp_left(:,2);
+
+freq_hp_right = hp_right(:,1);
+spl_hp_right = hp_right(:,2);
+
+
+% Interpolate filter response onto headphone frequency axis
+filter_left_interp = interp1(freq, mag_response_left, freq_hp_left, 'linear', 'extrap');
+filter_right_interp = interp1(freq, mag_response_right, freq_hp_right, 'linear', 'extrap');
+
+% Apply compensation
+corrected_left = spl_hp_left + filter_left_interp;
+corrected_right = spl_hp_right + filter_right_interp;
+
+corrected_left = corrected_left - max(corrected_left);
+corrected_right = corrected_right - max(corrected_right);
+
+
+
+
+figure;
+semilogx(freq, mag_response_left);
+hold on;
+semilogx(freq, mag_response_right);
+xlabel('Frequency (Hz)');
+ylabel('Magnitude (dB)');
+title('Estimated Magnitude Response of Calibration Filter');
+grid on;
+
+xlim([20 20000]);
+legend("Left", "Right");
+
+xticks([20 40 80 125 250 500 1000 2000 4000 8000 16000 20000]);
+xticklabels({'20','40','80','125','250','500','1k','2k','4k', '8k', '16k','20k'});
+
+
+figure;
+semilogx(freq_hp_left, corrected_left);
+hold on;
+semilogx(freq_hp_right, corrected_right);
+
+xlim([20 20000]);
+legend("Left", "Right");
+
+xlabel('Frequency (Hz)');
+ylabel('Magnitude (dB)');
+title('Predicted Frequency Response After Calibration');
+
+xticks([20 40 80 125 250 500 1000 2000 4000 8000 16000 20000]);
+xticklabels({'20','40','80','125','250','500','1k','2k','4k', '8k', '16k','20k'});
+grid on;
+
+fmin = 125;
+fmax = 16000;
+
+idx_left = freq_hp_left >= fmin & freq_hp_left <= fmax;
+idx_right = freq_hp_right >= fmin & freq_hp_right <= fmax;
+
+resp_left = corrected_left(idx_left_high);
+resp_right = corrected_right(idx_right_high);
+
+p2p_left = (max(corrected_left(idx_left)) - min(corrected_left(idx_left)))
+p2p_right = (max(corrected_right(idx_right)) - min(corrected_right(idx_right)))
+
+pp_left_high = (max(corrected_left(idx_left_high)) - min(corrected_left(idx_left_high)))
+pp_right_high = (max(corrected_right(idx_right_high)) - min(corrected_right(idx_right_high)))
+
+mean_left = mean(resp_left);
+mean_right = mean(resp_right);
+
+mse_left = mean((resp_left - mean_left).^2);
+mse_right = mean((resp_right - mean_right).^2);
+
+% RMS deviation (optional)
+rms_left = sqrt(mse_left);
+rms_right = sqrt(mse_right);
+
+fprintf('Left channel MSE (relative to mean, 125Hz–16kHz): %.3f dB^2\n', mse_left);
+fprintf('Right channel MSE (relative to mean, 125Hz–16kHz): %.3f dB^2\n', mse_right);
+fprintf('Left RMS deviation: ±%.2f dB\n', rms_left);
+fprintf('Right RMS deviation: ±%.2f dB\n', rms_right);
