@@ -61,20 +61,10 @@ xticklabels({'20','40','80','125','250','500','1k','2k','4k', '8k', '16k','20k'}
 
 
 figure;
-semilogx(freq_hp_left, corrected_left);
+semilogx(freq_hp_left, corrected_left, 'Color', [0.7 0.7 0.7], 'LineWidth', 1);
 hold on;
-semilogx(freq_hp_right, corrected_right);
+semilogx(freq_hp_right, corrected_right, 'Color', [0.7 0.7 0.7], 'LineWidth', 1);
 
-xlim([20 20000]);
-legend("Left", "Right");
-
-xlabel('Frequency (Hz)');
-ylabel('Magnitude (dB)');
-title('Predicted Frequency Response After Calibration');
-
-xticks([20 40 80 125 250 500 1000 2000 4000 8000 16000 20000]);
-xticklabels({'20','40','80','125','250','500','1k','2k','4k', '8k', '16k','20k'});
-grid on;
 
 fmin = 125;
 fmax = 16000;
@@ -82,8 +72,26 @@ fmax = 16000;
 idx_left = freq_hp_left >= fmin & freq_hp_left <= fmax;
 idx_right = freq_hp_right >= fmin & freq_hp_right <= fmax;
 
-resp_left = corrected_left(idx_left_high);
-resp_right = corrected_right(idx_right_high);
+
+h_left  = semilogx(freq_hp_left(idx_left), corrected_left(idx_left), 'Color','b');
+h_right  = semilogx(freq_hp_right(idx_right), corrected_right(idx_right), 'Color', 'r');
+
+
+xlim([20 20000]);
+
+xlabel('Frequency (Hz)');
+ylabel('Magnitude (dB)');
+title('Predicted Frequency Response After Calibration');
+
+xticks([20 40 80 125 250 500 1000 2000 4000 8000 16000 20000]);
+xticklabels({'20','40','80','125','250','500','1k','2k','4k', '8k', '16k','20k'});
+
+legend([h_left h_right], "Left", "Right");
+grid on;
+
+
+resp_left = corrected_left(idx_left);
+resp_right = corrected_right(idx_right);
 
 p2p_left = (max(corrected_left(idx_left)) - min(corrected_left(idx_left)))
 p2p_right = (max(corrected_right(idx_right)) - min(corrected_right(idx_right)))

@@ -86,6 +86,7 @@ legend('HRIRs', 'Theoretical')
 
 % Compute correlation and MSE for ILD and ITD vs theoretical
 r_itd = corr(itd(woodworth_idx), itd_approx(woodworth_idx))
+ild = ild_db(idx).';
 r_ild = corr(ild, ild_approx)
 
 rmse_itd = sqrt(mean((itd(woodworth_idx) - itd_approx(woodworth_idx)).^2))
