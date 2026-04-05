@@ -51,6 +51,7 @@ public:
         }
 
         // Test on random noise vs naive convolution in TD
+        // Compare processing time
         beginTest("White Noise");
         {
             const int partSize = 256;
@@ -71,11 +72,16 @@ public:
                 input[i] = random.nextFloat() * 2.0f - 1.0f;
 
             std::vector<float> output(totalSamples, 0.0f);
+            juce::int64 pcStart = juce::Time::getHighResolutionTicks();
             conv.processBlock(input.data(), output.data(), totalSamples);
+            juce::int64 pcFinish = juce::Time::getHighResolutionTicks();
+
+            double pcProcessingTimeMs = juce::Time::highResolutionTicksToSeconds(pcFinish - pcStart) * 1000.0;
 
             std::vector<float> reference(totalSamples, 0.0f);
 
             // Naive time-domain convolution
+            juce::int64 tdStart = juce::Time::getHighResolutionTicks();
             for (int n = 0; n < totalSamples; ++n) {
                 float sum = 0.0f;
 
@@ -88,6 +94,9 @@ public:
 
                 reference[n] = sum;
             }
+            juce::int64 tdFinish = juce::Time::getHighResolutionTicks();
+
+            double tdProcessingTimeMs = juce::Time::highResolutionTicksToSeconds(tdFinish - tdStart) * 1000.0;
 
             for (int i = partSize; i < totalSamples; ++i) {
                 expectWithinAbsoluteError(output[i], reference[i], tolerance,
@@ -117,6 +126,11 @@ public:
             DBG("SNR = " << snr << " dB");
 
             expect(snr > 120.0, "SNR too low: " + juce::String(snr) + " dB");
+
+            DBG("Processing Time");
+            DBG("Time-domain: " << tdProcessingTimeMs << " ms");
+            DBG("Partitioned convolver: " << pcProcessingTimeMs << " ms");
+
         }
 
     }

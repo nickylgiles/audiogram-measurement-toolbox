@@ -74,6 +74,13 @@ public:
             expectWithinAbsoluteError(estFreq, frequency, 0.1f, "ToneSource frequency incorrect");
             logMessage("ToneSource test 2 passed");
 
+            // Compute RMS error
+            double sumSquares = 0.0;
+            for (int i = 4800; i < numSamples - 4800; ++i)
+                sumSquares += std::pow(outputL[i] - (gain * std::sin(2.0f * juce::MathConstants<float>::pi * frequency * i / sampleRate)), 2.0);
+            double rmsError = std::sqrt(sumSquares / numSamples);
+            logMessage("ToneSource RMS error = " + juce::String(rmsError));
+
         }
         
         beginTest("Noise gain");
@@ -147,12 +154,19 @@ public:
 
             source.process(outputL.data(), outputR.data(), numSamples);
 
+            double sumSquares = 0.0;
             for (int i = 0; i < numSamples - 1; ++i) {
                 float expected = reference.getSample(0, i) * gain;
 
                 expectWithinAbsoluteError(outputL[i], expected, 1e-4f, "Sound file should match reference");
                 expectWithinAbsoluteError(outputR[i], expected, 1e-4f, "Sound file should match reference");
+
+                sumSquares += std::pow((outputL[i] - expected), 2.0);
+
             }
+
+            double rmsError = std::sqrt(sumSquares / (numSamples - 1));
+            logMessage("SoundFileSource RMS error = " + juce::String(rmsError));
 
             expect(source.isFinished(), "Playback did not finish");
         }
