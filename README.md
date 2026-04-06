@@ -13,6 +13,9 @@ This project requires [JUCE v8.0.1](https://github.com/juce-framework/JUCE) to b
 Open the [Jucer file](./AudiogramApp.jucer) in Projucer.  The global path to the JUCE library should be set in Projucer.
 The project also requires HRIR (Head-Related Impulse Response) .wav files which are included in JUCE binary data to run the spatial and dual-task tests, and spoken digit files to run the digits-in-noise test.
 A [MATLAB script](./Matlab/ir_extractor.m) is included to create these from a SOFA repository.  The .wav files must be included in Projucer as binary data. 
+This software uses the ARI HRTF dataset from the Acoustics Research Institute (Austrian Academy of Sciences), licensed under Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0).
+https://www.oeaw.ac.at/en/ari/outreach/software/hrtf-database
+
 The digit files are from [Audio MNIST](https://github.com/soerenab/AudioMNIST).
 The dual-task test uses speech samples from the [Modified Rhyme Test Audio Library](https://www.nist.gov/ctl/pscr/modified-rhyme-test-audio-library).  These are not included in binary data, and are instead configured via JSON loaded within the toolbox.
 [SQLite](https://github.com/clibs/sqlite/) is included as a submodule for logging test results.
